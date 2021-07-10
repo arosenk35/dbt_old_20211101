@@ -1,0 +1,168 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.7.3
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v2-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+
+      - save_cache:
+          paths:
+            - ./venv
+          key: v2-dependencies-{{ checksum "requirements.txt" }}
+
+      - run:
+          name: DBT Dependencies
+          command: |
+            . venv/bin/activate
+            dbt deps --profiles-dir=.
+      - run:
+          name: DBT Compile
+          command: |
+            . venv/bin/activate
+            dbt compile --profiles-dir=. --target prod
+      - run:
+          name: DBT Seed
+          command: |
+            . venv/bin/activate
+            dbt seed --full-refresh --profiles-dir=. --target prod
+
+  deploy:
+    docker:
+      - image: circleci/python:3.7.3
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found.
+            - v2-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+      - save_cache:
+          paths:
+            - ./venv
+          key: v2-dependencies-{{ checksum "requirements.txt" }}
+      - run:
+          name: DBT Dependencies
+          command: |
+            . venv/bin/activate
+            dbt deps --profiles-dir=.
+
+      - run:
+          name: DBT Seed
+          command: |
+            . venv/bin/activate
+            dbt seed --full-refresh --profiles-dir=. --target prod
+
+      - run:
+          name: DBT sales
+          no_output_timeout: 30m
+          command: |
+            . venv/bin/activate
+            dbt run --profiles-dir=. --models blue
+
+      - run:
+          name: DBT Finance
+          command: |
+            . venv/bin/activate
+            dbt run --profiles-dir=. --models  finance --target prod
+
+  daily:
+    docker:
+      - image: circleci/python:3.7.3
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v2-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+
+      - save_cache:
+          paths:
+            - ./venv
+          key: v2-dependencies-{{ checksum "requirements.txt" }}
+
+      - run:
+          name: DBT Dependencies
+          command: |
+            . venv/bin/activate
+            dbt deps --profiles-dir=.
+
+      - run:
+          name: DBT Cs-Cart
+          no_output_timeout: 30m
+          command: |
+            . venv/bin/activate
+            dbt run --profiles-dir=. --models cscart
+
+workflows:
+  version: 2
+  commit-workflow:
+    jobs:
+      - build
+  hourly-workflow:
+    triggers:
+      - schedule:
+          cron: "30 9-23 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - deploy
+
+  daily-workflow:
+    triggers:
+      - schedule:
+          cron: "50 3 * * 1-6"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - daily

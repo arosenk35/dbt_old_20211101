@@ -45,7 +45,7 @@ SELECT   distinct on (doctor_data__user_id)
 		doctor_data__b_country 					as b_country,
 		nullif(doctor_data__birthday,'') 		as birthday,
 		nullif(doctor_data__url,'') 			as company_url,
-		TIMESTAMP 'epoch' + updated_timestamp::numeric * INTERVAL '1 second' as created_date,
+		TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second' as created_date,
 		v.sln,
 		ips_vet_name,
 		ips_doctor_id
