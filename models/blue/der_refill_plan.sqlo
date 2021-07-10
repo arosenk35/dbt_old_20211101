@@ -1,0 +1,34 @@
+{{
+  config({
+    "materialized": "table",
+    "post-hook": [
+      after_commit("create index  index_{{this.name}}_on_rxno on {{this.schema}}.{{this.name}} (rxno)"),
+      after_commit("create index  index_{{this.name}}_on_scenario on {{this.schema}}.{{this.name}} (scenario,rxno)")
+      ]
+  })
+  }}
+  select  rxno,
+        patient_id,
+        doctor_id,
+        drug_id,
+        scenario, 
+        fill_number,
+        refill_date,
+        qty,
+        amount,
+        rxno::text||fill_number as refill_id
+    from {{ ref('der_refill_forecast') }}
+union all
+    select   
+        rxno,
+        patient_id,
+        doctor_id,
+        drug_id,
+        scenario, 
+        fill_number,
+        dispense_date as refill_date,
+        qty,
+        amount,
+        refill_id
+    FROM {{ ref('fact_prescription') }}
+    where  transaction_type ='Prescription'

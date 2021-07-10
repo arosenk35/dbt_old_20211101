@@ -1,0 +1,46 @@
+# Name your package! Package names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: bluerabbit
+version: "0.1.0"
+
+require-dbt-version: [">=0.18.0", "<0.20.0"]
+config-version: 2
+
+# These configurations specify where dbt should look for different types of files.
+# The `source-paths` config, for example, states that source models can be found
+# in the "models/" directory. You probably won't need to change these!
+target-path: "target" # directory which will store compiled SQL files
+clean-targets: ["target", "dbt_modules"] # directories to be removed by `dbt clean`
+macro-paths: ["macros"]
+log-path: "logs"
+source-paths: ["models"]
+data-paths: ["data"]
+test-paths: ["tests"]
+analysis-paths: ["analysis"]
+
+# This setting configures which "profile" dbt uses for this project. Profiles contain
+# database connection information, and should be configured in the  ~/.dbt/profiles.yml file
+profile: "bluerabbit_dbt"
+
+seeds:
+  bluerabbit:
+    +schema: seed
+    api_category:
+      +quote_columns: false
+      +full_refresh: true
+      +enabled: true
+  #     +column_types:
+  #       next_refill: date
+  #       created_date: timestamp
+  # In this example config, we tell dbt to build all models in the example/ directory
+  # as views (the default). Try changing `view` to `table` below, then re-running dbt
+
+models:
+  bluerabbit:
+    blue:
+      schema: blue
+      materialized: table
+    cscart:
+      schema: cscart
+      materialized: table

@@ -1,0 +1,35 @@
+---forecast refill revenue  generate potential rev
+
+with refill_forecast as
+(select 
+    rxno,
+    patient_id,
+    doctor_id,
+    drug_id,
+    rx_expire_date,
+    qty,
+    days_supply,
+    prescription_avg_price as amount,
+    generate_series(fill_number+1,  remaining_refills-1) as fill_number,
+    generate_series((start_date+days_supply::integer), 
+    case when start_date + ((remaining_refills)*days_supply)::integer > rx_expire_date
+            then rx_expire_date
+            else start_date + ((remaining_refills)*days_supply)::integer
+    end::date,
+    (days_supply||' day')::interval as refill_date
+
+FROM    {{ ref('calc_refill_status') }}
+where   der_refill_status='Open')
+
+select  rxno,
+        patient_id,
+        doctor_id,
+        drug_id,
+        'scheduled' as scenario, 
+        fill_number,
+        coalesce(refill_date,rx_expire_date) as refill_date,
+        qty,
+        amount
+    from refill_forecast
+where refill_date is not null and 
+refill_date <= rx_expire_date

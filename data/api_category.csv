@@ -1,0 +1,56 @@
+DrugName,api_category,Common,Controlled
+Aluminum hydroxide,Chronic,n,n
+Amitriptyline,Chronic,n,n
+Amlodipine,Chronic,y,n
+Amoxicillin,Acute,n,n
+Atenolol,Chronic,n,n
+Benazepril,Chronic,n,n
+Budesonide,Chronic,y,n
+Buprenorphine,Acute,n,y
+Calcitriol,Acute,n,n
+Cephalexin,Acute,n,n
+Chloramphenicol,Acute,y,n
+Chlorpheniramine,Chronic,n,n
+Cisapride,Chronic,y,n
+Clomipramine,Chronic,n,n
+Clopidogrel,Chronic,y,n
+Cyclosporine,Chronic,y,n
+Diethylstilbestrol,Chronic,y,n
+Enalapril,Chronic,n,n
+Enrofloxacin,Acute,y,n
+Estriol,Chronic,n,n
+Famciclovir,Acute,y,n
+Famotidine,Chronic,n,n
+Fenbendazole,Acute,n,n
+Fluoxetine,Chronic,y,n
+Furosemide,Chronic,n,n
+Gabapentin,Chronic,y,n
+Itraconazole,Acute,n,n
+Levetiracetam,Chronic,n,n
+Levothyroxine,Chronic,n,n
+Marbofloxacin,Acute,y,n
+Meloxicam,Acute,n,n
+Methimazole,Chronic,y,n
+Metronidazole,Chronic,y,n
+Mexiletine,Chronic,n,n
+Mirtazapine,Acute,y,n
+Mycophenolate,Chronic,n,n
+Omeprazole,Chronic,n,n
+Phenobarbital,Chronic,y,y
+Phenylpropanolamine,Chronic,y,n
+Pimobendan,Chronic,y,n
+Piroxicam,Chronic,y,n
+Potassium bromide,Chronic,y,n
+Potassium gluconate,Chronic,n,n
+Prazosin,Chronic,n,n
+Prednisolone,Chronic,y,n
+Prednisone,Chronic,n,n
+Ronidazole,Acute,n,n
+SAME/Milk Thistle,Chronic,y,n
+Sotalol,Chronic,n,n
+Terbutaline,Chronic,y,n
+Theophylline,Chronic,y,n
+Trilostane,Chronic,y,n
+Tylosin,Chronic,y,n
+Ursodiol,Chronic,y,n
+Zonisamide,Chronic,n,n
