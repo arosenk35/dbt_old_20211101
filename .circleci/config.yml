@@ -42,12 +42,12 @@ jobs:
           name: DBT Compile
           command: |
             . venv/bin/activate
-            dbt compile --profiles-dir=.
+            dbt compile --profiles-dir=. --target prod
       - run:
           name: DBT Seed
           command: |
             . venv/bin/activate
-            dbt seed --full-refresh --profiles-dir=.
+            dbt seed --full-refresh --profiles-dir=. --target prod
 
   deploy:
     docker:
