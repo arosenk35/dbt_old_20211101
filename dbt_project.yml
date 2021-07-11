@@ -21,7 +21,7 @@ analysis-paths: ["analysis"]
 
 # This setting configures which "profile" dbt uses for this project. Profiles contain
 # database connection information, and should be configured in the  ~/.dbt/profiles.yml file
-profile: "bluerabbit"
+profile: "default"
 
 seeds:
   bluerabbit:
