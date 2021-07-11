@@ -42,12 +42,12 @@ jobs:
           name: DBT Compile
           command: |
             . venv/bin/activate
-            dbt compile --profiles-dir=. --target prod
+            dbt compile --profiles-dir=.
       - run:
           name: DBT Seed
           command: |
             . venv/bin/activate
-            dbt seed --full-refresh --profiles-dir=. --target prod
+            dbt seed --full-refresh --profiles-dir=.
 
   deploy:
     docker:
@@ -92,13 +92,7 @@ jobs:
           no_output_timeout: 30m
           command: |
             . venv/bin/activate
-            dbt run --profiles-dir=. --models blue
-
-      - run:
-          name: DBT Finance
-          command: |
-            . venv/bin/activate
-            dbt run --profiles-dir=. --models  finance --target prod
+            dbt run --profiles-dir=. --models blue --target prod
 
   daily:
     docker:
@@ -132,14 +126,14 @@ jobs:
           name: DBT Dependencies
           command: |
             . venv/bin/activate
-            dbt deps --profiles-dir=.
+            dbt deps --profiles-dir=. --target prod
 
       - run:
           name: DBT Cs-Cart
           no_output_timeout: 30m
           command: |
             . venv/bin/activate
-            dbt run --profiles-dir=. --models cscart
+            dbt run --profiles-dir=. --models cscart --target prod
 
 workflows:
   version: 2
@@ -167,4 +161,3 @@ workflows:
                 - master
     jobs:
       - daily
-      
