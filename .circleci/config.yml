@@ -140,10 +140,11 @@ workflows:
   commit-workflow:
     jobs:
       - build
+
   hourly-workflow:
     triggers:
       - schedule:
-          cron: "40 9-23 * * *"
+          cron: "30 9-23 * * *"
           filters:
             branches:
               only:
