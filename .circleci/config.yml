@@ -92,48 +92,7 @@ jobs:
           no_output_timeout: 30m
           command: |
             . venv/bin/activate
-            dbt run --profiles-dir=. --models blue --target prod
-
-  daily:
-    docker:
-      - image: circleci/python:3.7.6
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v2-dependencies-{{ checksum "requirements.txt" }}
-            # fallback to using the latest cache if no exact match is found
-            - v2-dependencies-
-
-      - run:
-          name: install dependencies
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r requirements.txt
-
-      - save_cache:
-          paths:
-            - ./venv
-          key: v2-dependencies-{{ checksum "requirements.txt" }}
-
-      - run:
-          name: DBT Dependencies
-          command: |
-            . venv/bin/activate
-            dbt deps --profiles-dir=. --target prod
-
-      - run:
-          name: DBT Cs-Cart
-          no_output_timeout: 30m
-          command: |
-            . venv/bin/activate
-            dbt run --profiles-dir=. --models cscart --target prod
+            dbt run --profiles-dir=.   --target prod
 
 workflows:
   version: 2
@@ -144,21 +103,10 @@ workflows:
   hourly-workflow:
     triggers:
       - schedule:
-          cron: "30 9-23 * * *"
+          cron: "30 8,11,14,17,20,23 * * *"
           filters:
             branches:
               only:
                 - master
     jobs:
       - deploy
-
-  daily-workflow:
-    triggers:
-      - schedule:
-          cron: "50 3 * * 1-6"
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - daily
