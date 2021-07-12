@@ -1,4 +1,4 @@
-default:
+bluerabbit:
   outputs:
     prod_single:
       type: postgres
