@@ -37,7 +37,7 @@ jobs:
           name: DBT Dependencies
           command: |
             . venv/bin/activate
-            dbt deps --profiles-dir=.
+            dbt deps --profiles-dir=. --target prod
       - run:
           name: DBT Compile
           command: |
