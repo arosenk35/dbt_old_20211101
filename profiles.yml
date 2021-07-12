@@ -1,10 +1,10 @@
-default:
+bluerabbit:
   outputs:
     prod:
       type: postgres
       threads: 6
       host: "{{env_var('DB_HOST')}}"
-      port: "{{env_var('DB_PORT')}}"
+      port: 5432
       user: "{{env_var('DB_USER')}}"
       pass: "{{env_var('DB_PASS')}}"
       dbname: "{{env_var('DB_NAME')}}"
