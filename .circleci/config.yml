@@ -7,7 +7,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/python:3.7.3
+      - image: circleci/python:3.7.6
 
     working_directory: ~/repo
 
@@ -51,7 +51,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/python:3.7.3
+      - image: circleci/python:3.7.6
 
     working_directory: ~/repo
 
@@ -96,7 +96,7 @@ jobs:
 
   daily:
     docker:
-      - image: circleci/python:3.7.3
+      - image: circleci/python:3.7.6
 
     working_directory: ~/repo
 
