@@ -36,8 +36,9 @@ seeds:
   # as views (the default). Try changing `view` to `table` below, then re-running dbt
 
 models:
+  +unlogged: true
   bluerabbit:
-    blue:
+    ips:
       schema: blue
       materialized: table
     cscart:
