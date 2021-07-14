@@ -39,7 +39,8 @@
         p.start_date,
         p.qty ,       
         p.prescription_price,
-        dmd.api_category
+        dmd.api_category,
+        p.otc
 
 FROM {{ ref('fact_prescription') }} p
 join{{ ref('dim_drug') }}  dmd on dmd.drug_id=p.drug_id
@@ -123,6 +124,14 @@ select  distinct on (rxno)
             when r.next_rx_id is null then 'Unrenewed'
             else 'Renewed'
         end as renewal_status,
+        case 
+            when r.master_rx_id is not null then 'Renewal'
+            when otc='Y' then 'Shipping'
+        else 'Standard'
+        end as order_type,
+        r.master_rx_id,
+
+        
 
         f.dispensed_refill_amount,
         f.dispensed_first_fill_amount,

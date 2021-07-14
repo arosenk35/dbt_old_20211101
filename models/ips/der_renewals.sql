@@ -9,8 +9,8 @@
 with refill as (
   SELECT  rx_id as rxno,
           row_number()              OVER (PARTITION BY patient_id, drug_id order by created_date) as rx_renewal_sequence,
-          first_value(rx_id)        OVER (PARTITION BY patient_id, drug_id order by created_date) as first_rx_id,	
-          first_value(created_date) OVER (PARTITION BY patient_id, drug_id order by created_date) as first_rx_date,
+          first_value(rx_id)        OVER (PARTITION BY patient_id, drug_id order by created_date) as master_rx_id,	
+          first_value(created_date) OVER (PARTITION BY patient_id, drug_id order by created_date) as master_rx_date,
           last_value(created_date)  OVER (PARTITION BY patient_id, drug_id order by created_date) as last_rx_date,
           lag(rx_id)                OVER (PARTITION BY patient_id, drug_id order by created_date) as previous_rx_id,
           lag(start_date)           OVER (PARTITION BY patient_id, drug_id order by created_date) as previous_rx_date,
