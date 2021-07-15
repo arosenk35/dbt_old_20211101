@@ -40,7 +40,10 @@
         p.qty ,       
         p.prescription_price,
         dmd.api_category,
-        p.otc
+        auto_fill,
+        prescription_type,
+        p.origin
+
 
 FROM {{ ref('fact_prescription') }} p
 join{{ ref('dim_drug') }}  dmd on dmd.drug_id=p.drug_id
@@ -72,10 +75,11 @@ first_fill as (
 select  distinct on (rxno)
         l.*,
         r.nbr_renewals,
-        r.previous_rx_id,
+        r.previous_rxno,
         r.previous_rx_date,
-        r.next_rx_id,
+        r.next_rxno,
         r.next_rx_date,
+        r.master_rxno,
         coalesce(r.prescription_renewal,false) as prescription_renewal,
         f.first_fill_date ,
 		case 
@@ -106,7 +110,7 @@ select  distinct on (rxno)
             when fill_number=-1 then 1
             when (no_of_refill>fill_number and now()>=rx_expire_date and r.prescription_renewal) then 29
             when (no_of_refill>fill_number and now()>=rx_expire_date) then 20
-            when no_of_refill<=fill_number and r.next_rx_id is not null then 1
+            when no_of_refill<=fill_number and r.next_rxno is not null then 1
             when no_of_refill<=fill_number and r.prescription_renewal then 99
             when no_of_refill<=fill_number and r.prescription_renewal is null then 90
             when (no_of_refill>fill_number and (rx_expire_date between now() and now()+ interval '2 months') and r.prescription_renewal) then 69
@@ -121,18 +125,9 @@ select  distinct on (rxno)
         end as opportunity_ranking,
 
         case 
-            when r.next_rx_id is null then 'Unrenewed'
+            when r.next_rxno is null then 'Unrenewed'
             else 'Renewed'
         end as renewal_status,
-        case 
-            when r.master_rx_id is not null then 'Renewal'
-            when otc='Y' then 'Shipping'
-        else 'Standard'
-        end as order_type,
-        r.master_rx_id,
-
-        
-
         f.dispensed_refill_amount,
         f.dispensed_first_fill_amount,
         f.dispensed_total_amount,

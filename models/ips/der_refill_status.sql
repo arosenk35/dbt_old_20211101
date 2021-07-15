@@ -21,9 +21,9 @@
         nfo_status,
         schedule_type,
         start_date,
-        previous_rx_id,
+        previous_rxno,
         previous_rx_date,
-        next_rx_id,
+        next_rxno,
         next_rx_date,
         nbr_renewals,
         prescription_renewal,
@@ -52,6 +52,9 @@
         prescribed_total_fill_amount,
         prescribed_refill_scheduled_qty,
         prescribed_refill_qty,
-        prescribed_total_fill_qty
+        prescribed_total_fill_qty,
+        master_rxno,
+        origin,
+        auto_fill
         
 from {{ ref('calc_refill_status') }}
