@@ -145,7 +145,8 @@ select  distinct on (rxno)
         qty*(actual_no_of_refill-fill_number) AS prescribed_refill_scheduled_qty,
         actual_no_of_refill*qty as prescribed_refill_qty,
         (actual_no_of_refill+1)*qty as prescribed_total_fill_qty,
-        (actual_no_of_refill>no_of_refill) as over_prescribed
+        (actual_no_of_refill>no_of_refill) as over_prescribed,
+        product_renewal
 from last_refill l
 join first_fill f on l.rxno=f.rxno
 left join  {{ ref('dim_patient') }} pat on l.patient_id=pat.patient_id
