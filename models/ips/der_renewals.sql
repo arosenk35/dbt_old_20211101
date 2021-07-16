@@ -20,8 +20,7 @@ with refill as (
   FROM ips.prescription 
         where 
             rx_id not like 'otc%' and
-            office_id = 2 and
-            active='Y'
+            office_id = 2 
 )
 select *,
 case when nbr_renewals=1 then false else true end as prescription_renewal
