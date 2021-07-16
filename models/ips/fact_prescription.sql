@@ -220,7 +220,7 @@ select
         else false 
         end as auto_fill,
         case 
-            when p.sig_code ='FOU' then 'Office_use'
+            when p.sig_code ='FOU' then 'Office Use'
             when p.otc='Y' then 'Shipping'
         else 'Standard'
         end as prescription_type,

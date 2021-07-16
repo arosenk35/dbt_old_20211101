@@ -77,9 +77,11 @@ select  distinct on (rxno)
         r.nbr_renewals,
         r.previous_rxno,
         r.previous_rx_date,
+        r.last_rx_date,
         r.next_rxno,
         r.next_rx_date,
         r.master_rxno,
+        r.master_rx_start_date,
         coalesce(r.prescription_renewal,false) as prescription_renewal,
         f.first_fill_date ,
 		case 

@@ -54,6 +54,7 @@
         prescribed_refill_qty,
         prescribed_total_fill_qty,
         master_rxno,
+        master_rx_start_date,
         origin,
         auto_fill
         
