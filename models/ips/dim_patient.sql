@@ -42,6 +42,7 @@ SELECT distinct on (pm.id)
     initcap(pm.lastname2)    as lastname2,
     patient_class,
     pm.pregnant_flag,
+    pm.office_id,
     coalesce(z.country,pm.country,'USA') as country,
     coalesce(z.state,'CA')   as state,
 	  z.city ,

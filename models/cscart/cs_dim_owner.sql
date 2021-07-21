@@ -22,6 +22,7 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) )
 		nullif(cs.b_address_2,'') 								as address2,
 		nullif(cs.b_country,'') 								as country,
 		nullif(cs.b_county,'') 									as county,
+		nullif(cs.b_city,'') 									as city,
 		lower(cs.email) 										as email,
 		nullif(cs.fax,'') 										as fax,
 		cs.lang_code,

@@ -18,7 +18,8 @@ end as key,
     drug_id,
     drug_form,
     strength,
-    strength_value
+    strength_value,
+	quick_code
 FROM ips.drug_master 
     where nullif(btrim(drug),'') is not null
 )
@@ -33,16 +34,27 @@ from cscart.products cs
 
 select distinct on(cs.product_id)
     cs.key,
-    cs.product,
-    cs.product_id,
+    cs.product ,
+    cs.product_id ,
     cs.price,
-    TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second' as created_date,
-    ips.drug_id,
-    ips.drug_form,
-    ips.strength,
-    ips.strength_value,
-    ips.drug
+	cs.product_code,
+    cs.status as status,
+    case    when cs.status='A' then 'Active'
+            when cs.status='D' then 'Disabled'
+            when cs.status='H' then 'Hidden'
+    end status_name,
+    TIMESTAMP 'epoch' + updated_timestamp::numeric * INTERVAL '1 second' as updated_date,
+	TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second' as created_date,
+	(ips.drug_id is not null) as ips_found,
+	(coalesce(cs.product_code,'cs')=coalesce(ips.quick_code,'ips')) as cs_ips_codes_match,
+	ips.quick_code as ips_quick_code,
+    ips.drug_id as ips_drug_id,
+    ips.drug_form as ips_drug_form,
+    ips.strength as ips_strength,
+    ips.strength_value as ips_strenth_value,
+    ips.drug as ips_drug
+	
 from cscart cs
 left join  ips on ips.key=cs.key
 order by cs.product_id,
-timestamp desc
+   updated_timestamp desc

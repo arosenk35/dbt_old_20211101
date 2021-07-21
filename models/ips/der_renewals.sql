@@ -55,9 +55,10 @@ select
         else true 
       end as product_renewal,
       case 
-        when nbr_renewals=1 
-        then false 
-        else true 
+        when (nbr_renewals>1 and rx_renewal_sequence!=1)
+        or nullif(last_tran_id,0) is not null
+        then true
+        else false 
       end as prescription_renewal
 from refill 
 where 
