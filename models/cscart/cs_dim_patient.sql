@@ -12,12 +12,50 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id)|| coal
 		coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) 	as account_id,
 		nullif(cs.vet_data__id,'') 						as doctor_id,
 		initcap(nullif(cs.pet_data__name,'')) 			as patient_name,
-		nullif(replace(cs.pet_data__dob,'-','/'),'/')   as dob,
+		nullif(replace(cs.pet_data__dob,'-','/'),'/')   as dob_original,
+		case 
+			-- mm/dd/yyyy
+			when 
+				replace(cs.pet_data__dob,'-','/') ~ '\d{2}/\d{2}/\d{4}'
+				and split_part(replace(cs.pet_data__dob,'-','/'),'/',1)<='12'
+				and replace(cs.pet_data__dob,'-','/') ~ '^(([0-1][0-9])/([0-2][0-9])|([3][0-1]))/\d{4}$'
+			then to_date(replace(cs.pet_data__dob,'-','/') ,'mm/dd/yyyy')
+			--m/dd/yyyy
+			when 
+				replace(cs.pet_data__dob,'-','/') ~ '\d{1}/\d{2}/\d{4}'
+				and split_part(replace(cs.pet_data__dob,'-','/'),'/',1)<='9'
+				and replace(cs.pet_data__dob,'-','/') ~ '^(([0-9])/([0-2][0-9])|([3][0-1]))/\d{4}$'
+			then to_date(replace(cs.pet_data__dob,'-','/') ,'mm/dd/yyyy')
+			--m/d/yyyy
+			when 
+				replace(cs.pet_data__dob,'-','/') ~ '\d{1}/\d{1}/\d{4}'
+				and split_part(replace(cs.pet_data__dob,'-','/'),'/',1)<='9'
+				and replace(cs.pet_data__dob,'-','/') ~ '^(([0-9])/([0-9]))/\d{4}$'
+			then to_date(replace(cs.pet_data__dob,'-','/') ,'mm/dd/yyyy')
+			--mm/dd/yy
+			when 
+				replace(cs.pet_data__dob,'-','/') ~ '\d{2}/\d{2}/\d{2}'
+				and split_part(replace(cs.pet_data__dob,'-','/'),'/',1)<='12'
+				and replace(cs.pet_data__dob,'-','/') ~ '^(([0-1][0-9])/([0-2][0-9])|([3][0-1]))/\d{2}$'
+			then to_date(replace(cs.pet_data__dob,'-','/') ,'mm/dd/yy')
+			--m/dd/yy
+			when 
+				replace(cs.pet_data__dob,'-','/') ~ '\d{1}/\d{2}/\d{2}'
+				and split_part(replace(cs.pet_data__dob,'-','/'),'/',1)<='12'
+				and replace(cs.pet_data__dob,'-','/') ~ '^(([0-9])/([0-2][0-9])|([3][0-1]))/\d{2}$'
+			then to_date(replace(cs.pet_data__dob,'-','/') ,'mm/dd/yy')
+			
+			--yyyy
+			when 
+				cs.pet_data__dob ~ '^\d{4}$'
+			then to_date('0101'||cs.pet_data__dob ,'mmddyyyy')
+			
+		end::date as dob,
+
 		case  when cs.pet_data__sex ilike '%female%'  	then  'F'
           when cs.pet_data__sex ilike 'male%'     		then  'M'
           when cs.pet_data__sex ilike '%other%'   		then  'O'
     	end as sex,
-		nullif(cs.pet_data__sex,'-') 					as sex,
 		initcap(nullif(cs.pet_data__species,'-')) 		as species,
 		initcap(nullif(cs.pet_data__breed,'-')) 		as breed,
 		nullif(lower(cs.pet_data__weight),'-')	 		as weight,
