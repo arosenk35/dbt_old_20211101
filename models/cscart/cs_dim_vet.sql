@@ -17,7 +17,7 @@ SELECT
 		initcap(cs.vet_data__firstname) 		as firstname,
 		cs.vet_data__id 						as doctor_id,
 		initcap(cs.vet_data__lastname) 			as lastname, 
-		coalesce(initcap(cs.vet_data__firstname),'') || ' ' || coalesce(initcap(cs.vet_data__lastname),'') 	as vet,
+		btrim(coalesce(initcap(cs.vet_data__firstname),'') || ' ' || coalesce(initcap(cs.vet_data__lastname),'')) 	as vet,
 		nullif(regexp_replace(cs.vet_data__phone,' |-|\(|\)','','g'),'') as phone, 
 		nullif(cs.vet_data__sin,'-') as sln,
 		ips.doctor_id 				as ips_doctor_id,

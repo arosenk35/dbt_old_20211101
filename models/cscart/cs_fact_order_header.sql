@@ -4,7 +4,7 @@
     "post-hook": [
       	after_commit("create index  index_{{this.name}}_on_ord_id on {{this.schema}}.{{this.name}} (order_id)"),
         after_commit("create index  index_{{this.name}}_on_status on {{this.schema}}.{{this.name}} (status)"),
-        after_commit("create index  index_{{this.name}}_on_create_date on {{this.schema}}.{{this.name}} (created_date)")]
+        after_commit("create index  index_{{this.name}}_on_create_date on {{this.schema}}.{{this.name}} (order_date)")]
   })
 }}
 select
@@ -22,7 +22,7 @@ select
         o.total - o.tax_subtotal    as gross_amount,
         o.total - o.tax_subtotal -  o.shipping_cost    as gross_excl_shipping,
         o.subtotal_discount         as discount,
-        TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second' as created_date,
+        TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second' as order_date,
         o.status                    as status_code,
         o.shipping_cost             as shipping_amount,
         case o.status
@@ -48,6 +48,21 @@ select
 
 is_order_due,
 is_parent_order,
-is_patient_order
-
+is_patient_order,
+       case
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date  <=15 then '15'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=30 then '30'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=60 then '60'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=90 then '90'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=120 then '120'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=150 then '150'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date   <=180 then '180'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=210 then '210' 
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=240 then '240' 
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=270 then '270'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=300 then '300'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date   <=330 then '330'
+            else '360+'
+        end as days_since_first_order_tier
 from cscart.orders o
+left join {{ ref('cs_segment_owner') }} so on so.account_id=o.user_id   
