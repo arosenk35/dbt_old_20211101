@@ -10,7 +10,7 @@
 select
         o.order_id,
         coalesce(nullif(o.pet_data__user_id,'0'),o.user_id)|| coalesce(o.pet_id,'')     as patient_id,
-        coalesce(nullif(pet_data__user_id,'0'),o.user_id) 	                            as account_id,
+        o.user_id                                          	                            as account_id,
         o.user_id,
         o.issuer_id,
         o.doctor_data__user_id      as doctor_id,
@@ -19,7 +19,8 @@ select
         o.tax_subtotal              as tax_amount,
         o.paid_data__total          as paid_amount,
         o.total                     as order_amount ,
-        o.subtotal                  as gross_amount,
+        o.total - o.tax_subtotal    as gross_amount,
+        o.total - o.tax_subtotal -  o.shipping_cost    as gross_excl_shipping,
         o.subtotal_discount         as discount,
         TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second' as created_date,
         o.status                    as status_code,
@@ -40,7 +41,7 @@ select
             when 'J' then 'Processed (PK)'
             when 'K' then 'New Patient Order'
             when 'L' then 'Pending VET Approval'
-        end as status,
+        end                                       as status,
         nullif(refill_order_id,'0')               as refill_order_id,
         (o.doctor_data__user_id is null)          as direct_purchase,
         (nullif(refill_order_id,'0') is not null) as refill_order,

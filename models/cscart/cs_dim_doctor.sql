@@ -30,6 +30,7 @@ SELECT   distinct on (doctor_data__user_id)
 		
 		initcap(nullif(doctor_data__firstname,'')) 		as firstname,
 		initcap(nullif(doctor_data__lastname,'')) 		as lastname,
+		initcap(nullif(doctor_data__firstname,'')) ||' '|| initcap(nullif(doctor_data__lastname,''))  as doctor_name,
 		nullif(doctor_data__b_address,'') 				as address,
 		lower(nullif(doctor_data__email,'')) 			as email,
 		coalesce(nullif(regexp_replace(doctor_data__phone,' |-|\(|\)','','g'),''),nullif(regexp_replace(doctor_data__b_phone,' |-|\(|\)','','g'),''),nullif(regexp_replace(doctor_data__s_phone,' |-|\(|\)','','g'),'')) as phone,
