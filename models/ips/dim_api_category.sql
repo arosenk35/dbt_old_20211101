@@ -9,6 +9,6 @@
 SELECT distinct on (master_drug)
 master_drug,
 api_category,
-(lower(controlled)='y') as controlled,
-(lower(common)='y') as common
+(lower(controlled)='y')   as controlled,
+(lower(common)='y')       as common
 FROM {{ ref('api_category') }}

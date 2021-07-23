@@ -6,11 +6,12 @@
             ]
   })
   }}
-  select distinct on(practice_group)
-  practice_group as practice,
-  country,
-  state,
-  city ,
-  zip,
-  phone1
+  select 
+    distinct on(practice_group)
+    practice_group as practice,
+    country,
+    state,
+    city ,
+    zip,
+    phone1
   FROM {{ ref('dim_practice_map') }} 

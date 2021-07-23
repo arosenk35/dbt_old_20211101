@@ -10,10 +10,10 @@
 
     dm.drug_id,
     dm.drug||' '||dm.strength_value||' '||dm.strength as drug_name, 
-    dm.drug as master_drug, 
+    dm.drug                   as master_drug, 
     dm.ndc, 
-    btrim(dm.drug_form) as drug_form, 
-    btrim(dm.strength) as strength, 
+    btrim(dm.drug_form)       as drug_form, 
+    btrim(dm.strength)        as strength, 
     dm.strength_value, 
     dm.generic, 
     dm.manufacturer, 
@@ -39,8 +39,10 @@
     da.controlled,
     da.common,
     dm.active,
-    CASE when dm.drug ilike '%fedex%' then 'shipping'
-          when dm.drug ilike '%usps%' then 'shipping'
+    CASE when dm.drug ilike '%fedex%' 
+          then 'shipping'
+          when dm.drug ilike '%usps%' 
+          then 'shipping'
           else 'drug'
     END as item_type,
     p.created_date as last_used_date

@@ -12,5 +12,9 @@ SELECT
 FROM  ips.prescription p 
 order by 
     p.patient_id,
-    case when p.doctor_id ='-1' then 9 else 1 end,
+    case 
+        when p.doctor_id ='-1' 
+        then 9 
+        else 1 
+    end,
     p.changed_date desc

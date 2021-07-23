@@ -15,8 +15,9 @@
         rxno,
         drug_id,
         no_of_refill,
-        case when fill_number=0 then  start_date 
-        else dispense_date 
+        case 
+            when fill_number=0 then  start_date 
+            else dispense_date 
         end as status_date,
         days_supply,
         first_fill,

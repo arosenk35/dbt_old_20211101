@@ -39,14 +39,12 @@ SELECT distinct on (pm.id)
     pm.account_type, 
     pm.account_id,
     pd.doctor_id, 
-    initcap(pm.lastname2)    as lastname2,
-    patient_class,
     pm.pregnant_flag,
     pm.office_id,
-    coalesce(z.country,pm.country,'USA') as country,
-    coalesce(z.state,'CA')   as state,
-	  z.city ,
-    coalesce(lower(pm.firstname),'')  as key_pet
+    upper(coalesce(z.country,pm.country,'USA')) as country,
+    upper(coalesce(z.state,'CA'))               as state,
+	initcap(z.city)                             as city,
+    coalesce(lower(pm.firstname),'')            as key_pet
 	FROM ips.patient_master pm
   join ips.prescription p on p.patient_id=pm.id
   left join {{ ref('dim_patient_doctor') }} pd on pm.id=pd.patient_id

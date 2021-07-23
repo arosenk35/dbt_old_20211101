@@ -17,12 +17,12 @@
   
   vet as(
     SELECT 
-    coalesce(nullif(address,''),note) as practice,
-    nullif(address,'') as address,
-    z.zipid::text as zip,
+    coalesce(nullif(address,''),note)   as practice,
+    nullif(address,'')                  as address,
+    z.zipid::text                       as zip,
     phone11||'-'||phone12||'-'||phone13 as phone1,
-    coalesce(z.country,'USA') as country,
-    coalesce(z.state,'CA') as state,
+    coalesce(z.country,'USA')           as country,
+    coalesce(z.state,'CA')              as state,
 	  z.city,
     sv.max_created_date
 

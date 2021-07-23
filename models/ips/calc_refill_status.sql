@@ -29,9 +29,12 @@
         p.dispense_date as last_refill_date,
         p.days_supply,
         case 
-            when p.no_of_refill=fill_number then null
-            when now()>=p.rx_expire_date then null
-            when (p.dispense_date::date + days_supply) >= p.rx_expire_date then rx_expire_date
+            when p.no_of_refill=fill_number 
+            then null
+            when now()>=p.rx_expire_date 
+            then null
+            when (p.dispense_date::date + days_supply) >= p.rx_expire_date 
+            then rx_expire_date
             else p.dispense_date::date + p.days_supply 
         end as next_refill_date,
         p.first_fill,
@@ -55,16 +58,17 @@ first_fill as (
     select rxno,
     min(dispense_date) as first_fill_date,
     sum(amount) as dispensed_total_amount,
-    sum(amount) filter (where fill_number>0) as dispensed_refill_amount,
-    sum(amount) filter (where fill_number=0) as dispensed_first_fill_amount,
-    sum(qty) as dispensed_total_qty,
-    count(refill_id) filter (where fill_number>0) as dispensed_nbr_refills,
-    sum(qty) filter (where fill_number>0) as dispensed_refill_qty,
-    sum(qty) filter (where fill_number=0) as dispensed_first_fill_qty,
+    sum(amount) filter (where fill_number>0)        as dispensed_refill_amount,
+    sum(amount) filter (where fill_number=0)        as dispensed_first_fill_amount,
+    sum(qty)                                        as dispensed_total_qty,
+    count(refill_id) filter (where fill_number>0)   as dispensed_nbr_refills,
+    sum(qty) filter (where fill_number>0)           as dispensed_refill_qty,
+    sum(qty) filter (where fill_number=0)           as dispensed_first_fill_qty,
     sum(amount)/count(*) as prescription_avg_price,
     max(fill_number) as last_fill_number,
     case 
-        when max(fill_number) >avg(no_of_refill) then max(fill_number) 
+        when max(fill_number) >avg(no_of_refill) 
+        then max(fill_number) 
         else avg(no_of_refill)
     end as actual_no_of_refill
     FROM {{ ref('fact_prescription') }}

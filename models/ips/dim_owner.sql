@@ -23,9 +23,9 @@
         lower(pm.email)                                       as email, 
         pm.created_date,
         pm.address2,
-        coalesce(z.country,'USA')                             as country,
-        coalesce(z.state,'CA')                                as state,
-        z.city,
+        coalesce(upper(z.country),'USA')                      as country,
+        coalesce(upper(z.state),'CA')                         as state,
+        initcap(z.city) as city,
         lower(regexp_replace(pm.name,' |\,|','','g'))         as key_owner,
 		    pm.phone11 || pm.phone12 || pm.phone13                as key_phone
 

@@ -9,17 +9,17 @@
         pm.srno as facility_id, 
         phone11||'-'||phone12||'-'||phone13 as phone1,
         phone21||'-'||phone22||'-'||phone23 as phone2,
-        fax1||'-'||fax2||'-'||fax3 as fax1,
-        name, 
+        fax1||'-'||fax2||'-'||fax3          as fax,
+        initcap(name)                       as name, 
         address,
         note,
-        z.zipid::text as zip,
-        lower(pm.email) as email, 
+        z.zipid::text                       as zip,
+        lower(pm.email)                     as email, 
         active,
         created_date, 
         address2,
-        coalesce(z.country,'USA') as country,
-        coalesce(z.state,'CA')::text as state,
-        z.city 
+        coalesce(z.country,'USA')           as country,
+        coalesce(z.state,'CA')::text        as state,
+        initcap(z.city)                     as city 
 	FROM ips.facility_master pm
   left join ips.zip_master z on pm.zip = z.srno

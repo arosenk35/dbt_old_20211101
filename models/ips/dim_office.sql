@@ -18,6 +18,6 @@
         lower(pm.email)                     as email, 
         coalesce(z.country,'USA')           as country,
         coalesce(z.state,'CA')::text        as state,
-        z.city 
+        initcap(z.city) as city 
 FROM ips.office_master pm
   left join ips.zip_master z on pm.zip = z.srno
