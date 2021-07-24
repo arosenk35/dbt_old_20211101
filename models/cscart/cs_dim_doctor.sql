@@ -18,7 +18,7 @@ SELECT
 		cs.vet_data__id 						as doctor_id,
 		initcap(cs.vet_data__lastname) 			as lastname, 
 		nullif(btrim(coalesce(initcap(cs.vet_data__firstname),'') || ' ' || coalesce(initcap(cs.vet_data__lastname),'')),'') as doctor_name,
-		nullif(regexp_replace(cs.vet_data__sin ,' |-','','g'),'') 	as sln,
+		nullif(regexp_replace(cs.vet_data__sin ,' |\.|-','','g'),'') 	as sln,
 		nullif(cs.doctor_data__b_address_2,'') 						as address2,
 		coalesce(nullif(doctor_data__user_type,''),'U') 			as user_type,
 		nullif(doctor_data__clinic_id,'')  		as clinic_id,
