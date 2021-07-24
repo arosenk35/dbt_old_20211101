@@ -9,19 +9,18 @@
 }}
 select
         o.order_id,
-        coalesce(nullif(o.pet_data__user_id,'0'),o.user_id)|| coalesce(o.pet_id,'')     as patient_id,
+        coalesce(nullif(o.pet_data__user_id,'0'),o.user_id)|| coalesce(o.pet_id,'')  as patient_id,
         o.user_id                   as account_id,
         o.user_id,
         o.issuer_id,
-        (coalesce(nullif(cs.vet_data__id,''),'O'||cs.order_id)  ) as doctor_id  as doctor_id,
-        nullif(cs.vet_data__id,'') is not null as known_vet,
+        (coalesce(nullif(cs.vet_data__id,''),'U'||cs.order_id)) as doctor_id,
         nullif(btrim(o.notes),'')          as notes,
         nullif(btrim(o.staff_notes),'')    as staff_notes,
         o.tax_subtotal              as tax_amount,
         o.paid_data__total          as paid_amount,
         o.total                     as order_amount ,
         o.total - o.tax_subtotal    as gross_amount,
-        o.total - o.tax_subtotal -  o.shipping_cost    as gross_excl_shipping,
+        o.total - o.tax_subtotal -  o.shipping_cost  as gross_excl_shipping,
         o.subtotal_discount         as discount,
         TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second' as order_date,
         o.status                    as status_code,
@@ -52,17 +51,17 @@ is_parent_order = 'Y' as is_parent_order ,
 is_patient_order='Y' as is_patient_order,
        case
             when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date  <=15 then '15'
-            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=30 then '30'
-            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=60 then '60'
-            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=90 then '90'
-            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=120 then '120'
-            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=150 then '150'
-            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date   <=180 then '180'
-            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=210 then '210' 
-            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=240 then '240' 
-            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=270 then '270'
-            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date    <=300 then '300'
-            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date   <=330 then '330'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date  <=30 then '30'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date  <=60 then '60'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date  <=90 then '90'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date  <=120 then '120'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date  <=150 then '150'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date  <=180 then '180'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date  <=210 then '210' 
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date  <=240 then '240' 
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date  <=270 then '270'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date  <=300 then '300'
+            when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date  <=330 then '330'
             else '360+'
         end as days_since_first_order_tier
 from cscart.orders o

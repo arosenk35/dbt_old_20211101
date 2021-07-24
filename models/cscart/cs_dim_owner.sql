@@ -23,7 +23,7 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) )
 		upper(nullif(cs.b_country,'')) 							as country,
 		initcap(nullif(cs.b_county,''))							as county,
 		nullif(initcap(cs.b_city),'') 							as city,
-		nullif(lower(cs.email),'') 										as email,
+		nullif(lower(cs.email),'') 								as email,
 		nullif(regexp_replace(cs.fax,' |\.|-|\(|\)','','g'),'')	as fax,
 		TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second' as last_order_date,
 		ips.account_id 											as ips_account_id,
