@@ -8,6 +8,7 @@ SELECT   distinct on (doctor_data__user_id)
 		then initcap(doctor_data__company)
 		when 
 			doctor_data__b_firstname ilike '%vet%' 		or
+			doctor_data__b_lastname ilike '%corpo%' 		or
 			doctor_data__b_firstname ilike '%hosp%' 	or
 			doctor_data__b_firstname ilike '%medic%' 	or
 			doctor_data__b_firstname ilike '%center%' 	or
@@ -17,6 +18,7 @@ SELECT   distinct on (doctor_data__user_id)
 			doctor_data__b_firstname ilike '%clinic%'
 		then initcap(doctor_data__b_firstname)
 		when 
+			doctor_data__b_lastname ilike '%corpo%' 		or
 			doctor_data__b_lastname ilike '%vet%' 		or
 			doctor_data__b_lastname ilike '%hosp%' 		or
 			doctor_data__b_lastname ilike '%medic%' 	or
@@ -33,9 +35,9 @@ SELECT   distinct on (doctor_data__user_id)
 		initcap(nullif(doctor_data__firstname,'')) ||' '|| initcap(nullif(doctor_data__lastname,''))  as doctor_name,
 		nullif(doctor_data__b_address,'') 				as address,
 		lower(nullif(doctor_data__email,'')) 			as email,
-		coalesce(nullif(regexp_replace(doctor_data__phone,' |-|\(|\)','','g'),''),nullif(regexp_replace(doctor_data__b_phone,' |-|\(|\)','','g'),''),nullif(regexp_replace(doctor_data__s_phone,' |-|\(|\)','','g'),'')) as phone,
+		coalesce(nullif(regexp_replace(doctor_data__phone,' |\.|-|\(|\)','','g'),''),nullif(regexp_replace(doctor_data__b_phone,' |-|\(|\)','','g'),''),nullif(regexp_replace(doctor_data__s_phone,' |-|\(|\)','','g'),'')) as phone,
 		nullif(initcap(doctor_data__b_city),'') 		as city,
-		nullif(regexp_replace(doctor_data__fax,' |-|\(|\)','','g'),'')		as fax,
+		nullif(regexp_replace(doctor_data__fax,' |\.|-|\(|\)','','g'),'')		as fax,
 		nullif(doctor_data__tax_exempt,'') 				as tax_excempt,
 		upper(doctor_data__b_state) 					as state,
 		doctor_data__b_zipcode 							as zip,

@@ -5,7 +5,7 @@
 }}
 SELECT  
       company,  
-      email, 
+      email
       firstname,
       lastname,
       user_name as issuer_name,

@@ -26,7 +26,7 @@
         coalesce(upper(z.country),'USA')                      as country,
         coalesce(upper(z.state),'CA')                         as state,
         initcap(z.city) as city,
-        lower(regexp_replace(pm.name,' |\,|','','g'))         as key_owner,
+        lower(regexp_replace(pm.name,' |\.|-|','','g'))         as key_owner,
 		    pm.phone11 || pm.phone12 || pm.phone13                as key_phone
 
 	FROM ips.responsible_party_master pm
