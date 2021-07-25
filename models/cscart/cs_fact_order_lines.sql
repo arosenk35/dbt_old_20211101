@@ -11,8 +11,8 @@ select
         l.product,
         l.product_id,
         l.tax_value         as tax_amount,
-        l.shipped_amount    as units_shipped,
-        l.amount            as units_ordered,
+        --l.shipped_amount    as units_shipped,
+        --l.amount            as units_ordered,
         l.discount,
         l.subtotal          as gross_amount,
         l.price             as unit_price,
@@ -34,6 +34,15 @@ select
               and opt.status='A' and nullif(variant_name,'') is not null
               limit 1) 
         as flavor,
+        (select 
+              opt.variant_name 
+          from cscart.orders__lines__extra__product_options_value opt
+              where opt._sdc_source_key_order_id=l._sdc_source_key_order_id 
+              and option_name ilike '%instruct%'
+              and l._sdc_level_0_id =opt._sdc_level_0_id
+              and opt.status='A' and nullif(variant_name,'') is not null
+              limit 1) 
+        as opt_instruction,
         (select 
               opt.variant_name 
           from cscart.orders__lines__extra__product_options_value opt
