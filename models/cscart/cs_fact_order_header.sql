@@ -13,7 +13,7 @@ select
         o.user_id                   as account_id,
         o.user_id,
         o.issuer_id,
-        (coalesce(nullif(cs.vet_data__id,''),'U'||cs.order_id)) as doctor_id,
+        (coalesce(nullif(o.vet_data__id,''),'U'||o.order_id)) as doctor_id,
         nullif(btrim(o.notes),'')          as notes,
         nullif(btrim(o.staff_notes),'')    as staff_notes,
         o.tax_subtotal              as tax_amount,
@@ -43,7 +43,7 @@ select
             when 'L' then 'Pending VET Approval'
         end                                       as status,
         nullif(refill_order_id,'0')               as refill_order_id,
-        nullif(cs.vet_data__id,'') is null        as direct_purchase,
+        nullif(o.vet_data__id,'') is null        as direct_purchase,
         (nullif(refill_order_id,'0') is not null) as refill_order,
 
 is_order_due='y'  as is_order_due ,
