@@ -4,10 +4,10 @@
     "post-hook": [
       after_commit("create index  index_{{this.name}}_on_id on {{this.schema}}.{{this.name}}  (doctor_id)"),
       after_commit("create index  index_{{this.name}}_on_vet on {{this.schema}}.{{this.name}} (vet)"),
-      after_commit("create index  index_{{this.name}}_on_vet_k on {{this.schema}}.{{this.name}} (key_vet)"),
-      after_commit("create index  index_{{this.name}}_on_vet_s on {{this.schema}}.{{this.name}} (key_sln)"),
-      after_commit("create index  index_{{this.name}}_on_vet_p on {{this.schema}}.{{this.name}} (key_phone)"),
-      after_commit("create index  index_{{this.name}}_on_vet_e on {{this.schema}}.{{this.name}} (email)")
+      after_commit("create index  index_{{this.name}}_on_kv on {{this.schema}}.{{this.name}} (key_vet)"),
+      after_commit("create index  index_{{this.name}}_on_ks on {{this.schema}}.{{this.name}} (key_sln)"),
+      after_commit("create index  index_{{this.name}}_on_kp on {{this.schema}}.{{this.name}} (key_phone)"),
+      after_commit("create index  index_{{this.name}}_on_email on {{this.schema}}.{{this.name}} (email)")
       ]
   })
   }}
@@ -47,7 +47,7 @@
     coalesce(z.state,'CA')    as state,
 	  initcap(z.city)           as city,
 
-    nullif(regexp_replace(lower(coalesce(firstname,'')||coalesce(lastname,'')),' |\.|-|','','g'),'') as key_vet,
+    nullif(regexp_replace(lower(coalesce(firstname,'')||coalesce(lastname,'')),' |\&|\.|-|','','g'),'') as key_vet,
 		nullif(regexp_replace(phone1,' |\.|-|\(|\)','','g'),'')  as key_phone,
 		nullif(regexp_replace(sln,'[^0-9]+', '', 'g'),'')     as key_sln
 

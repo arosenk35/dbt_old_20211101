@@ -5,9 +5,9 @@
       after_commit("create index if not exists index_{{this.name}}_on_id on {{this.schema}}.{{this.name}} (patient_id)"),
       after_commit("create index if not exists index_{{this.name}}_on_doc_id on {{this.schema}}.{{this.name}} (doctor_id)"),
       after_commit("create index if not exists index_{{this.name}}_on_acct_id on {{this.schema}}.{{this.name}} (account_id)"),
-      after_commit("create index if not exists index_{{this.name}}_on_name on {{this.schema}}.{{this.name}} (patient_name)"),
+      after_commit("create index if not exists index_{{this.name}}_on_pat_name on {{this.schema}}.{{this.name}} (patient_name)"),
       after_commit("create index if not exists index_{{this.name}}_on_zip_state on {{this.schema}}.{{this.name}} (zip,state)"),
-      after_commit("create index if not exists index_{{this.name}}_on_zip_state on {{this.schema}}.{{this.name}} (key_pet)")
+      after_commit("create index if not exists index_{{this.name}}_on_key_pet on {{this.schema}}.{{this.name}} (key_pet)")
           ]
     })
 }}
@@ -17,7 +17,7 @@ SELECT distinct on (pm.id)
     pm.phone11 || '-' || pm.phone12 || '-' || pm.phone13 as phone1,
     pm.phone21 || '-' || pm.phone22 || '-' || pm.phone23 as phone2,
     pm.phone31 || '-' || pm.phone32 || '-' || pm.phone33 as phone3,
-    coalesce(initcap(pm.firstname),'')                   as patient_name,
+    coalesce(initcap(pm.firstname||' '||pm.lastname),'') as patient_name,
     initcap(pm.lastname)    as lastname ,
     initcap(pm.firstname)   as firstname,
     initcap(pm.middlename)  as middlename,
@@ -44,8 +44,9 @@ SELECT distinct on (pm.id)
     upper(coalesce(z.country,pm.country,'USA')) as country,
     upper(coalesce(z.state,'CA'))               as state,
 	initcap(z.city)                             as city,
-    coalesce(lower(pm.firstname),'')            as key_pet
+    lower(regexp_replace(pm.lastname||pm.firstname,' |\&|\.|-|','','g'))  as key_pet
 	FROM ips.patient_master pm
   join ips.prescription p on p.patient_id=pm.id
   left join {{ ref('dim_patient_doctor') }} pd on pm.id=pd.patient_id
   left join ips.zip_master z on pm.zip = z.srno
+  order by pm.id ,p.created_date desc

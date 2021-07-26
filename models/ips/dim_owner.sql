@@ -16,7 +16,9 @@
         pm.phone11 || '-' || pm.phone12 || '-' || pm.phone13  as phone1,
         pm.phone21 || '-' || pm.phone22 || '-' || pm.phone23  as phone2,
         pm.fax1 || '-' || pm.fax2 || '-' || pm.fax3           as fax1,
-        initcap(pm.name )                                     as owner_name, 
+        initcap(coalesce(nullif(pm.care_of,''),pm.name))               as owner_name, 
+        nullif(pm.care_of,'') as care_of,
+        initcap(nullif(pm.name,'')) as name,
         pm.address,
         pm.note,
         z.zipid::text                                         as zip,
@@ -26,10 +28,11 @@
         coalesce(upper(z.country),'USA')                      as country,
         coalesce(upper(z.state),'CA')                         as state,
         initcap(z.city) as city,
-        lower(regexp_replace(pm.name,' |\.|-|','','g'))         as key_owner,
+        lower(regexp_replace( coalesce(nullif(pm.care_of,''),pm.name) ,' |\&|\.|-|','','g'))    as key_owner,
 		    pm.phone11 || pm.phone12 || pm.phone13                as key_phone
 
 	FROM ips.responsible_party_master pm
   join ips.prescription p     on p.account_id=pm.srno
   left join ips.zip_master z  on pm.zip = z.srno
   where name not like '%, +%'
+  order by pm.srno,p.created_date desc

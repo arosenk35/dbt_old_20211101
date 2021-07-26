@@ -51,6 +51,15 @@ select
             and l._sdc_level_0_id =opt._sdc_level_0_id
             and opt.status='A' and nullif(variant_name,'') is not null
             limit 1) 
-        as quantity
+        as quantity,
+        (select 
+              modifier 
+          from cscart.orders__lines__extra__product_options_value opt
+        where opt._sdc_source_key_order_id=l._sdc_source_key_order_id 
+            and opt.option_name ilike '%quantity%' 
+            and l._sdc_level_0_id =opt._sdc_level_0_id
+            and opt.status='A' and nullif(variant_name,'') is not null
+            limit 1) 
+        as variant_price
 
 from cscart.orders__lines l 
