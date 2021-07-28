@@ -18,16 +18,16 @@ SELECT distinct on (pm.id)
     pm.phone21 || '-' || pm.phone22 || '-' || pm.phone23 as phone2,
     pm.phone31 || '-' || pm.phone32 || '-' || pm.phone33 as phone3,
     coalesce(initcap(pm.firstname||' '||pm.lastname),'') as patient_name,
-    initcap(pm.lastname)    as lastname ,
-    initcap(pm.firstname)   as firstname,
-    initcap(pm.middlename)  as middlename,
+    initcap(nullif(pm.lastname,''))    as lastname,
+    initcap(nullif(pm.firstname,''))   as firstname,
+    initcap(nullif(pm.middlename,''))  as middlename,
     pm.bdate                as dob, 
     case  when pm.sex ilike '%female%'  then  'F'
           when pm.sex ilike 'male%'     then  'M'
           when pm.sex ilike '%other%'   then  'O'
-          else pm.sex
+          else nullif(pm.sex,'')
     end as sex,
-    lower(pm.email)          as email, 
+    lower(nullif(pm.email,''))          as email, 
     pm.patnote, 
     pm.created_date, 
     pm.address,
@@ -44,7 +44,7 @@ SELECT distinct on (pm.id)
     upper(coalesce(z.country,pm.country,'USA')) as country,
     upper(coalesce(z.state,'CA'))               as state,
 	initcap(z.city)                             as city,
-    lower(regexp_replace(pm.lastname||pm.firstname,' |\&|\.|-|','','g'))  as key_pet
+    lower(regexp_replace(pm.lastname||pm.firstname,' |\,|\&|\.|-|','','g'))  as key_pet
 	FROM ips.patient_master pm
   join ips.prescription p on p.patient_id=pm.id
   left join {{ ref('dim_patient_doctor') }} pd on pm.id=pd.patient_id

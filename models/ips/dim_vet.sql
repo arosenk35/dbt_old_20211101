@@ -47,8 +47,8 @@
     coalesce(z.state,'CA')    as state,
 	  initcap(z.city)           as city,
 
-    nullif(regexp_replace(lower(coalesce(firstname,'')||coalesce(lastname,'')),' |\&|\.|-|','','g'),'') as key_vet,
-		nullif(regexp_replace(phone1,' |\.|-|\(|\)','','g'),'')  as key_phone,
+    nullif(regexp_replace(lower(coalesce(firstname,'')||coalesce(lastname,'')),' |\,|\&|\.|-|','','g'),'') as key_vet,
+		nullif(regexp_replace(phone1,' |\,|\.|-|\(|\)','','g'),'')  as key_phone,
 		nullif(regexp_replace(sln,'[^0-9]+', '', 'g'),'')     as key_sln
 
 	FROM ips.doctor_master dm

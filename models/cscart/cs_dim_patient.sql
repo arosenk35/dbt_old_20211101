@@ -23,16 +23,16 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id)|| coal
 		TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second' as last_order_date,
 		o.ips_account_id,
 		dmp.patient_id as ips_patient_id,
-		lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||cs.pet_data__name||cs.pet_data__species,' |\&|\.|-|','','g'))  as key_pet
+		lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||cs.pet_data__name,' |\,|\&|\.|-|','','g'))  as key_pet
 FROM cscart.orders cs
 left join {{ ref('cs_dim_owner') }} o on o.account_id=coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id)
 left join {{ ref('dim_patient') }} dmp 
  on (
-	(dmp.key_pet=lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||cs.pet_data__name||cs.pet_data__species,' |\&|\.|-|','','g'))
-and o.ips_account_id=dmp.account_id and nullif(cs.pet_data__name,'') is not null)
-or (dmp.key_pet like lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||cs.pet_data__name,' |\&|\.|-|','','g')||'%')
-	
-and o.ips_account_id=dmp.account_id and nullif(cs.pet_data__name,'') is not null))
-
+(dmp.key_pet=lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||cs.pet_data__name||cs.pet_data__species,' |\,|\&|\.|-|','','g'))
+and o.ips_account_id=dmp.account_id ))
+or 
+(dmp.key_pet like lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||cs.pet_data__name,' |\,|\&|\.|-|','','g')||'%')
+	and o.ips_account_id=dmp.account_id )
+where nullif(cs.pet_data__name,'') is not null
 order by coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id)|| coalesce(cs.pet_id,'') ,
 timestamp desc

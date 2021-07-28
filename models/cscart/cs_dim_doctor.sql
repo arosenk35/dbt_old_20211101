@@ -9,7 +9,7 @@
 SELECT   
 		distinct on (coalesce(nullif(cs.vet_data__id,''),'U'||cs.order_id) )
 
-		nullif(regexp_replace(lower(cs.vet_data__firstname||cs.vet_data__lastname),' |\.|-|','','g'),'') as key_vet,
+		nullif(regexp_replace(lower(cs.vet_data__firstname||cs.vet_data__lastname),' |\,|\&|\.|-|','','g'),'') as key_vet,
 		nullif(regexp_replace(cs.vet_data__phone,' |\.|-|\(|\)','','g'),'') 	as key_phone,
 		nullif(regexp_replace(cs.vet_data__sin,'[^0-9]+', '', 'g'),'') 			as key_sln,
 		nullif(lower(cs.vet_data__email),'') 									as email, 
@@ -24,7 +24,7 @@ SELECT
 		nullif(doctor_data__clinic_id,'')  		as clinic_id,
 	    (cs.vet_data__email ilike '%ggvcp%')  	as ggvcp_vet,
 		nullif(doctor_data__b_address,'') 		as address,
-		coalesce(nullif(regexp_replace(cs.vet_data__phone,' |\.|-|\(|\)','','g'),''),nullif(regexp_replace(doctor_data__phone,' |\.|-|\(|\)','','g'),''),nullif(regexp_replace(doctor_data__b_phone,' |-|\(|\)','','g'),''),nullif(regexp_replace(doctor_data__s_phone,' |-|\(|\)','','g'),'')) as phone,
+		coalesce(nullif(regexp_replace(cs.vet_data__phone,' |\,|\&|\.|-|\(|\)','','g'),''),nullif(regexp_replace(doctor_data__phone,' |\,|\&|\.|-|\(|\)','','g'),''),nullif(regexp_replace(doctor_data__b_phone,' |-|\(|\)','','g'),''),nullif(regexp_replace(doctor_data__s_phone,' |-|\(|\)','','g'),'')) as phone,
 		nullif(initcap(doctor_data__b_city),'') as city,
 		nullif(doctor_data__tax_exempt,'') 		as tax_excempt,
 		upper(nullif(doctor_data__b_state,'')) 	as state,
@@ -98,7 +98,7 @@ SELECT
 FROM cscart.orders cs
 
 left join {{ ref('dim_vet') }} ips
-	on ( nullif(regexp_replace(lower(cs.vet_data__firstname||cs.vet_data__lastname),' |\.|-|','','g'),'') = ips.key_vet)
+	on ( nullif(regexp_replace(lower(cs.vet_data__firstname||cs.vet_data__lastname),' |\,|\&|\.|-|','','g'),'') = ips.key_vet)
 	or ( nullif(regexp_replace(cs.vet_data__sin,'[^0-9]+', '', 'g'),'') = ips.key_sln)
 	or ( nullif(regexp_replace(cs.vet_data__phone,' |\.|-|\(|\)','','g'),'') = ips.key_phone)
 	or 	nullif(lower(cs.vet_data__email),'')  = ips.email
