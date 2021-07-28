@@ -30,12 +30,16 @@
 	    last_patient_name
 	FROM {{ ref('cs_der_owner') }} cs
 	left join {{ ref('dim_owner') }} ips on	
-		(cs.key_owner=ips.key_owner 
-		or
-		cs.lastname||'%' like ips.key_owner )
+		(
+			cs.key_owner=ips.key_owner 
+			or
+			ips.key_owner like '%'||cs.lastname||'%'
+			or
+			ips.patient_name ilike '%'||cs.lastname||'%'
+		) 
 	and 
-	(
-		ips.contact_phone_numbers @> cs.array_phone
-		or
-		ips.contact_emails @> cs.array_email
-	)
+		(
+			ips.contact_phone_numbers @> cs.array_phone
+			or
+			ips.contact_emails @> cs.array_email
+		)

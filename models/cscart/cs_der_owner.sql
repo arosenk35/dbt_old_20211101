@@ -11,7 +11,7 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) )
 		btrim(initcap(coalesce(cs.b_firstname,''))||' '|| initcap(nullif(cs.b_lastname,''))) as owner_name,
 		coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) 	as account_id,
 		initcap(nullif(cs.b_firstname,'')) 						as firstname,
-		lower(reverse(split_part(reverse(cs.lastname),' ',1)))  as lastname,
+		btrim(lower(reverse(split_part(reverse(cs.lastname),' ',1))))  as lastname,
 		upper(cs.b_state) 										as state,
 		cs.b_zipcode 											as zip,
 		nullif(regexp_replace(cs.b_phone,' |\.|-|\(|\)','','g'),'')  as phone,
