@@ -46,7 +46,8 @@
 							  when address ilike '%clinic%' then 3
                 when address ilike '%animal%' then 4
                 when address ilike '%center%' then 5
-                when address ilike '%pets%' then 6
+                when address ilike '%corpor%' then 6
+                when address ilike '%pets%' then 7
 							  else 88
 							  end
 							  ) practice_group

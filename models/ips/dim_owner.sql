@@ -31,7 +31,15 @@
         lower(regexp_replace( coalesce(nullif(pm.care_of,''),pm.name) ,' |\,|\&|\.|-|','','g'))    as key_owner,
 		    pm.phone11 || pm.phone12 || pm.phone13                as key_phone,
         coalesce(oc.phone_numbers,'{}') as contact_phone_numbers,
-        coalesce(oc.emails,'{}') as contact_emails
+        coalesce(oc.emails,'{}') as contact_emails,
+        case 		when coalesce(nullif(pm.care_of,''),pm.name) ilike '%vet%' then 'Clinic'
+							  when coalesce(nullif(pm.care_of,''),pm.name) ilike '%hosp%' then 'Clinic'
+							  when coalesce(nullif(pm.care_of,''),pm.name) ilike '%clinic%' then 'Clinic'
+                when coalesce(nullif(pm.care_of,''),pm.name) ilike '%animal%' then 'Clinic'
+                when coalesce(nullif(pm.care_of,''),pm.name) ilike '%center%' then 'Clinic'
+                when coalesce(nullif(pm.care_of,''),pm.name) ilike '%corpor%' then 'Clinic'
+                else 'Patient'
+        end as account_type
 
 	FROM ips.responsible_party_master pm
   left join {{ ref('dim_owner_contacts') }} oc on pm.srno=oc.account_id

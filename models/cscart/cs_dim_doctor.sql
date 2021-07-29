@@ -47,7 +47,8 @@ SELECT
 			cs.b_firstname ilike '%pets%' 	or
 			cs.b_firstname ilike '%clinic%'
 			then initcap(cs.b_firstname)
-		when 
+		when
+			cs.b_lastname  ilike '%corpo%' 	or 
 			cs.b_lastname  ilike '%vet%' 	or
 			cs.b_lastname  ilike '%hosp%' 	or
 			cs.b_lastname  ilike '%medic%' 	or
@@ -93,7 +94,7 @@ SELECT
 		else true
 	end doctor_resgistered,
 		ips.doctor_id 										as ips_doctor_id,
-		ips.vet 											as ips_doctor_name		
+		ips.vet 											as ips_doctor_name
 
 FROM cscart.orders cs
 

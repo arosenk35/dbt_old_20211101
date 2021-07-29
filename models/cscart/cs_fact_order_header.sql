@@ -19,8 +19,7 @@ select
         o.tax_subtotal              as tax_amount,
         o.paid_data__total          as paid_amount,
         o.total                     as order_amount ,
-        o.total - o.tax_subtotal    as gross_amount,
-        o.total - o.tax_subtotal -  o.shipping_cost  as gross_excl_shipping,
+        o.total - o.tax_subtotal -  o.shipping_cost  as gross_amount,
         o.subtotal_discount         as discount,
         TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second' as order_date,
         o.status                    as status_code,
@@ -46,9 +45,15 @@ select
         nullif(o.vet_data__id,'') is null        as direct_purchase,
         (nullif(refill_order_id,'0') is not null) as refill_order,
 
-is_order_due='y'  as is_order_due ,
-is_parent_order = 'Y' as is_parent_order ,
-is_patient_order='Y' as is_patient_order,
+      is_order_due='y'  as is_order_due ,
+      is_parent_order = 'Y' as is_parent_order ,
+      is_patient_order='Y' as is_patient_order,
+      case 
+          when  o.status in ('C','I')
+          then null
+          else    
+          now()::date-(TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date 
+      end as days_open,
        case
             when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date  <=15 then '15'
             when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date  <=30 then '30'
