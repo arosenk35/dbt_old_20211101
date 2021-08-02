@@ -22,9 +22,9 @@ SELECT distinct on (pm.id)
     initcap(nullif(pm.firstname,''))   as firstname,
     initcap(nullif(pm.middlename,''))  as middlename,
     pm.bdate                as dob, 
-    case  when pm.sex ilike '%female%'  then  'F'
-          when pm.sex ilike 'male%'     then  'M'
-          when pm.sex ilike '%other%'   then  'O'
+    case  when pm.sex ilike '%female%'  then  'Female'
+          when pm.sex ilike 'male%'     then  'Male'
+          when pm.sex ilike '%other%'   then  'Other'
           else nullif(pm.sex,'')
     end as sex,
     lower(nullif(pm.email,''))          as email, 

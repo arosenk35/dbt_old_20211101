@@ -13,9 +13,9 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id)|| coal
 		nullif(cs.vet_data__id,'') 						as doctor_id,
 		initcap(reverse(split_part(reverse(cs.lastname),' ',1))) || ' '||initcap(nullif(cs.pet_data__name,'')) 	as patient_name,
 		nullif(replace(cs.pet_data__dob,'-','/'),'/')   as dob,
-		case  when cs.pet_data__sex ilike '%female%'  	then  'F'
-          when cs.pet_data__sex ilike 'male%'     		then  'M'
-          when cs.pet_data__sex ilike '%other%'   		then  'O'
+		case  	when cs.pet_data__sex ilike '%female%'  	then  'Female'
+          		when cs.pet_data__sex ilike 'male%'     	then  'Male'
+          		when cs.pet_data__sex ilike '%other%'   	then  'Other'
     	end as sex,
 		initcap(nullif(cs.pet_data__species,'-')) 		as species,
 		initcap(nullif(cs.pet_data__breed,'-')) 		as breed,

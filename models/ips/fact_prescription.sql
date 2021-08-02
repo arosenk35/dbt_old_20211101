@@ -112,9 +112,7 @@
     end as auto_fill,
         case 
             when p.sig_code like 'FOU%' then 'Office Use'
-            when p.otc='Y' then 'Shipping'
-            when p.no_of_refill=0 then 'Onetime'
-        else 'Standard'
+        else 'Patient Use'
         end as prescription_type,
     p.sig_code,
     case 
@@ -135,7 +133,7 @@ left join ips.zip_master zm_pt ON patient_master.zip = zm_pt.srno
 left join ips.responsible_party_master ON bh.account_id = responsible_party_master.srno 
 left join ips.zip_master zm_dr ON doctor_master.zip = zm_dr.srno
 left join {{ ref('dim_practice_map') }} pg on pg.practice=doctor_master.address
-WHERE p.office_id = 2
+WHERE p.office_id = 2 and bh.patient_pay-bh.sales_tax_amount !=0
 
 union all
 
