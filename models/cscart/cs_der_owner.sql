@@ -10,8 +10,12 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) )
 		(coalesce(nullif(cs.vet_data__id,''),'U'||cs.order_id) )	as last_doctor_id,
 		btrim(initcap(coalesce(cs.b_firstname,''))||' '|| initcap(nullif(cs.b_lastname,''))) as owner_name,
 		coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) 	as account_id,
-		initcap(nullif(cs.b_firstname,'')) 						as firstname,
-		btrim(lower(reverse(split_part(reverse(cs.lastname),' ',1))))  as lastname,
+		case 
+			when nullif(cs.b_firstname,'') is null
+			then initcap(split_part(cs.b_lastname,' ',1))
+			else initcap(nullif(cs.b_firstname,'')) 	
+		end as firstname,
+		btrim(lower(reverse(split_part(reverse(cs.b_lastname),' ',1))))  as lastname,
 		upper(cs.b_state) 										as state,
 		cs.b_zipcode 											as zip,
 		nullif(regexp_replace(cs.b_phone,' |\.|-|\(|\)','','g'),'')  as phone,
