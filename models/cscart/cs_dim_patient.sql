@@ -8,7 +8,7 @@
 }}
 SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id)|| coalesce(cs.pet_id,'') )
 
-        coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id)|| coalesce(cs.pet_id,'')  as patient_id,
+        coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) || ':' || coalesce(cs.pet_id,'')  as patient_id,
 		coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) 	as account_id,
 		nullif(cs.vet_data__id,'') 								as doctor_id,
 		initcap(reverse(split_part(reverse(cs.lastname),' ',1))) || ' '||initcap(nullif(cs.pet_data__name,'')) 	as patient_name,
