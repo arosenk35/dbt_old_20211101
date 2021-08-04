@@ -10,9 +10,11 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id)|| coal
 
         coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id)|| coalesce(cs.pet_id,'')  as patient_id,
 		coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) 	as account_id,
-		nullif(cs.vet_data__id,'') 						as doctor_id,
+		nullif(cs.vet_data__id,'') 								as doctor_id,
 		initcap(reverse(split_part(reverse(cs.lastname),' ',1))) || ' '||initcap(nullif(cs.pet_data__name,'')) 	as patient_name,
-		nullif(replace(cs.pet_data__dob,'-','/'),'/')   as dob,
+		initcap(nullif(cs.pet_data__name,'')) 					as firstname,
+		initcap(btrim(lower(reverse(split_part(reverse(cs.b_lastname),' ',1))))) as lastname,
+		nullif(replace(cs.pet_data__dob,'-','/'),'/')   	as dob,
 		case  	when cs.pet_data__sex ilike '%female%'  	then  'Female'
           		when cs.pet_data__sex ilike 'male%'     	then  'Male'
           		when cs.pet_data__sex ilike '%other%'   	then  'Other'
