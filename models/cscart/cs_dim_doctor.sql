@@ -32,7 +32,7 @@ SELECT
 		upper(doctor_data__b_country) 			as country,
 		nullif(doctor_data__birthday,'') 		as dob,
 		nullif(doctor_data__url,'') 			as company_url,
-			
+		nullif(doctor_data__staff_notes,'') 	as staff_notes,
 	case 
 		when nullif(regexp_replace(cs.company,' |-|','','g'),'') is not null
 		then nullif(regexp_replace(cs.company,' |-|','','g'),'')
