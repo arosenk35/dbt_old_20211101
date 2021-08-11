@@ -99,4 +99,5 @@ or
 	and o.ips_account_id=dmp.account_id )
 where nullif(cs.pet_data__name,'') is not null
 order by coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id)|| coalesce(cs.pet_id,'') ,
-timestamp desc
+cs.timestamp desc,
+case when dmp.active then 1 else 99 end asc

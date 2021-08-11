@@ -43,3 +43,5 @@
 			or
 			ips.contact_emails @> cs.array_email
 		)
+	order by cs.account_id,
+	case when ips.active then 1 else 99 end asc

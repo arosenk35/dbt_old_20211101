@@ -106,4 +106,5 @@ left join {{ ref('dim_vet') }} ips
 
 order by (coalesce(nullif(cs.vet_data__id,''),'U'||cs.order_id) ),
 	cs.timestamp desc,
+	case when active then 1 else 99 end asc,
 	ips.created_date desc
