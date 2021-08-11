@@ -46,6 +46,7 @@
     coalesce(z.country,'USA') as country,
     coalesce(z.state,'CA')    as state,
 	  initcap(z.city)           as city,
+    case when active='Y' then true else false end active,
 
     nullif(regexp_replace(lower(coalesce(firstname,'')||coalesce(lastname,'')),' |\,|\&|\.|-|','','g'),'') as key_vet,
 		nullif(regexp_replace(phone1,' |\,|\.|-|\(|\)','','g'),'')  as key_phone,
