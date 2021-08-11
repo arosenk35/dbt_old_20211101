@@ -41,7 +41,7 @@ SELECT distinct on (pm.id)
     pd.doctor_id, 
     pm.pregnant_flag,
     pm.office_id,
-    case when active='Y' then true else false end active,
+    case when pm.active='Y' then true else false end active,
     upper(coalesce(z.country,pm.country,'USA')) as country,
     upper(coalesce(z.state,'CA'))               as state,
 	initcap(z.city)                             as city,

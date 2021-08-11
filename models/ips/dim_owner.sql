@@ -40,7 +40,7 @@
                 when coalesce(nullif(pm.care_of,''),pm.name) ilike '%corpor%' then 'Clinic'
                 else 'Patient'
         end as account_type,
-        case when active='Y' then true else false end active,
+        case when pm.active='Y' then true else false end active
 
 	FROM ips.responsible_party_master pm
   left join {{ ref('dim_owner_contacts') }} oc on pm.srno=oc.account_id
