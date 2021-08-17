@@ -24,7 +24,8 @@
     coalesce(z.country,'USA')           as country,
     coalesce(z.state,'CA')              as state,
 	  z.city,
-    sv.max_created_date
+    sv.max_created_date,
+    active
 
 	FROM ips.doctor_master dm
   join max_created sv on dm.srno=sv.doctor_id
@@ -39,7 +40,8 @@
   zip,
   phone1,
   first_value(practice) OVER (PARTITION BY state,city,zip,phone1 order by 
-                max_created_date desc,
+                case when active='Y' then 1 else 99 end,
+                max_created_date desc,                
 							  case when btrim(practice) is null then 99
 							  when address ilike '%vet%' then 2
 							  when address ilike '%hosp%' then 1 

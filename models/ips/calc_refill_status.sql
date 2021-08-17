@@ -100,6 +100,7 @@ select  distinct on (rxno)
             else 'Open'
         end as refill_status,
         case 
+            when pat.active = false then 'Lost'
             when pat.deceased_date is not null then 'Lost'
             when fill_number=-1 and hold_date is not null then 'OnHold' 
             when fill_number=-1 then 'InProgress'
