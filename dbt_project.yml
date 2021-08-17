@@ -39,8 +39,10 @@ models:
   +unlogged: true
   bluerabbit:
     ips:
+      description: This schema contains all of the IPS Related data used by Tableau
       schema: blue
       materialized: table
     cscart:
+      description: This schema contains all of the Cs-Cart Related data used by Tableau
       schema: cscart
       materialized: table
