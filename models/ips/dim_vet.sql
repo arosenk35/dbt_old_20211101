@@ -46,7 +46,18 @@
     coalesce(z.country,'USA') as country,
     coalesce(z.state,'CA')    as state,
 	  initcap(z.city)           as city,
-    case when active='Y' then true else false end active,
+    case  when active='Y' 
+              then true 
+              else false 
+          end active,
+    case  when address ilike '%vet%'    then initcap(address)
+          when address ilike '%hosp%'   then initcap(address)
+          when address ilike '%clinic%' then initcap(address)
+          when address ilike '%animal%' then initcap(address)
+          when address ilike '%center%' then initcap(address)
+          when address ilike '%corpor%' then initcap(address)
+          when address ilike '%pets%'   then initcap(address)
+    end as clinic,
 
     nullif(regexp_replace(lower(coalesce(firstname,'')||coalesce(lastname,'')),' |\,|\&|\.|-|','','g'),'') as key_vet,
 		nullif(regexp_replace(phone1,' |\,|\.|-|\(|\)','','g'),'')  as key_phone,
