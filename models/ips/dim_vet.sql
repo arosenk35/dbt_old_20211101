@@ -63,11 +63,14 @@
           when address ilike '%pets%'   then initcap(address) ||' - '|| initcap(z.city) 
     end as clinic,
 
-    nullif(regexp_replace(lower(coalesce(firstname,'')||coalesce(lastname,'')),' |\,|\&|\.|-|','','g'),'') as key_vet,
+    nullif(regexp_replace(lower(coalesce(firstname,'')||coalesce(lastname,'')),'Dvm|Dr| |\,|\&|\.|-|','','g'),'') as key_vet,
 		phone11 || phone12|| phone13  as key_phone1,
     phone21 || phone22|| phone23  as key_phone2,
     phone31 || phone32|| phone33  as key_phone3,
-		nullif(regexp_replace(sln,'[^0-9]+', '', 'g'),'')     as key_sln
+		case 
+        when length(nullif(regexp_replace(sln,'[^0-9]+', '', 'g'),'') ) <4 then null
+        else nullif(regexp_replace(sln,'[^0-9]+', '', 'g'),'')  
+    end   as key_sln
 
 	FROM ips.doctor_master dm
   left join ips.zip_master z on dm.zip = z.srno

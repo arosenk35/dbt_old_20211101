@@ -15,7 +15,7 @@ SELECT
 		nullif(lower(cs.vet_data__email),'') 									as email, 
 		nullif(regexp_replace(cs.vet_data__fax ,' |\.|-|\(|\)','','g'),'') 		as fax, 
 		initcap(cs.vet_data__firstname) 		as firstname,
-		cs.vet_data__id 						as doctor_id,
+		(coalesce(nullif(cs.vet_data__id,''),'U'||cs.order_id) )				as doctor_id,
 		initcap(cs.vet_data__lastname) 			as lastname, 
 		nullif(btrim(coalesce(initcap(cs.vet_data__firstname),'') || ' ' || coalesce(initcap(cs.vet_data__lastname),'')),'') as doctor_name,
 		nullif(regexp_replace(cs.vet_data__sin ,' |\.|-','','g'),'') 	as sln,
@@ -101,8 +101,7 @@ FROM cscart.orders cs
 left join {{ ref('dim_vet') }} ips
 	on ( nullif(regexp_replace(lower(cs.vet_data__firstname||cs.vet_data__lastname),' |\,|\&|\.|-|','','g'),'') = ips.key_vet)
 	or ( nullif(regexp_replace(cs.vet_data__sin,'[^0-9]+', '', 'g'),'') = ips.key_sln)
-	or ( nullif(regexp_replace(cs.vet_data__phone,' |\.|-|\(|\)','','g'),'') = ips.key_phone)
-	or 	nullif(lower(cs.vet_data__email),'')  = ips.email
+	or 	lower(case when cs.vet_data__email ilike '%ggvcp%' then null else cs.vet_data__email end)  = ips.email
 
 order by (coalesce(nullif(cs.vet_data__id,''),'U'||cs.order_id) ),
 	cs.timestamp desc,

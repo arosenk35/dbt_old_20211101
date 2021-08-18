@@ -46,4 +46,7 @@
   join ips.prescription p     on p.account_id=pm.srno
   left join ips.zip_master z  on pm.zip = z.srno
   where name not like '%, +%'
-  order by pm.srno,p.created_date desc
+  order by 
+  pm.srno, 
+  case when pm.active='Y' then 1 else 99 end,
+  p.created_date desc
