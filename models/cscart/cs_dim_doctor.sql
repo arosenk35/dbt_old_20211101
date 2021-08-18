@@ -80,7 +80,7 @@ SELECT
 			cs.s_lastname ilike '%animal%' 	or
 			cs.s_lastname ilike '%clinic%'
 		then initcap(cs.s_lastname )
-		end as company,
+		end as clinic,
 	
 	case when 
 		nullif(vet_data__id,'') is null and
@@ -94,14 +94,21 @@ SELECT
 		else true
 	end doctor_resgistered,
 		ips.doctor_id 										as ips_doctor_id,
-		ips.vet 											as ips_doctor_name
+		ips.vet 											as ips_doctor_name,
+		ips.sln    as ips_sln,
+		ips.clinic as ips_clinic,
+		ips.practice as ips_practice,
+		ips.dea as ips_dea
 
 FROM cscart.orders cs
 
 left join {{ ref('dim_vet') }} ips
-	on ( nullif(regexp_replace(lower(cs.vet_data__firstname||cs.vet_data__lastname),' |\,|\&|\.|-|','','g'),'') = ips.key_vet)
+on (nullif(regexp_replace(lower(coalesce(cs.vet_data__firstname,'')||coalesce(cs.vet_data__lastname,'')),'(dvm)|(dr )|(dr.)| |\`|\,|\&|\.|-|','','g'),'')
+	 = ips.key_vet)
 	or ( nullif(regexp_replace(cs.vet_data__sin,'[^0-9]+', '', 'g'),'') = ips.key_sln)
 	or 	lower(case when cs.vet_data__email ilike '%ggvcp%' then null else cs.vet_data__email end)  = ips.email
+
+where (nullif(btrim(coalesce(cs.vet_data__firstname,'') || coalesce(cs.vet_data__lastname,'')),'') ) is not null
 
 order by (coalesce(nullif(cs.vet_data__id,''),'U'||cs.order_id) ),
 	cs.timestamp desc,

@@ -11,4 +11,5 @@ SELECT  (coalesce(nullif(cs.vet_data__id,''),'U'||cs.order_id) )            as d
         count(distinct order_id)                                            as nbr_orders
 
 FROM cscart.orders cs
+where (nullif(btrim(coalesce(cs.vet_data__firstname,'') || coalesce(cs.vet_data__lastname,'')),'') ) is not null
 group by (coalesce(nullif(cs.vet_data__id,''),'U'||cs.order_id) ) 
