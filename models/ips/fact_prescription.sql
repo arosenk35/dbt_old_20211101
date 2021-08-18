@@ -121,7 +121,8 @@
     when receive_through ='3' then 'Electronic'
     when receive_through ='4' then 'Fax'
     when receive_through ='5' then 'Transfer'
-    end origin
+    end origin,
+    bh.acquisition_cost
 
 FROM ips.bill_detail bd
 join ips.bill_header bh on bh.tran_id = bd.tran_id 
@@ -232,7 +233,8 @@ select
         when p.receive_through ='3' then 'Electronic'
         when p.receive_through ='4' then 'Fax'
         when p.receive_through ='5' then 'Transfer'
-        end origin
+        end origin,
+        0::numeric as acquisition_cost
 
 
 from ips.prescription p
