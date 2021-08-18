@@ -3,10 +3,14 @@
     "materialized": "table",
     "post-hook": [
       after_commit("create index  index_{{this.name}}_on_id on {{this.schema}}.{{this.name}}  (doctor_id)"),
+      after_commit("create index  index_{{this.name}}_on_clinic on {{this.schema}}.{{this.name}}  (clinic)"),
+      after_commit("create index  index_{{this.name}}_on_practice on {{this.schema}}.{{this.name}}  (practice)"),
       after_commit("create index  index_{{this.name}}_on_vet on {{this.schema}}.{{this.name}} (vet)"),
       after_commit("create index  index_{{this.name}}_on_kv on {{this.schema}}.{{this.name}} (key_vet)"),
       after_commit("create index  index_{{this.name}}_on_ks on {{this.schema}}.{{this.name}} (key_sln)"),
-      after_commit("create index  index_{{this.name}}_on_kp on {{this.schema}}.{{this.name}} (key_phone)"),
+      after_commit("create index  index_{{this.name}}_on_kp1 on {{this.schema}}.{{this.name}} (key_phone1)"),
+      after_commit("create index  index_{{this.name}}_on_kp2 on {{this.schema}}.{{this.name}} (key_phone2)"),
+      after_commit("create index  index_{{this.name}}_on_kp3 on {{this.schema}}.{{this.name}} (key_phone3)"),
       after_commit("create index  index_{{this.name}}_on_email on {{this.schema}}.{{this.name}} (email)")
       ]
   })
@@ -50,17 +54,19 @@
               then true 
               else false 
           end active,
-    case  when address ilike '%vet%'    then initcap(address)
-          when address ilike '%hosp%'   then initcap(address)
-          when address ilike '%clinic%' then initcap(address)
-          when address ilike '%animal%' then initcap(address)
-          when address ilike '%center%' then initcap(address)
-          when address ilike '%corpor%' then initcap(address)
-          when address ilike '%pets%'   then initcap(address)
+    case  when address ilike '%vet%'    then initcap(address) ||' - '|| initcap(z.city) 
+          when address ilike '%hosp%'   then initcap(address) ||' - '|| initcap(z.city) 
+          when address ilike '%clinic%' then initcap(address) ||' - '|| initcap(z.city) 
+          when address ilike '%animal%' then initcap(address) ||' - '|| initcap(z.city) 
+          when address ilike '%center%' then initcap(address) ||' - '|| initcap(z.city) 
+          when address ilike '%corpor%' then initcap(address) ||' - '|| initcap(z.city) 
+          when address ilike '%pets%'   then initcap(address) ||' - '|| initcap(z.city) 
     end as clinic,
 
     nullif(regexp_replace(lower(coalesce(firstname,'')||coalesce(lastname,'')),' |\,|\&|\.|-|','','g'),'') as key_vet,
-		nullif(regexp_replace(phone1,' |\,|\.|-|\(|\)','','g'),'')  as key_phone,
+		phone11 || phone12|| phone13  as key_phone1,
+    phone21 || phone22|| phone23  as key_phone2,
+    phone31 || phone32|| phone33  as key_phone3,
 		nullif(regexp_replace(sln,'[^0-9]+', '', 'g'),'')     as key_sln
 
 	FROM ips.doctor_master dm
