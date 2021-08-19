@@ -12,7 +12,7 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id)|| coal
 		coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) 	as account_id,
 		nullif(cs.vet_data__id,'') 								as doctor_id,
 		initcap(reverse(split_part(reverse(cs.lastname),' ',1))) || ' '||initcap(nullif(cs.pet_data__name,'')) 	as patient_name,
-		initcap(nullif(cs.pet_data__name,'')) 					as firstname,
+		initcap(btrim(nullif(cs.pet_data__name,''))) 					as firstname,
 		initcap(btrim(lower(reverse(split_part(reverse(cs.b_lastname),' ',1))))) as lastname,
 		case 
 			-- mm/dd/yyyy

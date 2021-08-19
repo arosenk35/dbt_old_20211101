@@ -13,7 +13,7 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) )
 		case 
 			when nullif(cs.b_firstname,'') is null
 			then initcap(split_part(cs.b_lastname,' ',1))
-			else initcap(nullif(cs.b_firstname,'')) 	
+			else btrim(initcap(nullif(cs.b_firstname,'')) )	
 		end as firstname,
 		btrim(lower(reverse(split_part(reverse(cs.b_lastname),' ',1))))  as lastname,
 		upper(cs.b_state) 										as state,
