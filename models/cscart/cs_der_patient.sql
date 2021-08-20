@@ -128,7 +128,7 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id)|| coal
             then 'guinea pig'
             else lower(btrim(regexp_replace(cs.pet_data__species,'\`|\.|-','','g'))) 
         end as species,
-        initcap(btrim(regexp_replace(cs.pet_data__species,'\`|\.|-','','g'))) as orig_species,
+        lower(btrim(regexp_replace(cs.pet_data__species,'\`|\.|-','','g'))) as orig_species,
         initcap(btrim(regexp_replace(cs.pet_data__breed,'\`|\.|-','','g'))) as breed,
 		nullif(lower(cs.pet_data__weight),'-')	 		                    as weight,
 		TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second'        as last_order_date,
