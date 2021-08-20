@@ -2,12 +2,13 @@
   config({
     "materialized": "table",
     "post-hook": [
-      after_commit("create index  index_{{this.name}}_on_id on {{this.schema}}.{{this.name}}  (doctor_id)"),
-      after_commit("create index  index_{{this.name}}_on_clinic on {{this.schema}}.{{this.name}}  (clinic)"),
-      after_commit("create index  index_{{this.name}}_on_practice on {{this.schema}}.{{this.name}}  (practice)"),
+      after_commit("create index  index_{{this.name}}_on_id on {{this.schema}}.{{this.name}} (doctor_id)"),
+      after_commit("create index  index_{{this.name}}_on_clinic on {{this.schema}}.{{this.name}} (clinic)"),
+      after_commit("create index  index_{{this.name}}_on_practice on {{this.schema}}.{{this.name}} (practice)"),
       after_commit("create index  index_{{this.name}}_on_vet on {{this.schema}}.{{this.name}} (vet)"),
       after_commit("create index  index_{{this.name}}_on_kv on {{this.schema}}.{{this.name}} (key_vet)"),
       after_commit("create index  index_{{this.name}}_on_ks on {{this.schema}}.{{this.name}} (key_sln)"),
+      after_commit("create index  index_{{this.name}}_on_kclinic on {{this.schema}}.{{this.name}} (key_clinic)"),
       after_commit("create index  index_{{this.name}}_on_kp1 on {{this.schema}}.{{this.name}} (key_phone1)"),
       after_commit("create index  index_{{this.name}}_on_kp2 on {{this.schema}}.{{this.name}} (key_phone2)"),
       after_commit("create index  index_{{this.name}}_on_kp3 on {{this.schema}}.{{this.name}} (key_phone3)"),
@@ -54,7 +55,20 @@
               then true 
               else false 
           end active,
-    case  when address ilike '%vet%'    then initcap(address) 
+
+    case  when 
+              address ilike '%vet%'   
+          or address ilike '%hosp%' 
+          or address ilike '%clinic%'
+          or address ilike '%animal%'
+          or address ilike '%center%'
+          or address ilike '%corpor%'
+          or address ilike '%pets%'
+    then nullif(regexp_replace(lower(coalesce(address,'')),'\(|\)| |\,|\&|\.|-|','','g'),'')
+    end as key_clinic,
+
+        case  
+          when address ilike '%vet%'    then initcap(address) 
           when address ilike '%hosp%'   then initcap(address) 
           when address ilike '%clinic%' then initcap(address) 
           when address ilike '%animal%' then initcap(address) 
