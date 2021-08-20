@@ -94,39 +94,7 @@ left join {{ ref('dim_vet') }} ips
 	or 	cs.key_sln	= 	ips.key_sln
 	or 	cs.email  	= 	ips.email
 
-order by cs.doctor_id,
-	
-	
-	case 
-		when not active then 99 
-		when cs.key_sln = ips.key_sln 
-		and cs.key_clinic =ips.key_clinic
-		then 1
-		when cs.key_vet	 	= 	ips.key_vet
-		and cs.key_clinic 	=	ips.key_clinic
-		then 2		
-		when cs.key_sln = ips.key_sln 
-		and (	phone 	=	ips.key_phone1
-			or 	phone  	=	ips.key_phone2
-			or 	phone  	=	ips.key_phone3
-			or  fax 	=	ips.key_phone1
-			or 	fax  	=	ips.key_phone2
-			or 	fax  	=	ips.key_phone3)
-		then 3		
-		when  	cs.key_vet	 = ips.key_vet 
-		and (	phone 	=	ips.key_phone1
-			or 	phone 	=	ips.key_phone2
-			or 	phone 	=	ips.key_phone3
-			or  fax 	=	ips.key_phone1
-			or 	fax  	=	ips.key_phone2
-			or 	fax  	=	ips.key_phone3)
-		then 4		
-		when cs.key_sln = ips.key_sln 
-		then 50		
-		when cs.key_vet	 = ips.key_vet
-		then 51		
-		when cs.email  = ips.email
-		then 52
-		else 88
-	end  asc,
+order by 
+	cs.doctor_id,
+	rank asc,
 	ips.created_date desc

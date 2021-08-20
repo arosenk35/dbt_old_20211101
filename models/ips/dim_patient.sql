@@ -7,7 +7,7 @@
       after_commit("create index if not exists index_{{this.name}}_on_acct_id on {{this.schema}}.{{this.name}} (account_id)"),
       after_commit("create index if not exists index_{{this.name}}_on_pat_name on {{this.schema}}.{{this.name}} (patient_name)"),
       after_commit("create index if not exists index_{{this.name}}_on_zip_state on {{this.schema}}.{{this.name}} (zip,state)"),
-      after_commit("create index if not exists index_{{this.name}}_on_key_pet on {{this.schema}}.{{this.name}} (key_pet)")
+      after_commit("create index if not exists index_{{this.name}}_on_key_patient on {{this.schema}}.{{this.name}} (key_patient)")
           ]
     })
 }}
@@ -45,7 +45,7 @@ SELECT distinct on (pm.id)
     upper(coalesce(z.country,pm.country,'USA')) as country,
     upper(coalesce(z.state,'CA'))               as state,
 	initcap(z.city)                             as city,
-    lower(regexp_replace(pm.lastname||pm.firstname,' |\,|\&|\.|-|','','g'))  as key_pet
+    lower(regexp_replace(pm.lastname||pm.firstname,' |\,|\&|\.|-|','','g'))  as key_patient
 	FROM ips.patient_master pm
   join ips.prescription p on p.patient_id=pm.id
   left join {{ ref('dim_patient_doctor') }} pd on pm.id=pd.patient_id
