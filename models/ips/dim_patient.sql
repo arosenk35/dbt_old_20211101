@@ -50,4 +50,6 @@ SELECT distinct on (pm.id)
   join ips.prescription p on p.patient_id=pm.id
   left join {{ ref('dim_patient_doctor') }} pd on pm.id=pd.patient_id
   left join ips.zip_master z on pm.zip = z.srno
-  order by pm.id , p.created_date desc
+  order by 
+        pm.id , 
+        p.created_date desc

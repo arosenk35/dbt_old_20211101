@@ -73,8 +73,44 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id)|| coal
           		when cs.pet_data__sex ilike 'male%'     	then  'Male'
           		when cs.pet_data__sex ilike '%other%'   	then  'Other'
     	end as sex,
-		initcap(nullif(cs.pet_data__species,'-')) 		as species,
-		initcap(nullif(cs.pet_data__breed,'-')) 		as breed,
+        case 
+            when    cs.pet_data__species ilike '%dog%' or
+                    cs.pet_data__species ilike '%k%9%' or
+                    cs.pet_data__species ilike '%king%' or
+                    cs.pet_data__species ilike '%terrier%' or
+                    cs.pet_data__species ilike '%poodle%' or
+                    cs.pet_data__species ilike 'cani%' or
+                    cs.pet_data__species ilike '%hound%' or
+                    cs.pet_data__species ilike '%malte%' or
+                    cs.pet_data__species ilike '%spaniel%' or
+                    cs.pet_data__species ilike '%c%nine%' 
+            then 'Dog'
+            when    cs.pet_data__species ilike '%bird%' or
+                    cs.pet_data__species ilike '%parrot%' or
+                    cs.pet_data__species ilike '%macaw%' or
+                    cs.pet_data__species ilike '%pigeon%' 
+            then 'Bird'
+            when    cs.pet_data__species ilike '%rabbit%' or 
+                    cs.pet_data__species ilike '%bunny%'
+            then 'Rabbit'
+            when    cs.pet_data__species ilike '%rat%'
+            then 'Rat'
+            when    cs.pet_data__species ilike '%reptile%'
+            then 'Reptile'
+            when    cs.pet_data__species ilike '%horse%'
+            then 'Horse'
+            when    cs.pet_data__species ilike '%ferret%'
+            then 'Rat'
+            when    cs.pet_data__species ilike '%gerbil%'
+            then 'Gerbil'
+            when    cs.pet_data__species ilike '%cat%' or
+                    cs.pet_data__species ilike '%siam%' or
+                    cs.pet_data__species ilike '%tabby%' or
+                    cs.pet_data__species ilike '%fe%ne%'  
+            then 'Cat'
+            else initcap(btrim(regexp_replace(cs.pet_data__species,'\`|\.|-','','g'))) 
+        end as species,
+        initcap(btrim(regexp_replace(cs.pet_data__breed,'\`|\.|-','','g'))) as breed,
 		nullif(lower(cs.pet_data__weight),'-')	 		as weight,
 		TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second' as last_order_date,
 		lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||cs.pet_data__name,' |\,|\&|\.|-|','','g'))  as key_patient,
