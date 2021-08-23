@@ -9,6 +9,7 @@
 SELECT  distinct on(cs.patient_id)
 		key_patient_species,
 		cs.patient_id,
+		cs.cscart_patient_id,
 		cs.account_id,
 		cs.doctor_id,
 		cs.patient_name,
