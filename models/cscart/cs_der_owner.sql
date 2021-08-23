@@ -6,7 +6,7 @@
   })
 }}
 SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) )
-		nullif(regexp_replace(lower(coalesce(cs.firstname,'')||coalesce(cs.lastname,'')),' |\,|\&|\.|-|','','g'),'') as key_owner,
+		nullif(regexp_replace(lower(coalesce(cs.firstname,'')||coalesce(cs.lastname,'')),'\`| |\,|\&|\.|-|','','g'),'') as key_owner,
 		(coalesce(nullif(cs.vet_data__id,''),'U'||cs.order_id) )	as last_doctor_id,
 		btrim(initcap(coalesce(cs.b_firstname,''))||' '|| initcap(nullif(cs.b_lastname,''))) as owner_name,
 		coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) 	as account_id,

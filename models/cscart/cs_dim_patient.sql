@@ -7,7 +7,7 @@
   })
 }}
 SELECT  distinct on(cs.patient_id)
-key_patient_species,
+		key_patient_species,
 		cs.patient_id,
 		cs.account_id,
 		cs.doctor_id,
@@ -32,18 +32,39 @@ key_patient_species,
 					dmp.key_patient=cs.key_patient||cs.species
 						and o.ips_account_id=dmp.account_id
 					)
-					then 2
+					then 1
 			when (
 					dmp.key_patient=cs.key_patient_species
 						and o.ips_account_id=dmp.account_id
 					)
-					then 1
+					then 2
+			when (
+				dmp.key_patient_cleaned = cs.key_patient
+				and o.ips_account_id=dmp.account_id 
+					)
+					then 3
+			when 	(
+				dmp.key_patient_cleaned like cs.key_patient||'%'
+				and o.ips_account_id=dmp.account_id 
+					)
+					then 4
 			when (
 					dmp.key_patient like cs.key_patient||'%'
 					and o.ips_account_id=dmp.account_id 
 					)
-			then 5
-
+					then 5
+			when (
+					dmp.key_patient = cs.key_patient
+					)
+					then 6
+			when 	(
+					dmp.key_patient = cs.key_patient_reverse
+					)
+					then 7
+			when (
+					dmp.key_patient like cs.key_patient||'%'
+					)
+					then 10
 			else 88 
 		end as rank
 		
@@ -53,17 +74,35 @@ left join {{ ref('dim_patient') }} dmp
 		on 	(
 				dmp.key_patient=cs.key_patient||cs.species
 					and o.ips_account_id=dmp.account_id
-				)
+			)
 			or 
 			(
 				dmp.key_patient=cs.key_patient_species
 					and o.ips_account_id=dmp.account_id
-				)
+			)
 			or 
 			(
 				dmp.key_patient like cs.key_patient||'%'
 				and o.ips_account_id=dmp.account_id 
-				)
+			)
+			or 
+			(
+				dmp.key_patient_cleaned = cs.key_patient
+				and o.ips_account_id=dmp.account_id 
+			)
+			or 
+			(
+				dmp.key_patient_cleaned like cs.key_patient||'%'
+				and o.ips_account_id=dmp.account_id 
+			)
+			or 
+			(
+				dmp.key_patient = cs.key_patient
+			)
+			or 
+			(
+				dmp.key_patient = cs.key_patient_reverse
+			)
 where cs.patient_name is not null
 order by 
 		cs.patient_id,

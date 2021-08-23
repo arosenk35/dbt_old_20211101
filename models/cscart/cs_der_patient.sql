@@ -1,3 +1,12 @@
+{{
+  config({
+    "materialized": "table",
+    "post-hook": [
+      	after_commit("create index  index_{{this.name}}_on_k_p on {{this.schema}}.{{this.name}} (key_patient)"),
+		after_commit("create index  index_{{this.name}}_on_k_ps on {{this.schema}}.{{this.name}} (key_patient_species)")]
+  })
+}}
+
 SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id)|| coalesce(cs.pet_id,'') )
 
         coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) || ':' || coalesce(cs.pet_id,'')  as patient_id,
@@ -132,8 +141,9 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id)|| coal
         initcap(btrim(regexp_replace(cs.pet_data__breed,'\`|\.|-','','g'))) as breed,
 		nullif(lower(cs.pet_data__weight),'-')	 		                    as weight,
 		TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second'        as last_order_date,
-		lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||cs.pet_data__name,' |\,|\&|\.|-|','','g'))  as key_patient,
-        lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||cs.pet_data__name||cs.pet_data__species,' |\,|\&|\.|-|','','g')) as key_patient_species
+		lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||cs.pet_data__name,'\`| |\,|\&|\.|-|','','g'))  as key_patient,
+		lower(regexp_replace(cs.pet_data__name||reverse(split_part(reverse(cs.lastname),' ',1)),'\`| |\,|\&|\.|-|','','g'))  as key_patient_reverse,
+        lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||cs.pet_data__name||cs.pet_data__species,'\`| |\,|\&|\.|-|','','g')) as key_patient_species
 
 FROM cscart.orders cs
     where nullif(cs.pet_data__name,'') is not null

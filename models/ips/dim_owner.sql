@@ -28,7 +28,7 @@
         coalesce(upper(z.country),'USA')                      as country,
         coalesce(upper(z.state),'CA')                         as state,
         initcap(z.city) as city,
-        lower(regexp_replace( coalesce(nullif(pm.care_of,''),pm.name) ,' |\,|\&|\.|-|','','g'))    as key_owner,
+        lower(regexp_replace( coalesce(nullif(pm.care_of,''),pm.name) ,'\`| |\,|\&|\.|-|','','g'))    as key_owner,
         coalesce(oc.phone_numbers,'{}') as contact_phone_numbers,
         coalesce(oc.emails,'{}') as contact_emails,
         case 		when coalesce(nullif(pm.care_of,''),pm.name) ilike '%vet%' then 'Clinic'

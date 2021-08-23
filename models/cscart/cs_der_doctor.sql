@@ -1,9 +1,9 @@
 SELECT   
 		distinct on (coalesce(nullif(cs.vet_data__id,''),'U'||cs.order_id) )
 
-		nullif(regexp_replace(lower(cs.vet_data__firstname||cs.vet_data__lastname),' |\,|\&|\.|-|','','g'),'') as key_vet,
+		nullif(regexp_replace(lower(cs.vet_data__firstname||cs.vet_data__lastname),'\`| |\,|\&|\.|-|','','g'),'') as key_vet,
 		nullif(regexp_replace(cs.vet_data__sin,'[^0-9]+', '', 'g'),'') 			                    as key_sln,
-		nullif(regexp_replace(lower(coalesce(cs.company,'')),'\(|\)| |\,|\&|\.|-|','','g'),'')      as key_clinic,
+		nullif(regexp_replace(lower(coalesce(cs.company,'')),'\`|\(|\)| |\,|\&|\.|-|','','g'),'')      as key_clinic,
 		lower(case when cs.vet_data__email ilike '%ggvcp%' then null else cs.vet_data__email end)   as email, 
 		nullif(regexp_replace(cs.vet_data__fax ,' |\.|-|\(|\)','','g'),'') 		                    as fax, 
 		initcap(cs.vet_data__firstname) 		                                                    as firstname,

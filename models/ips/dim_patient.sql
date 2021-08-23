@@ -7,7 +7,8 @@
       after_commit("create index if not exists index_{{this.name}}_on_acct_id on {{this.schema}}.{{this.name}} (account_id)"),
       after_commit("create index if not exists index_{{this.name}}_on_pat_name on {{this.schema}}.{{this.name}} (patient_name)"),
       after_commit("create index if not exists index_{{this.name}}_on_zip_state on {{this.schema}}.{{this.name}} (zip,state)"),
-      after_commit("create index if not exists index_{{this.name}}_on_key_patient on {{this.schema}}.{{this.name}} (key_patient)")
+      after_commit("create index if not exists index_{{this.name}}_on_key_patient on {{this.schema}}.{{this.name}} (key_patient)"),
+      after_commit("create index if not exists index_{{this.name}}_on_key_patient_cl on {{this.schema}}.{{this.name}} (key_patient_cleaned)")
           ]
     })
 }}
@@ -17,9 +18,9 @@ SELECT distinct on (pm.id)
     pm.phone11 || '-' || pm.phone12 || '-' || pm.phone13 as phone1,
     pm.phone21 || '-' || pm.phone22 || '-' || pm.phone23 as phone2,
     pm.phone31 || '-' || pm.phone32 || '-' || pm.phone33 as phone3,
-    coalesce(initcap(pm.firstname||' '||pm.lastname),'') as patient_name,
+    coalesce(initcap(split_part(split_part(firstname, ' ',1),'-',1)||' '||pm.lastname),'') as patient_name,
     initcap(nullif(pm.lastname,''))    as lastname,
-    initcap(nullif(pm.firstname,''))   as firstname,
+    initcap(nullif(split_part(split_part(firstname, ' ',1),'-',1),''))   as firstname,
     initcap(nullif(pm.middlename,''))  as middlename,
     pm.bdate                as dob, 
     case  when pm.sex ilike '%female%'  then  'Female'
@@ -45,7 +46,9 @@ SELECT distinct on (pm.id)
     upper(coalesce(z.country,pm.country,'USA')) as country,
     upper(coalesce(z.state,'CA'))               as state,
 	initcap(z.city)                             as city,
-    lower(regexp_replace(pm.lastname||pm.firstname,' |\,|\&|\.|-|','','g'))  as key_patient
+    lower(regexp_replace(pm.lastname||pm.firstname,'\`| |\,|\&|\.|-|','','g'))  as key_patient,
+    lower(regexp_replace(pm.lastname||split_part(split_part(firstname, ' ',1),'-',1),'\`| |\,|\&|\.|-|','','g'))  as key_patient_cleaned
+    
 	FROM ips.patient_master pm
   join ips.prescription p on p.patient_id=pm.id
   left join {{ ref('dim_patient_doctor') }} pd on pm.id=pd.patient_id

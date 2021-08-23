@@ -64,7 +64,7 @@
           or address ilike '%center%'
           or address ilike '%corpor%'
           or address ilike '%pets%'
-    then nullif(regexp_replace(lower(coalesce(address,'')),'\(|\)| |\,|\&|\.|-|','','g'),'')
+    then nullif(regexp_replace(lower(coalesce(address,'')),'\`|\(|\)| |\,|\&|\.|-|','','g'),'')
     end as key_clinic,
 
         case  
@@ -77,7 +77,7 @@
           when address ilike '%pets%'   then initcap(address) 
     end as clinic,
 
-     nullif(regexp_replace(lower(coalesce(firstname,'')||coalesce(lastname,'')),'(dvm)|(dr )|(dr.)| |\`|\,|\&|\.|-|','','g'),'') as key_vet,
+     nullif(regexp_replace(lower(coalesce(firstname,'')||coalesce(lastname,'')),'\`|(dvm)|(dr )|(dr.)| |\`|\,|\&|\.|-|','','g'),'') as key_vet,
 		phone11 || phone12|| phone13  as key_phone1,
     phone21 || phone22|| phone23  as key_phone2,
     phone31 || phone32|| phone33  as key_phone3,
