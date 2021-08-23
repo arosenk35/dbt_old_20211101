@@ -4,12 +4,12 @@
     "post-hook": [
       	after_commit("create index  index_{{this.name}}_on_ord_id on {{this.schema}}.{{this.name}} (order_id)"),
         after_commit("create index  index_{{this.name}}_on_status on {{this.schema}}.{{this.name}} (status)"),
-        after_commit("create index  index_{{this.name}}_on_create_date on {{this.schema}}.{{this.name}} (order_date)")]
+        after_commit("create index  index_{{this.name}}_on_create_date on {{this.schema}}.{{this.name}} (order_date,status)")]
   })
 }}
 select
         o.order_id,
-        coalesce(nullif(o.pet_data__user_id,'0'),o.user_id)|| coalesce(o.pet_id,'')  as patient_id,
+        coalesce(nullif(o.pet_data__user_id,'0'),o.user_id)|| ':' ||coalesce(o.pet_id,'')  as patient_id,
         o.user_id                   as account_id,
         o.user_id,
         o.issuer_id,

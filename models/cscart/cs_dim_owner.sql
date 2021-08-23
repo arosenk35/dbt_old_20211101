@@ -3,7 +3,7 @@
     "materialized": "table",
     "post-hook": [
       	after_commit("create index  index_{{this.name}}_on_acct_id on {{this.schema}}.{{this.name}} (account_id)"),
-		after_commit("create index  index_{{this.name}}_on_doc_id on {{this.schema}}.{{this.name}} (last_doctor_id)"),
+		after_commit("create index  index_{{this.name}}_on_email on {{this.schema}}.{{this.name}} (email)"),
 		after_commit("create index  index_{{this.name}}_on_key_acct on {{this.schema}}.{{this.name}} (key_owner)")]
   })
 }}
@@ -26,8 +26,7 @@
 		cs.fax,
 		cs.last_order_date,
 		ips.account_id as ips_account_id,
-		ips.owner_name as ips_owner_name,
-	    last_patient_name
+		ips.owner_name as ips_owner_name
 	FROM {{ ref('cs_der_owner') }} cs
 	left join {{ ref('dim_owner') }} ips on	
 		(
