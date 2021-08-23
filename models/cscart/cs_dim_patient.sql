@@ -18,6 +18,7 @@ SELECT  distinct on(cs.patient_id)
 		cs.lastname,
 		cs.dob,
 		cs.sex,
+		cs.breed,
 		initcap(cs.species) as species,
 		orig_species,
 		cs.weight,
