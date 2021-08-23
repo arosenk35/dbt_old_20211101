@@ -3,7 +3,7 @@ SELECT
 
 		nullif(regexp_replace(lower(cs.vet_data__firstname||cs.vet_data__lastname),'\`| |\,|\&|\.|-|','','g'),'') as key_vet,
 		nullif(regexp_replace(cs.vet_data__sin,'[^0-9]+', '', 'g'),'') 			                    as key_sln,
-		nullif(regexp_replace(lower(coalesce(cs.company,'')),'\`|\(|\)| |\,|\&|\.|-|','','g'),'')      as key_clinic,
+		nullif(regexp_replace(lower(coalesce(cs.company,'')),'\`|\(|\)| |\,|\&|\.|-|','','g'),'')   as key_clinic,
 		lower(case when cs.vet_data__email ilike '%ggvcp%' then null else cs.vet_data__email end)   as email, 
 		nullif(regexp_replace(cs.vet_data__fax ,' |\.|-|\(|\)','','g'),'') 		                    as fax, 
 		initcap(cs.vet_data__firstname) 		                                                    as firstname,
@@ -26,7 +26,7 @@ SELECT
 		nullif(doctor_data__staff_notes,'') 	as staff_notes,
 	case 
 		when nullif(regexp_replace(cs.company,'\(|\)| |-|','','g'),'') is not null
-		then nullif(regexp_replace(cs.company,'\(|\)| |-|','','g'),'')
+		then Initcap(nullif(regexp_replace(cs.company,'\(|\)|-|','','g'),''))
 		when 
 			cs.b_firstname ilike '%corpo%' 	or
 			cs.b_firstname ilike '%vet%' 	or

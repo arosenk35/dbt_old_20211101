@@ -47,11 +47,12 @@ select distinct on(cs.product_id)
 	TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second' as created_date,
 	(ips.drug_id is not null) as ips_found,
 	(coalesce(cs.product_code,'cs')=coalesce(ips.quick_code,'ips')) as cs_ips_codes_match,
+    main_pair__detailed__http_image_path as image_path,
 	ips.quick_code as ips_quick_code,
     ips.drug_id as ips_drug_id,
     ips.drug_form as ips_drug_form,
     ips.strength as ips_strength,
-    ips.strength_value as ips_strenth_value,
+    ips.strength_value as ips_strength_value,
     ips.drug as ips_drug
 	
 from cscart cs
