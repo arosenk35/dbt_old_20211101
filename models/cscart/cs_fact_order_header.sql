@@ -9,11 +9,10 @@
 }}
 select
         o.order_id,
-        coalesce(nullif(o.pet_data__user_id,'0'),o.user_id)|| ':' ||coalesce(o.pet_id,'')  as patient_id,
-        o.user_id                   as account_id,
-        o.user_id,
-        o.issuer_id,
+        coalesce(nullif(o.pet_data__user_id,'0'),nullif(o.user_id,'0'),'U'||order_id )|| ':' ||coalesce(o.pet_id,'')  as patient_id,
+        coalesce(nullif(o.pet_data__user_id,'0'),nullif(o.user_id,'0'),'U'||order_id )   as account_id,
         (coalesce(nullif(o.vet_data__id,''),'U'||o.order_id)) as doctor_id,
+        o.issuer_id,
         nullif(btrim(o.notes),'')          as notes,
         nullif(btrim(o.staff_notes),'')    as staff_notes,
         o.tax_subtotal              as tax_amount,

@@ -88,5 +88,5 @@ FROM cscart.orders cs
 
 where (nullif(btrim(coalesce(cs.vet_data__firstname,'') || coalesce(cs.vet_data__lastname,'')),'') ) is not null
 
-order by (coalesce(nullif(cs.vet_data__id,''),'U'||cs.order_id) ),
+order by doctor_id,
 	cs.timestamp desc

@@ -16,6 +16,7 @@ select
         l.discount,
         l.subtotal          as gross_amount,
         l.price             as price,
+        l.amount            as quantity_ordered,
         (select 
               opt.variant_name 
           from cscart.orders__lines__extra__product_options_value opt
