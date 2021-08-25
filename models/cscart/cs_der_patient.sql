@@ -19,49 +19,49 @@ SELECT  distinct on(   coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_
 		case 
 			-- mm/dd/yyyy
 			when 
-				regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g')  ~ '^\d{2}/\d{2}/\d{4}'
+				regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g')  ~ '^\d{2}/\d{2}/\d{4}$'
 				and split_part(regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g'),'/',1)<='12'
 				and regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g') ~  '^[0-1][0-9]/[0-2][0-9]|[3][0-1]/\d{4}$'
 			then to_date(regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g') ,'mm/dd/yyyy')
 			--m/dd/yyyy
 			when 
-				regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g')  ~ '^\d{1}/\d{2}/\d{4}'
+				regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g')  ~ '^\d{1}/\d{2}/\d{4}$'
 				and split_part(regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g'),'/',1)<='9'
 				and regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g') ~  '^[0-9]/[0-2][0-9]|[3][0-1]/\d{4}$'
 			then to_date(regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g') ,'m/dd/yyyy')
 			--m/d/yyyy
 			when 
-				regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g')  ~ '^\d{1}/\d{1}/\d{4}'
+				regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g')  ~ '^\d{1}/\d{1}/\d{4}$'
 				and split_part(regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g'),'/',1)<='9'
 				and regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g') ~ '^([0-9]/[0-9])/\d{4}$'
 			then to_date(regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g') ,'m/dd/yyyy')
 			--mm/dd/yy
 			when 
-				regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g')  ~ '^\d{2}/\d{2}/\d{2}'
+				regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g')  ~ '^\d{2}/\d{2}/\d{2}$'
 				and split_part(regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g'),'/',1)<='12'
 				and regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g') ~  '^[0-1][0-9]/[0-2][0-9]|[3][0-1]/\d{2}$'
 			then to_date(regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g') ,'mm/dd/yy')
 			--mm/d/yy
 			when 
-				regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g')  ~ '^\d{2}/\d{1}/\d{2}'
+				regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g')  ~ '^\d{2}/\d{1}/\d{2}$'
 				and split_part(regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g'),'/',1)<='12'
 				and regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g') ~  '^[0-1][0-9]/[0-9]/\d{2}$'
 			then to_date(regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g') ,'mm/dd/yy')
 			--mm/d/yyyy
 			when 
-				regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g')  ~ '^\d{2}/\d{1}/\d{4}'
+				regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g')  ~ '^\d{2}/\d{1}/\d{4}$'
 				and split_part(regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g'),'/',1)<='12'
 				and regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g') ~  '^[0-1][0-9]/[0-9]/\d{4}$'
 			then to_date(regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g') ,'mm/dd/yyyy')
 			--m/dd/yy
 			when 
-				regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g')  ~ '^\d{1}/\d{2}/\d{2}'
+				regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g')  ~ '^\d{1}/\d{2}/\d{2}$'
 				and split_part(regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g'),'/',1)<='9'
 				and regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g') ~  '^[0-9]/[0-2][0-9]|[3][0-1]/\d{2}$'
 			then to_date(regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g') ,'mm/dd/yy')
 			--m/d/yy
 			when 
-				regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g')  ~ '^\d{1}/\d{1}/\d{2}'
+				regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g')  ~ '^\d{1}/\d{1}/\d{2}$'
 				and split_part(regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g'),'/',1)<='9'
 				and regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g') ~ '^([0-9]/[0-9])/\d{2}$'
 			then to_date(regexp_replace(cs.pet_data__dob,'\ |\.|\-','/','g') ,'m/dd/yy')
