@@ -10,19 +10,19 @@
 select
         o.order_id,
         coalesce(nullif(o.pet_data__user_id,'0'),nullif(o.user_id,'0'),'U'||order_id )|| ':' ||coalesce(o.pet_id,'')  as patient_id,
-        coalesce(nullif(o.pet_data__user_id,'0'),nullif(o.user_id,'0'),'U'||order_id )   as account_id,
-        (coalesce(nullif(o.vet_data__id,''),'U'||o.order_id)) as doctor_id,
+        coalesce(nullif(o.pet_data__user_id,'0'),nullif(o.user_id,'0'),'U'||order_id )                                as account_id,
+        coalesce(nullif(o.vet_data__id,''),'U'||o.order_id)                                                           as doctor_id,
         o.issuer_id,
-        nullif(btrim(o.notes),'')          as notes,
-        nullif(btrim(o.staff_notes),'')    as staff_notes,
-        o.tax_subtotal              as tax_amount,
-        o.paid_data__total          as paid_amount,
-        o.total                     as order_amount ,
+        nullif(btrim(o.notes),'')           as notes,
+        nullif(btrim(o.staff_notes),'')     as staff_notes,
+        o.tax_subtotal                      as tax_amount,
+        o.paid_data__total                  as paid_amount,
+        o.total                             as order_amount ,
         o.total - o.tax_subtotal -  o.shipping_cost  as gross_amount,
-        o.subtotal_discount         as discount,
+        o.subtotal_discount                 as discount,
         TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second' as order_date,
-        o.status                    as status_code,
-        o.shipping_cost             as shipping_amount,
+        o.status                            as status_code,
+        o.shipping_cost                     as shipping_amount,
         case o.status
             when 'P' then 'Awaiting Fulfillment'
             when 'C' then 'Complete'
@@ -41,12 +41,12 @@ select
             when 'L' then 'Pending VET Approval'
         end                                       as status,
         nullif(refill_order_id,'0')               as refill_order_id,
-        nullif(o.vet_data__id,'') is null        as direct_purchase,
+        nullif(o.vet_data__id,'') is null         as direct_purchase,
         (nullif(refill_order_id,'0') is not null) as refill_order,
 
-      is_order_due='y'  as is_order_due ,
-      is_parent_order = 'Y' as is_parent_order ,
-      is_patient_order='Y' as is_patient_order,
+      is_order_due='y'                            as is_order_due ,
+      is_parent_order = 'Y'                       as is_parent_order ,
+      is_patient_order='Y'                        as is_patient_order,
       case 
           when  o.status in ('C','I')
           then null

@@ -10,11 +10,13 @@ SELECT  _sdc_source_key_order_id as order_id,
         shipping as shipping_method,
         rate::numeric,
         case 
+            when shipping ilike '%pickup%' 
+                  then 'Standard' 
             when shipping ilike '%expedited%' 
-                then 'Expedited'
+                then 'Overnight'
             when shipping ilike '%overnight%' 
                 then 'Overnight'
-            else 'Other'
-        end as class
+            else 'Standard'
+        end as method
 
 FROM cscart.orders__shipping
