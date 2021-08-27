@@ -73,5 +73,5 @@ select
         sr.shipping_requirement
 from cscart.orders o
 left join {{ ref('cs_segment_owner') }} so on so.account_id=o.user_id   
-left join {{ ref('cs_fact_order_shipping') }}  s
-left join {{ ref('cs_fact_order_shipping_requirement') }}  sr
+left join {{ ref('cs_fact_order_shipping') }}  s on s.order_id=o.order_id
+left join {{ ref('cs_fact_order_shipping_req') }}  sr on sr.order_id=o.order_id
