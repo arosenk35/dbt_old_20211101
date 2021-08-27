@@ -17,6 +17,6 @@ SELECT  _sdc_source_key_order_id as order_id,
             when shipping ilike '%overnight%' 
                 then 'Overnight'
             else 'Standard'
-        end as method
+        end as shipping_class
 
 FROM cscart.orders__shipping

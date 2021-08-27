@@ -67,6 +67,11 @@ select
             when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date  <=300 then '300'
             when  (TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second')::date-first_order_date::date  <=330 then '330'
             else '360+'
-        end as days_since_first_order_tier
+        end as days_since_first_order_tier,
+        s.shipping_method,
+        s.shipping_class,
+        sr.shipping_requirement
 from cscart.orders o
 left join {{ ref('cs_segment_owner') }} so on so.account_id=o.user_id   
+left join {{ ref('cs_fact_order_shipping') }}  s
+left join {{ ref('cs_fact_order_shipping_requirement') }}  sr
