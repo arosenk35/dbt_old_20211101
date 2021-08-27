@@ -30,25 +30,15 @@ select
     cs.*,
     case 
     when 
-        product ilike 'AMLODIPINE 2.5 MG/ML SUSPENSION (R)%' or
-        product ilike 'AMLODIPINE 1.25 MG/ML SUSPENSION (R)%' or
-        product ilike 'ARANESP (DARBEPOETIN ALFA) 25 MCG/ML INJECTION VIAL (1 ML VIAL) (CAV) (R)%' or
-        product ilike 'SAME/MILK THISTLE 90/9 MG/ML ORAL SUSPENSION (R)%' or
-        product ilike 'POTASSIUM BROMIDE 250 MG/ML ORAL SUSPENSION (R)%' or
-        product ilike 'OMEPRAZOLE 10 MG/ML ORAL SUSPENSION (R)%' or
-        product ilike 'TERBUTALINE 2.5 MG/ML ORAL SUSPENSION (R)%' or
-        product ilike 'CHLORAMBUCIL 2 MG CAPSULE (R)%' or
-        product ilike 'AZITHROMYCIN 50 MG/ML ORAL SUSPENSION (R)%' or
-        product ilike 'POTASSIUM BROMIDE 400 MG/ML ORAL SUSPENSION (R)' or
-        product ilike 'POTASSIUM BROMIDE 200 MG/ML ORAL SUSPENSION (R)%' or
-        product ilike 'AMLODIPINE 0.625 MG/ML SUSPENSION (R)%' or
-        product ilike 'AMLODIPINE 1 MG/ML SUSPENSION (R)%' or
-        product ilike 'CHLORAMBUCIL 2 MG CHEW (R)%' or
-        product ilike 'CHLORAMBUCIL 2 MG/ML ORAL SUSPENSION (R)%' or
-        product ilike 'CHLORAMBUCIL 4 MG/ML ORAL SUSPENSION (R)%' or
-        product ilike 'SAME/MILK THISTLE 180/18 MG/ML ORAL SUSPENSION (R)%' or
-        product ilike 'AZITHROMYCIN 40 MG/ML ORAL SUSPENSION (R)%' or
-        product ilike 'MARBOFLOXACIN 50 MG/ML ORAL SUSPENSION (R)'
+        product ilike 'AMLODIPINE%SUSPENSION%' or
+        product ilike 'ARANESP%(DARBEPOETIN ALFA)%INJECTION VIAL%' or
+        product ilike 'POTASSIUM%SUSPENSION%' or
+        product ilike 'OMEPRAZOLE%SUSPENSION%' or
+        product ilike 'TERBUTALINE%SUSPENSION%' or
+        product ilike 'CHLORAMBUCIL%' or
+        product ilike 'SAME/MILK%THISTLE%SUSPENSION%' or
+        product ilike 'AZITHROMYCIN%SUSPENSION%' or
+        product ilike 'MARBOFLOXACIN%SUSPENSION%'
     then 'Overnight'
     else 'Standard'
     end as shipping_requirement
