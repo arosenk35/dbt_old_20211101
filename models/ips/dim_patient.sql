@@ -7,9 +7,8 @@
       after_commit("create index if not exists index_{{this.name}}_on_acct_id on {{this.schema}}.{{this.name}} (account_id)"),
       after_commit("create index if not exists index_{{this.name}}_on_pat_name on {{this.schema}}.{{this.name}} (patient_name)"),
       after_commit("create index if not exists index_{{this.name}}_on_zip_state on {{this.schema}}.{{this.name}} (zip,state)"),
-      after_commit("create index if not exists index_{{this.name}}_on_key_patient on {{this.schema}}.{{this.name}} (key_patient)"),
-      after_commit("create index if not exists index_{{this.name}}_on_key_patient_cl on {{this.schema}}.{{this.name}} (key_patient_cleaned)"),
-      after_commit("create index  index_{{this.name}}_on_key on {{this.schema}}.{{this.name}} using gist(key_patient)")
+      after_commit("create index if not exists index_{{this.name}}_on_key_patient on {{this.schema}}.{{this.name}} using gist (key_patient)"),
+      after_commit("create index if not exists index_{{this.name}}_on_key_patient_cl on {{this.schema}}.{{this.name}} using gist (key_patient_cleaned)")
           ]
     })
 }}

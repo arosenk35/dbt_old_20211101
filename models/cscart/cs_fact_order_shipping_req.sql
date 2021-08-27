@@ -7,9 +7,9 @@
 }}
 select  distinct on (h.order_id)
 		h.order_id,
-		shipping_requirement,
+		p.shipping_requirement,
 		case 
-			when  p.shipping_requirement ='Overnight'
+			when  p.shipping_requirement ilike '%Overnight%'
 			then 1 
 			else 2 
 		end rank

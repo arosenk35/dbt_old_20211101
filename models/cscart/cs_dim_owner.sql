@@ -4,7 +4,7 @@
     "post-hook": [
       	after_commit("create index  index_{{this.name}}_on_acct_id on {{this.schema}}.{{this.name}} (account_id)"),
 		after_commit("create index  index_{{this.name}}_on_email on {{this.schema}}.{{this.name}} (email)"),
-		after_commit("create index  index_{{this.name}}_on_key_acct on {{this.schema}}.{{this.name}} (key_owner)")]
+		after_commit("create index  index_{{this.name}}_on_key_acct on {{this.schema}}.{{this.name}} using  gist (key_owner)")]
   })
 }}
 	SELECT  distinct on(cs.account_id)
@@ -26,7 +26,11 @@
 		cs.fax,
 		cs.last_order_date,
 		ips.account_id as ips_account_id,
-		ips.owner_name as ips_owner_name
+		ips.owner_name as ips_owner_name,
+		case 
+			when ips.active 
+			then 1 else 99 
+		end  as rank
 	FROM {{ ref('cs_der_owner') }} cs
 	left join {{ ref('dim_owner') }} ips on	
 		(
@@ -42,5 +46,4 @@
 			or
 			ips.contact_emails @> cs.array_email
 		)
-	order by cs.account_id,
-	case when ips.active then 1 else 99 end asc
+	order by cs.account_id,rank

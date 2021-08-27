@@ -2,7 +2,9 @@
   config({
     "materialized": "table",
     "post-hook": [
-      	after_commit("create index  index_{{this.name}}_on_acct_id on {{this.schema}}.{{this.name}} (account_id)")]
+      	after_commit("create index  index_{{this.name}}_on_acct_id on {{this.schema}}.{{this.name}} (account_id)"),
+		after_commit("create index  index_{{this.name}}_on_phone on {{this.schema}}.{{this.name}} using gin (array_phone)"),
+		after_commit("create index  index_{{this.name}}_on_lastname on {{this.schema}}.{{this.name}}  (lastname)")]
   })
 }}
 SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,'0'),'U'||order_id ) )
