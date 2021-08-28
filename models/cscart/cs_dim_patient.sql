@@ -24,10 +24,10 @@ SELECT  distinct on(cs.patient_id)
 		orig_species,
 		cs.weight,
 		cs.last_order_date,
-		o.ips_account_id as ips_owner_account_id,
-		dmp.patient_id as ips_patient_id,
-		dmp.account_id as ips_account_id,
-		dmp.doctor_id as ips_doctor_id,
+		o.ips_account_id 	as ips_owner_account_id,
+		dmp.patient_id 		as ips_patient_id,
+		dmp.account_id 		as ips_account_id,
+		dmp.doctor_id 		as ips_doctor_id,
 		case 
 			when not dmp.active 
 			then 99 
@@ -68,6 +68,9 @@ SELECT  distinct on(cs.patient_id)
 					dmp.key_patient like cs.key_patient||'%'
 					)
 					then 10
+			when ( 	dmp.key_patient like '%'||cs.lastname||'%'
+			)
+			then 77
 			else 88 
 		end as rank
 		
@@ -106,6 +109,11 @@ left join {{ ref('dim_patient') }} dmp
 			(
 				dmp.key_patient = cs.key_patient_reverse
 			)
+			or 
+			(
+				dmp.key_patient = cs.key_patient_reverse
+			)
+			
 where cs.patient_name is not null
 order by 
 		cs.patient_id,

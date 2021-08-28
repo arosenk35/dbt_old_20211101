@@ -28,22 +28,27 @@
 		ips.account_id as ips_account_id,
 		ips.owner_name as ips_owner_name,
 		case 
-			when ips.active 
-			then 1 else 99 
+			when not ips.active 
+			then 99
+			when cs.key_owner=ips.key_owner 
+			then 1
+			when ips.key_owner like '%'||cs.lastname||'%'
+			then 2
+			when ips.patient_name ilike '%'||cs.lastname||'%'
+			then 3
+			else 88
 		end  as rank
 	FROM {{ ref('cs_der_owner') }} cs
 	left join {{ ref('dim_owner') }} ips on	
 		(
-			cs.key_owner=ips.key_owner 
-			or
-			ips.key_owner like '%'||cs.lastname||'%'
-			or
+			cs.key_owner=ips.key_owner or
+			ips.key_owner like '%'||cs.lastname||'%' or
 			ips.patient_name ilike '%'||cs.lastname||'%'
 		) 
 	and 
 		(
-			ips.contact_phone_numbers @> cs.array_phone
-			or
+			ips.contact_phone_numbers @> cs.array_phone or
 			ips.contact_emails @> cs.array_email
 		)
-	order by cs.account_id,rank
+	
+	order by cs.account_id,rank,ips.created_date desc

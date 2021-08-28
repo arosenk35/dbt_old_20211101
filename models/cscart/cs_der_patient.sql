@@ -15,7 +15,7 @@ SELECT  distinct on(   coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_
 		nullif(cs.vet_data__id,'') 								                                as doctor_id,
 		initcap(reverse(split_part(reverse(cs.lastname),' ',1))) || ' '||initcap(btrim(nullif(split_part(cs.pet_data__name,' ',1),'')))	as patient_name,
 		initcap(btrim(nullif(split_part(cs.pet_data__name,' ',1),'')))					        as firstname,
-		initcap(btrim(lower(reverse(split_part(reverse(cs.b_lastname),' ',1)))))                as lastname,
+		initcap(btrim(lower(reverse(split_part(reverse(cs.lastname),' ',1)))))                  as lastname,
 		case 
 			-- mm/dd/yyyy
 			when 
