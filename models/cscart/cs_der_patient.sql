@@ -16,6 +16,8 @@ SELECT  distinct on(   coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_
 		initcap(reverse(split_part(reverse(cs.lastname),' ',1))) || ' '||initcap(btrim(nullif(split_part(cs.pet_data__name,' ',1),'')))	as patient_name,
 		initcap(btrim(nullif(split_part(cs.pet_data__name,' ',1),'')))					        as firstname,
 		initcap(btrim(lower(reverse(split_part(reverse(cs.lastname),' ',1)))))                  as lastname,
+		split_part(lastname,'-',1) 																as alt_lastname1,
+		split_part(lastname,'-',2) 																as alt_lastname2,
 		case 
 			-- mm/dd/yyyy
 			when 
@@ -146,6 +148,8 @@ SELECT  distinct on(   coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_
 		nullif(lower(cs.pet_data__weight),'-')	 		                    as weight,
 		TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second'        as last_order_date,
 		lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||split_part(cs.pet_data__name,' ',1),'\`| |\,|\&|\.|-|','','g'))  as key_patient,
+		lower(regexp_replace(split_part(lastname,'-',1) ||split_part(cs.pet_data__name,' ',1),'\`| |\,|\&|\.|-|','','g'))  as key_patient1,
+		lower(regexp_replace(split_part(lastname,'-',2) ||split_part(cs.pet_data__name,' ',1),'\`| |\,|\&|\.|-|','','g'))  as key_patient2,
 		lower(regexp_replace(cs.pet_data__name||reverse(split_part(reverse(cs.lastname),' ',1)),'\`| |\,|\&|\.|-|','','g'))  as key_patient_reverse,
         lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||cs.pet_data__name||cs.pet_data__species,'\`| |\,|\&|\.|-|','','g')) as key_patient_species
 

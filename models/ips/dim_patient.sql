@@ -8,7 +8,8 @@
       after_commit("create index if not exists index_{{this.name}}_on_pat_name on {{this.schema}}.{{this.name}} (patient_name)"),
       after_commit("create index if not exists index_{{this.name}}_on_zip_state on {{this.schema}}.{{this.name}} (zip,state)"),
       after_commit("create index if not exists index_{{this.name}}_on_key_patient on {{this.schema}}.{{this.name}} using gist (key_patient)"),
-      after_commit("create index if not exists index_{{this.name}}_on_key_patient_cl on {{this.schema}}.{{this.name}} using gist (key_patient_cleaned)")
+      after_commit("create index if not exists index_{{this.name}}_on_alt_key_patient on {{this.schema}}.{{this.name}} using gist (alt_key_patient)"),
+      after_commit("create index if not exists index_{{this.name}}_on_key_patient_cleaned on {{this.schema}}.{{this.name}} using gist (key_patient_cleaned)")
           ]
     })
 }}
@@ -23,6 +24,7 @@ SELECT distinct on (pm.id)
 	initcap(nullif(pm.lastname,''))    as orig_lastname,
     initcap(nullif(split_part(split_part(firstname, ' ',1),'-',1),''))  as firstname,
     initcap(nullif(pm.middlename,''))  as middlename,
+    initcap(btrim(lower(reverse(split_part(reverse(address2),' ',1)))))   as lastname_alternative,
     pm.bdate                as dob, 
     case  when pm.sex ilike '%female%'  then  'Female'
           when pm.sex ilike 'male%'     then  'Male'
@@ -48,12 +50,14 @@ SELECT distinct on (pm.id)
     upper(coalesce(z.state,'CA'))               as state,
 	initcap(z.city)                             as city,
     lower(regexp_replace(pm.lastname||pm.firstname,'\`| |\,|\&|\.|-|','','g'))  as key_patient,
+    lower(regexp_replace(reverse(split_part(reverse(address2),' ',1))||split_part(split_part(firstname, ' ',1),'-',1),'\`| |\,|\&|\.|-|','','g')) as alt_key_patient,
     lower(regexp_replace(nullif(split_part(split_part(lastname, ' ',1),'-',1),'')||split_part(split_part(firstname, ' ',1),'-',1),'\`| |\,|\&|\.|-|','','g'))  as key_patient_cleaned
     
 	FROM ips.patient_master pm
   join ips.prescription p on p.patient_id=pm.id
   left join {{ ref('dim_patient_doctor') }} pd on pm.id=pd.patient_id
   left join ips.zip_master z on pm.zip = z.srno
+  where  pm.office_id=2
   order by 
         pm.id , 
         p.created_date desc
