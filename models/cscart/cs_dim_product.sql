@@ -31,7 +31,7 @@ select
     case 
     when 
         product ilike 'AMLODIPINE%SUSPENSION%' or
-        product ilike 'ARANESP%(DARBEPOETIN ALFA)%INJECTION VIAL%' or
+        product ilike 'ARANESP%DARBEPOETIN%INJECTION%VIAL%' or
         product ilike 'POTASSIUM%SUSPENSION%' or
         product ilike 'OMEPRAZOLE%SUSPENSION%' or
         product ilike 'TERBUTALINE%SUSPENSION%' or
@@ -39,7 +39,7 @@ select
         product ilike 'SAME/MILK%THISTLE%SUSPENSION%' or
         product ilike 'AZITHROMYCIN%SUSPENSION%' or
         product ilike 'MARBOFLOXACIN%SUSPENSION%'
-    then 'Overnignt'
+    then 'Overnight'
     else 'Standard'
     end as shipping_requirement
 from cscart.products cs
@@ -68,7 +68,7 @@ select distinct on(cs.product_id)
     ips.strength as ips_strength,
     ips.strength_value as ips_strength_value,
     ips.drug as ips_drug,
-    (shipping_requirement='Overnight') as cold_shipping,
+    (cs.shipping_requirement ilike 'Overnight%') as cold_shipping,
     shipping_requirement
 	
 from cscart cs
