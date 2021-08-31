@@ -149,7 +149,7 @@ SELECT  distinct on(   coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_
 		TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second'        as last_order_date,
 		lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||split_part(cs.pet_data__name,' ',1),'\`| |\,|\&|\.|-|','','g'))  as key_patient,
 		lower(regexp_replace(split_part(lastname,'-',1) ||split_part(cs.pet_data__name,' ',1),'\`| |\,|\&|\.|-|','','g'))  as key_patient1,
-		lower(regexp_replace(split_part(lastname,'-',2) ||split_part(cs.pet_data__name,' ',1),'\`| |\,|\&|\.|-|','','g'))  as key_patient2,
+		lower(regexp_replace(coalesce(nullif(split_part(lastname,'-',2),''),split_part(lastname,'-',1)) ||split_part(cs.pet_data__name,' ',1),'\`| |\,|\&|\.|-|','','g'))  as key_patient2,
 		lower(regexp_replace(cs.pet_data__name||reverse(split_part(reverse(cs.lastname),' ',1)),'\`| |\,|\&|\.|-|','','g'))  as key_patient_reverse,
         lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||cs.pet_data__name||cs.pet_data__species,'\`| |\,|\&|\.|-|','','g')) as key_patient_species
 
