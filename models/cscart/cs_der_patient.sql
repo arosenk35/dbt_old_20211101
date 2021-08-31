@@ -13,7 +13,7 @@ SELECT  distinct on(   coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_
 		coalesce(cs.pet_id,'')  as cscart_patient_id,
 		coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) 	                                as account_id,
 		nullif(cs.vet_data__id,'') 								                                as doctor_id,
-		initcap(reverse(split_part(reverse(cs.lastname),' ',1))) || ' '||initcap(btrim(nullif(split_part(cs.pet_data__name,' ',1),'')))	as patient_name,
+		btrim(initcap(reverse(split_part(reverse(cs.lastname),' ',1))) || ' '||initcap(btrim(nullif(split_part(cs.pet_data__name,' ',1),''))))	as patient_name,
 		initcap(btrim(nullif(split_part(cs.pet_data__name,' ',1),'')))					        as firstname,
 		initcap(btrim(lower(reverse(split_part(reverse(cs.lastname),' ',1)))))                  as lastname,
 		split_part(lastname,'-',1) 																as alt_lastname1,

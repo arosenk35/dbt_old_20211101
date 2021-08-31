@@ -26,12 +26,20 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,
 		upper(nullif(cs.b_country,'')) 							as country,
 		initcap(nullif(cs.b_county,''))							as county,
 		nullif(initcap(cs.b_city),'') 							as city,
-		nullif(lower(cs.email),'') 								as email,
+		case 
+			when cs.email ilike '%ggvcp%' then null
+			else btrim(nullif(lower(cs.email),''))
+		end														as email,
 		nullif(regexp_replace(cs.fax,' |\.|-|\(|\)','','g'),'')	as fax,
 		TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second' as last_order_date,
 		u.created_date,
 		array_remove(array_append(array[null::text], nullif(regexp_replace(cs.b_phone,' |\.|-|\(|\)','','g'),'')),null) as array_phone,
-		array_remove(array_append(array[null::text], nullif(lower(cs.email),'')),null) as array_email,
+		array_remove(array_append(array[null::text], nullif(lower(
+			case 
+			when cs.email ilike '%ggvcp%' then null
+			else nullif(lower(cs.email),'') 
+			end	
+		),'')),null) as array_email,
         initcap(reverse(split_part(reverse(cs.lastname),' ',1))) || ' '||initcap(nullif(cs.pet_data__name,'')) 	as last_patient_name
 FROM cscart.orders cs
 left join analytics_cscart.cs_dim_user u on u.user_id=(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) )
