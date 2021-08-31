@@ -6,7 +6,8 @@
       after_commit("create index  index_{{this.name}}_on_email on {{this.schema}}.{{this.name}} (email)"),
       after_commit("create index  index_{{this.name}}_on_p_numbers on {{this.schema}}.{{this.name}} USING gin (contact_phone_numbers)"),
       after_commit("create index  index_{{this.name}}_on_emails on {{this.schema}}.{{this.name}} USING gin (contact_emails)"),
-      after_commit("create index  index_{{this.name}}_on_k_owner on {{this.schema}}.{{this.name}}  (key_owner)")
+      after_commit("create index  index_{{this.name}}_on_pat_name on {{this.schema}}.{{this.name}}  (patient_name)"),
+      after_commit("create index  index_{{this.name}}_on_k_owner on {{this.schema}}.{{this.name}} (key_owner)")
       ]
   })
   }}
