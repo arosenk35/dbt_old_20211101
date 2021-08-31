@@ -5,6 +5,8 @@ SELECT  distinct on(cs.patient_id)
 		cs.patient_id,
 	    cs.key_patient1,
 	    cs.key_patient2,
+		cs.key_patient3,
+		cs.email_lastname,
 		cs.cscart_patient_id,
 		cs.account_id,
 		cs.doctor_id,
@@ -130,6 +132,8 @@ c2 as (select
 		cs.patient_id,
 	   	cs.key_patient1,
 	    cs.key_patient2,
+		cs.key_patient3,
+		cs.email_lastname,
 		cs.cscart_patient_id,
 		cs.account_id,
 		cs.doctor_id,
@@ -157,6 +161,8 @@ c2 as (select
 					then 21
 			when dmp.key_patient like cs.key_patient2||'%'
 					then 22
+			when dmp.key_patient like cs.key_patient3||'%'
+					then 23
 
 			else cs.rank 
 		end as rank
@@ -175,6 +181,10 @@ join {{ ref('dim_patient') }}  dmp on
 			or 
 			(
 				dmp.key_patient like cs.key_patient2||'%'
+			)
+			or 
+			(
+				dmp.key_patient like cs.key_patient3||'%'
 			)
 			
 

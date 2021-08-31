@@ -28,6 +28,7 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,
 		nullif(initcap(cs.b_city),'') 							as city,
 		case 
 			when cs.email ilike '%ggvcp%' then null
+			when cs.email ilike '%ggcvp%' then null
 			else btrim(nullif(lower(cs.email),''))
 		end														as email,
 		nullif(regexp_replace(cs.fax,' |\.|-|\(|\)','','g'),'')	as fax,
@@ -37,6 +38,7 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,
 		array_remove(array_append(array[null::text], nullif(lower(
 			case 
 			when cs.email ilike '%ggvcp%' then null
+			when cs.email ilike '%ggcvp%' then null
 			else nullif(lower(cs.email),'') 
 			end	
 		),'')),null) as array_email,

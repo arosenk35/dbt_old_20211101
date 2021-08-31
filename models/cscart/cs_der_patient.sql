@@ -13,11 +13,20 @@ SELECT  distinct on(   coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_
 		coalesce(cs.pet_id,'')  as cscart_patient_id,
 		coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) 	                                as account_id,
 		nullif(cs.vet_data__id,'') 								                                as doctor_id,
-		btrim(initcap(reverse(split_part(reverse(cs.lastname),' ',1))) || ' '||initcap(btrim(nullif(split_part(cs.pet_data__name,' ',1),''))))	as patient_name,
+		case 
+			when 	cs.lastname ilike '%hospital%' or
+					cs.lastname ilike '%clinic%' or
+					cs.lastname ilike '%veten%' 
+			then
+				btrim(initcap(split_part(split_part(cs.email,'@',1),'.',1)) || ' '||initcap(btrim(nullif(split_part(cs.pet_data__name,' ',1),''))))
+			else
+				btrim(initcap(reverse(split_part(reverse(cs.lastname),' ',1))) || ' '||initcap(btrim(nullif(split_part(cs.pet_data__name,' ',1),''))))	
+		end patient_name,
 		initcap(btrim(nullif(split_part(cs.pet_data__name,' ',1),'')))					        as firstname,
 		initcap(btrim(lower(reverse(split_part(reverse(cs.lastname),' ',1)))))                  as lastname,
 		split_part(lastname,'-',1) 																as alt_lastname1,
 		split_part(lastname,'-',2) 																as alt_lastname2,
+		split_part(split_part(cs.email,'@',1),'.',1) 											as email_lastname,
 		case 
 			-- mm/dd/yyyy
 			when 
@@ -150,6 +159,7 @@ SELECT  distinct on(   coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_
 		lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||split_part(cs.pet_data__name,' ',1),'\`| |\,|\&|\.|-|','','g'))  as key_patient,
 		lower(regexp_replace(split_part(lastname,'-',1) ||split_part(cs.pet_data__name,' ',1),'\`| |\,|\&|\.|-|','','g'))  as key_patient1,
 		lower(regexp_replace(coalesce(nullif(split_part(lastname,'-',2),''),split_part(lastname,'-',1)) ||split_part(cs.pet_data__name,' ',1),'\`| |\,|\&|\.|-|','','g'))  as key_patient2,
+		lower(regexp_replace(split_part(split_part(cs.email,'@',1),'.',1)  ||split_part(cs.pet_data__name,' ',1),'\`| |\,|\&|\.|-|','','g'))  as key_patient3,
 		lower(regexp_replace(cs.pet_data__name||reverse(split_part(reverse(cs.lastname),' ',1)),'\`| |\,|\&|\.|-|','','g'))  as key_patient_reverse,
         lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||cs.pet_data__name||cs.pet_data__species,'\`| |\,|\&|\.|-|','','g')) as key_patient_species
 
