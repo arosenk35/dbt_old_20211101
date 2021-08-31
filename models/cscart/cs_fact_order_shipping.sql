@@ -7,16 +7,30 @@
 }}
 
 SELECT  _sdc_source_key_order_id as order_id,
-        shipping as shipping_method,
+        shipping as shipping_method_orig,
+        btrim(nullif(regexp_replace((shipping),'Discount|\(.*\)$','','g'),'') ) as shipping_method,
         rate::numeric,
         case 
             when shipping ilike '%pickup%' 
-                  then 'Standard' 
+                  then 'Pickup' 
+            when shipping ilike '%free%' 
+                  then 'Free' 
             when shipping ilike '%expedited%' 
                 then 'Overnight'
             when shipping ilike '%overnight%' 
                 then 'Overnight'
             else 'Standard'
-        end as shipping_class
+        end as shipping_class,
+        case 
+            when shipping ilike '%fedex%'
+            then 'FEDEX'
+            when shipping ilike '%ups%'
+            then 'UPS'
+            when shipping ilike '%usps%'
+            then 'USPS'
+            when shipping ilike '%dhl%'
+            then 'DHL'
+        end sipping_carrier
+
 
 FROM cscart.orders__shipping
