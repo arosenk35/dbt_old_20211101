@@ -61,11 +61,7 @@ SELECT  distinct on(cs.patient_id)
 			when 	(
 					dmp.key_patient = cs.key_patient_reverse
 					)
-					then 7
-			when (
-					dmp.key_patient like cs.key_patient||'%'
-					)
-					then 10			
+					then 7				
 			when dmp.alt_key_patient = cs.key_patient
 					then 11			
 			when dmp.key_patient = cs.key_patient1
@@ -193,7 +189,7 @@ join {{ ref('dim_patient') }}  dmp on
 			or 
 			(
 				dmp.key_patient like cs.key_patient4||'%'
-			)
+			)			
 
 where 	 ips_patient_id is null and nullif(cs.lastname,'') is not null )
 
