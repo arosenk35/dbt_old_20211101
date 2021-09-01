@@ -70,7 +70,7 @@ select
         end as days_since_first_order_tier,
         s.shipping_method,
         s.shipping_class,
-        sr.shipping_requirement
+        sr.cold_shipping
 from cscart.orders o
 left join {{ ref('cs_segment_owner') }} so on so.account_id=o.user_id   
 left join {{ ref('cs_fact_order_shipping') }}  s on s.order_id=o.order_id
