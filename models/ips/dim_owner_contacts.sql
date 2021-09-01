@@ -38,6 +38,6 @@ select
     case  when pm_email=rp_email
 	        then pm_email
 	        else array_cat(pm_email,rp_email) 
-	  end as  emails as emails,
+	  end as  emails ,
     fax
 from contacts
