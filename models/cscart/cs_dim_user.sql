@@ -7,7 +7,7 @@
 }}
 SELECT  
       initcap(u.company)      as company,  
-     nullif(lower(u.email),'')           as email, 
+      btrim(nullif(lower(u.email),''))           as email, 
       initcap(u.firstname)    as firstname,
       u.is_root, 
       initcap(u.lastname)     as lastname,

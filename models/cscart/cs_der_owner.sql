@@ -39,7 +39,7 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,
 			case 
 			when cs.email ilike '%ggvcp%' then null
 			when cs.email ilike '%ggcvp%' then null
-			else nullif(lower(cs.email),'') 
+			else btrim(nullif(lower(cs.email),''))
 			end	
 		),'')),null) as array_email,
         initcap(reverse(split_part(reverse(cs.lastname),' ',1))) || ' '||initcap(nullif(cs.pet_data__name,'')) 	as last_patient_name
