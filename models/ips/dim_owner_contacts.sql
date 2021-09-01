@@ -16,8 +16,14 @@
         array_remove(array_agg(distinct nullif(pm.phone11,'') ||pm.phone12 ||  pm.phone13),null) as phone1,
         array_remove(array_agg(distinct nullif(pm.phone21,'') ||pm.phone22 ||  pm.phone23),null) as phone2,	
         array_remove(array_agg(distinct nullif(pm.phone31,'') ||pm.phone32 ||  pm.phone33),null) as phone3,
-        array_remove(array_agg(distinct nullif(lower(pm.email),'') ),null)    as pm_email,
-        array_remove(array_agg(distinct nullif(lower(case when rpm.email ilike '%ggvcp%' then null else rpm.email end ),'') ),null)   as rp_email,
+        array_remove(array_agg(distinct nullif(lower(btrim(pm.email)),'') ),null)    as pm_email,
+        array_remove(array_agg(distinct nullif(lower( case 
+                                                          when rpm.email ilike '%ggvcp%' 
+                                                          then null
+                                                          when rpm.email not like '%@%' 
+                                                          then null 
+                                                          else btrim(rpm.email) 
+                                                      end ),'') ),null)   as rp_email,
         array_remove(array_agg(distinct nullif(rpm.phone11,'') ||rpm.phone12 ||  rpm.phone13),null) as rp_phone,
         array_remove(array_agg(distinct nullif(rpm.fax1,'') ||rpm.fax2 ||  rpm.fax3),null) as fax
 	FROM ips.patient_master pm
@@ -29,6 +35,9 @@
 select 
     account_id,
     array_cat(array_cat(array_cat(phone1,phone2),phone3),rp_phone) as phone_numbers,
-    array_cat(pm_email,rp_email) as emails,
+    case  when pm_email=rp_email
+	        then pm_email
+	        else array_cat(pm_email,rp_email) 
+	  end as  emails as emails,
     fax
 from contacts

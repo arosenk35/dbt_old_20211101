@@ -30,6 +30,8 @@
     case 
       when dm.email ilike '%ggvcp%' 
       then null
+      when dm.email not like '%@%' 
+      then null 
       else lower(dm.email) 
     end      as email, 
     z.zipid::text         as zip,

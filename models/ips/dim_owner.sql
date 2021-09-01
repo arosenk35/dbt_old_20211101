@@ -14,19 +14,22 @@
 
   SELECT distinct on (pm.srno)
         pm.srno as account_id, 
-        pm.phone11 || pm.phone12 ||  pm.phone13  as phone1,
-        pm.phone21 ||  pm.phone22 ||  pm.phone23  as phone2,
-        pm.fax1 ||  pm.fax2 ||  pm.fax3           as fax,
-        btrim(initcap(coalesce(nullif(pm.care_of,''),pm.name)))      as owner_name, 
-        initcap(nullif(pm.care_of,'')) as care_of,
-        initcap(nullif(pm.name,'')) as patient_name,
+        pm.phone11 || pm.phone12 || pm.phone13   as phone1,
+        pm.phone21 || pm.phone22 || pm.phone23   as phone2,
+        pm.fax1 ||  pm.fax2 ||  pm.fax3          as fax,
+        btrim(initcap(coalesce(nullif(pm.care_of,''),pm.name))) as owner_name, 
+        initcap(nullif(pm.care_of,''))                          as care_of,
+        initcap(nullif(pm.name,''))                             as patient_name,
         pm.address,
         pm.note,
-        z.zipid::text                                         as zip,
+        z.zipid::text                                           as zip,
         case 
               when pm.email ilike '%ggvcp%'
               then null
-              else btrim(lower(pm.email))                                as email, 
+              when pm.email not like '%@%' 
+              then null 
+              else btrim(lower(pm.email))       
+        end   as email, 
         pm.created_date,
         pm.address2,
         coalesce(upper(z.country),'USA')                      as country,
@@ -41,14 +44,14 @@
                 when coalesce(nullif(pm.care_of,''),pm.name) ilike '%animal%' then 'Clinic'
                 when coalesce(nullif(pm.care_of,''),pm.name) ilike '%center%' then 'Clinic'
                 when coalesce(nullif(pm.care_of,''),pm.name) ilike '%corpor%' then 'Clinic'
-                when pm.email ilike ilike '%vet%'     then 'Clinic'
-                when pm.email ilike ilike '%hosp%'    then 'Clinic'
-                when pm.email ilike ilike '%clinic%'  then 'Clinic'
-                when pm.email ilike ilike '%animal%'  then 'Clinic'
-                when pm.email ilike ilike '%center%'  then 'Clinic'
-                when pm.email ilike ilike '%corpo%'   then 'Clinic'
-                when pm.email ilike ilike '%payab%'   then 'Clinic'
-                when pm.email ilike ilike '%account%' then 'Clinic'
+                when pm.email ilike '%vet%'     then 'Clinic'
+                when pm.email ilike '%hosp%'    then 'Clinic'
+                when pm.email ilike '%clinic%'  then 'Clinic'
+                when pm.email ilike '%animal%'  then 'Clinic'
+                when pm.email ilike '%center%'  then 'Clinic'
+                when pm.email ilike '%corpo%'   then 'Clinic'
+                when pm.email ilike '%payab%'   then 'Clinic'
+                when pm.email ilike '%account%' then 'Clinic'
                 else 'Patient'
         end as account_type,
         case when pm.active='Y' then true else false end active

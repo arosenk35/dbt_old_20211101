@@ -13,6 +13,7 @@
         drug_id,
         last_tran_id,
         last_fill_number,
+        last_dispense_date,
         rxno,
         no_of_refill,
         refill_status,
