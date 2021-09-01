@@ -38,6 +38,7 @@
         opportunity_ranking,
         renewal_status,
         prescription_price,
+        prescription_type,
         prescription_avg_price,
         actual_no_of_refill,
         over_prescribed,

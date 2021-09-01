@@ -23,7 +23,10 @@
         pm.address,
         pm.note,
         z.zipid::text                                         as zip,
-        btrim(lower(pm.email))                                as email, 
+        case 
+              when pm.email ilike '%ggvcp%'
+              then null
+              else btrim(lower(pm.email))                                as email, 
         pm.created_date,
         pm.address2,
         coalesce(upper(z.country),'USA')                      as country,
@@ -32,12 +35,20 @@
         lower(regexp_replace( coalesce(nullif(pm.care_of,''),pm.name) ,'\`| |\,|\&|\.|-|','','g'))    as key_owner,
         coalesce(oc.phone_numbers,'{}') as contact_phone_numbers,
         coalesce(oc.emails,'{}') as contact_emails,
-        case 		when coalesce(nullif(pm.care_of,''),pm.name) ilike '%vet%' then 'Clinic'
-							  when coalesce(nullif(pm.care_of,''),pm.name) ilike '%hosp%' then 'Clinic'
+        case 		when coalesce(nullif(pm.care_of,''),pm.name) ilike '%vet%'    then 'Clinic'
+							  when coalesce(nullif(pm.care_of,''),pm.name) ilike '%hosp%'   then 'Clinic'
 							  when coalesce(nullif(pm.care_of,''),pm.name) ilike '%clinic%' then 'Clinic'
                 when coalesce(nullif(pm.care_of,''),pm.name) ilike '%animal%' then 'Clinic'
                 when coalesce(nullif(pm.care_of,''),pm.name) ilike '%center%' then 'Clinic'
                 when coalesce(nullif(pm.care_of,''),pm.name) ilike '%corpor%' then 'Clinic'
+                when pm.email ilike ilike '%vet%'     then 'Clinic'
+                when pm.email ilike ilike '%hosp%'    then 'Clinic'
+                when pm.email ilike ilike '%clinic%'  then 'Clinic'
+                when pm.email ilike ilike '%animal%'  then 'Clinic'
+                when pm.email ilike ilike '%center%'  then 'Clinic'
+                when pm.email ilike ilike '%corpo%'   then 'Clinic'
+                when pm.email ilike ilike '%payab%'   then 'Clinic'
+                when pm.email ilike ilike '%account%' then 'Clinic'
                 else 'Patient'
         end as account_type,
         case when pm.active='Y' then true else false end active
