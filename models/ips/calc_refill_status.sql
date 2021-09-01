@@ -17,7 +17,6 @@
         p.rxno,
         p.fill_number,
         p.tran_id as last_tran_id,
-        p.tran_date as last_tran_date,
         p.drug_id,
         p.no_of_refill,
         p.hold_date,

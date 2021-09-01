@@ -8,7 +8,6 @@
   })
   }}
   select  
-        rxno,
         patient_id,
         doctor_id,
         drug_id,

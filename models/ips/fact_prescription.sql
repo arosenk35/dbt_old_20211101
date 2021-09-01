@@ -221,8 +221,6 @@ select
         end as auto_fill,
         case 
             when p.sig_code like 'FOU%' then 'Office Use'
-            when p.otc='Y' then 'Shipping'
-            when p.no_of_refill=0 then 'Onetime'
         else 'Standard'
         end as prescription_type,
         p.sig_code,
