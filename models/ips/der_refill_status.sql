@@ -58,6 +58,8 @@
         master_rx_start_date,
         origin,
         auto_fill,
-        product_renewal
+        product_renewal,
+        sig,
+        flavor
         
 from {{ ref('calc_refill_status') }}

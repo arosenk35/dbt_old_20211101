@@ -7,9 +7,9 @@
   }}
  SELECT
         pm.srno as facility_id, 
-        phone11||'-'||phone12||'-'||phone13 as phone1,
-        phone21||'-'||phone22||'-'||phone23 as phone2,
-        fax1||'-'||fax2||'-'||fax3          as fax,
+        phone11||phone12||phone13 as phone1,
+        phone21||phone22||phone23 as phone2,
+        fax1||fax2||fax3          as fax,
         initcap(name)                       as name, 
         address,
         note,

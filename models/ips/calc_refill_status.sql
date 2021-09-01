@@ -21,10 +21,16 @@
         p.no_of_refill,
         p.hold_date,
         p.hold_note,
+        p.sig,
+        p.flavor,
         case 
             when no_of_refill-fill_number <0 then 0
             else no_of_refill-fill_number
         end as remaining_refills,
+        case 
+            when no_of_refill-fill_number <0 then 0
+            else fill_number+1
+        end as next_fill_number,
         rx_expire_date,
         (now()>=p.rx_expire_date and p.no_of_refill!=p.fill_number) as expired,
         p.dispense_date as last_refill_date,

@@ -20,7 +20,7 @@
         p.account_id,
         p.note, 
         p.rx_id as rxno, 
-        p.rx_id::text||fill_number::text as refill_id, 
+        p.rx_id::text||':'||fill_number::text as refill_id, 
         p.med_type, 
         p.sig, 
         p.hold, 
@@ -45,7 +45,6 @@
         p.office_id, 
         p.otc, 
         bh.fill_number, 
-        p.sig_english, 
         p.ips_bill, 
         bd.delay_reason_code,
         case when coalesce(p.last_tran_id,0) = 0  
@@ -111,9 +110,15 @@
     else false 
     end as auto_fill,
         case 
-            when p.sig_code like 'FOU%' then 'Office Use'
+            when p.sig_code ilike 'fou%' then 'Office Use'
+            when p.sig_code ilike 'for%offic%' then 'Office Use'
         else 'Patient Use'
         end as prescription_type,
+    case 
+            when    sig ilike '%flavor%' and
+                    split_part(split_part(sig,'(',2),')',1) ilike '%flavor%'
+            then lower(split_part(split_part(sig,'(',2),')',1))
+    end flavor,
     p.sig_code,
     case 
     when p.receive_through ='1' then 'Paper'
@@ -145,7 +150,7 @@ select
 		p.account_id,
         p.note, 
         p.rx_id as rxno, 
-		p.rx_id::text||'-1'::text as refill_id, 
+		p.rx_id::text||':'||'-1'::text as refill_id, 
         p.med_type, 
         p.sig, 
         p.hold, 
@@ -170,7 +175,6 @@ select
         p.office_id, 
         p.otc, 
         -1 as fill_number, 
-        p.sig_english, 
         p.ips_bill, 
         null as delay_reason_code,
 		
@@ -220,10 +224,16 @@ select
         else false 
         end as auto_fill,
         case 
-            when p.sig_code like 'FOU%' then 'Office Use'
+            when p.sig_code ilike 'fou%' then 'Office Use'
+            when p.sig_code ilike 'for%offic%' then 'Office Use'
         else 'Standard'
         end as prescription_type,
-        p.sig_code,
+        case 
+            when    sig ilike '%flavor%' and
+                    split_part(split_part(sig,'(',2),')',1) ilike '%flavor%'
+            then lower(split_part(split_part(sig,'(',2),')',1))
+        end flavor,
+        sig_code,
 
         case 
         when p.receive_through ='1' then 'Paper'

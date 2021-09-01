@@ -9,9 +9,9 @@
   }}
   sELECT
         pm.srno                             as office_id, 
-        phone11||'-'||phone12||'-'||phone13 as phone1,
-        phone21||'-'||phone22||'-'||phone23 as phone2,
-        fax1||'-'||fax2||'-'||fax3          as fax1,
+        phone11||phone12||phone13 as phone1,
+        phone21||phone22||phone23 as phone2,
+        fax1||fax2||fax3          as fax1,
         initcap(name)                       as pharmacy_name, 
         address,
         z.zipid::text                       as zip,

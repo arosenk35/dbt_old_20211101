@@ -16,7 +16,7 @@
         refill_date,
         qty,
         amount,
-        rxno::text||fill_number as refill_id
+        rxno::text||':'||fill_number:text as refill_id
     from {{ ref('der_refill_forecast') }}
 union all
     select   

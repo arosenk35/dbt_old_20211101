@@ -14,9 +14,9 @@
 
   SELECT distinct on (pm.srno)
         pm.srno as account_id, 
-        pm.phone11 || '-' || pm.phone12 || '-' || pm.phone13  as phone1,
-        pm.phone21 || '-' || pm.phone22 || '-' || pm.phone23  as phone2,
-        pm.fax1 || '-' || pm.fax2 || '-' || pm.fax3           as fax,
+        pm.phone11 || pm.phone12 ||  pm.phone13  as phone1,
+        pm.phone21 ||  pm.phone22 ||  pm.phone23  as phone2,
+        pm.fax1 ||  pm.fax2 ||  pm.fax3           as fax,
         btrim(initcap(coalesce(nullif(pm.care_of,''),pm.name)))      as owner_name, 
         initcap(nullif(pm.care_of,'')) as care_of,
         initcap(nullif(pm.name,'')) as patient_name,

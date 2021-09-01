@@ -16,9 +16,9 @@
 
 SELECT distinct on (pm.id)
     pm.id                                                as patient_id,
-    pm.phone11 || '-' || pm.phone12 || '-' || pm.phone13 as phone1,
-    pm.phone21 || '-' || pm.phone22 || '-' || pm.phone23 as phone2,
-    pm.phone31 || '-' || pm.phone32 || '-' || pm.phone33 as phone3,
+    pm.phone11 ||  pm.phone12 ||  pm.phone13 as phone1,
+    pm.phone21 ||  pm.phone22 ||  pm.phone23 as phone2,
+    pm.phone31 ||  pm.phone32 ||  pm.phone33 as phone3,
     initcap(nullif(split_part(split_part(lastname, ' ',1),'-',1),''))||' '||initcap(split_part(split_part(firstname, ' ',1),'-',1)) as patient_name,
     initcap(nullif(split_part(split_part(lastname, ' ',1),'-',1),''))   as lastname,
 	initcap(nullif(pm.lastname,''))    as orig_lastname,
