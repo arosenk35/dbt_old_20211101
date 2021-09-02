@@ -2,14 +2,15 @@
   config({
     "materialized": "table",
     "post-hook": [
-      	after_commit("create index  index_{{this.name}}_on_prod_key on {{this.schema}}.{{this.name}} (key)")]
+      	after_commit("create index  index_{{this.name}}_on_product_id on {{this.schema}}.{{this.name}} (product_id)")]
   })
 }}
 
 
 
 select distinct on(cs.product_id)
-    cs.key,
+    cs.key1,
+    cs.key2,
     cs.product ,
     cs.product_id ,
     cs.price,
@@ -31,16 +32,22 @@ select distinct on(cs.product_id)
 	ips.active,
 	case 
 	when ips.active='N' then 99
-	when ips.drug_key1=cs.key then 1
-	when ips.drug_key2=cs.key then 2
-	when ips.drug_key3=cs.key then 3
+	when ips.drug_key1=cs.key1 then 1
+	when ips.drug_key2=cs.key1 then 2
+	when ips.drug_key3=cs.key1 then 3
+    when ips.drug_key1=cs.key2 then 4
+	when ips.drug_key2=cs.key2 then 5
+	when ips.drug_key3=cs.key2 then 6
 	else 88
 	end as rank
 	
 from {{ ref('cs_der_product') }} cs
 left join {{ ref('dim_drug') }} ips  on (
-	ips.drug_key1=cs.key or
-	ips.drug_key2=cs.key or
-	ips.drug_key3=cs.key )
+	ips.drug_key1=cs.key1 or
+	ips.drug_key2=cs.key1 or
+	ips.drug_key3=cs.key1 or
+    ips.drug_key1=cs.key2 or
+	ips.drug_key2=cs.key2 or
+	ips.drug_key3=cs.key2 )
 order by cs.product_id,
    rank desc

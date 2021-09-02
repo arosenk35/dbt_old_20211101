@@ -1,7 +1,17 @@
+{{
+  config({
+    "materialized": "table",
+    "post-hook": [
+      	after_commit("create index  index_{{this.name}}_on_k1 on {{this.schema}}.{{this.name}} (key1)"),
+        after_commit("create index  index_{{this.name}}_on_k2 on {{this.schema}}.{{this.name}} (key2)")]
+  })
+}}
+
 select
     distinct on (product_id)
     
-    nullif(regexp_replace(lower(cs.product),'micro|\,|\-|\(|\)|\/| |otic|\%|s$|oral|','','g'),'') as key,
+    nullif(regexp_replace(lower(cs.product),'micro|\,|\-|\(|\)|\/| |otic|\%|s$|oral|','','g'),'') as key1,
+    nullif(regexp_replace(lower(cs.product),'\(.*\)$|micro|\,|\-|\(|\)|\/| |otic|\%|s$|oral|','','g'),'') as key2,
     cs.product ,
     cs.product_id ,
     cs.price,
