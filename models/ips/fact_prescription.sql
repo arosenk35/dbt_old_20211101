@@ -117,7 +117,8 @@
     case 
             when    sig ilike '%flavor%' and
                     split_part(split_part(sig,'(',2),')',1) ilike '%flavor%'
-            then lower(split_part(split_part(sig,'(',2),')',1))
+            then btrim(regexp_replace(regexp_replace( split_part(split_part(sig,'(',2),')',1),'flavored|flavors|flavor','','g'),'  ',' ','g'))
+ 
     end flavor,
     p.sig_code,
     case 
@@ -231,7 +232,8 @@ select
         case 
             when    sig ilike '%flavor%' and
                     split_part(split_part(sig,'(',2),')',1) ilike '%flavor%'
-            then lower(split_part(split_part(sig,'(',2),')',1))
+--btrim(regexp_replace(regexp_replace( split_part(split_part(sig,'(',2),')',1),'mls|\/|ml|flavors|flavor|[0-9]|\#','','g'),'  ',' ','g'))
+            then btrim(regexp_replace(regexp_replace( split_part(split_part(sig,'(',2),')',1),'flavored|flavors|flavor','','g'),'  ',' ','g'))
         end flavor,
         sig_code,
 

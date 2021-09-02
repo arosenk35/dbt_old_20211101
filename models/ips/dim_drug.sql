@@ -3,13 +3,25 @@
     "materialized": "table",
     "post-hook": [
       after_commit("create index  index_{{this.name}}_on_id on {{this.schema}}.{{this.name}} (drug_id)"),
-      after_commit("create index  index_{{this.name}}_on_drug on {{this.schema}}.{{this.name}} (master_drug)")]
+      after_commit("create index  index_{{this.name}}_on_drug on {{this.schema}}.{{this.name}} (master_drug)"),
+      after_commit("create index  index_{{this.name}}_on_drug_k1 on {{this.schema}}.{{this.name}} (drug_key1)"),
+      after_commit("create index  index_{{this.name}}_on_drug_k2 on {{this.schema}}.{{this.name}} (drug_key2)"),
+      after_commit("create index  index_{{this.name}}_on_drug_k3 on {{this.schema}}.{{this.name}} (drug_key3)")
+      ]
   })
   }}
     SELECT distinct on (drug_id)
 
+    lower(regexp_replace(coalesce(drug,'')||coalesce(strength_value,'')||coalesce(strength,'')||coalesce(drug_form,''),'otic|\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))
+            as drug_key1,
+    lower(regexp_replace(coalesce(drug,'')||coalesce(strength_value,'')||coalesce(strength,'')||coalesce(drug_form,''),'|\(.*\)$|otic||\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))
+            as drug_key2,
+    lower(regexp_replace(coalesce(drug,'')||coalesce(strength_value,'')||coalesce(strength,'')||coalesce(drug_form,''),'HCL|\(.*\)$|otic|\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))
+            as drug_key3,
+
+
     dm.drug_id,
-    dm.drug||' '||dm.strength_value||' '||dm.strength as drug_name, 
+    btrim(coalesce(dm.drug,'')||' '||coalesce(dm.strength_value,'')||' '||coalesce(dm.strength,'')) as drug_name, 
     dm.drug                   as master_drug, 
     dm.ndc, 
     btrim(dm.drug_form)       as drug_form, 
@@ -33,7 +45,6 @@
     dm.price_template_id,  
     dm.special_type, 
     dm.drug_subtype,
-    u.upc_code, 
     dm.awp,
     coalesce(da.api_category,'Unclassified') as api_category,
     da.controlled,
@@ -44,10 +55,7 @@
           when dm.drug ilike '%usps%' 
           then 'shipping'
           else 'drug'
-    END as item_type,
-    p.created_date as last_used_date
+    END as item_type
 FROM ips.drug_master dm
-join ips.prescription p on dm.drug_id=p.drug_id
-left join ips.drug_master_upc u on dm.ndc=u.ndc
 left join {{ ref('dim_api_category') }} da on dm.drug  ilike '%'||da.master_drug||'%'
-order by drug_id,p.created_date desc
+order by drug_id
