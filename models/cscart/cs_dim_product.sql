@@ -37,13 +37,10 @@ select distinct on(cs.product_id)
 	else 88
 	end as rank
 	
-from analytics_cscart.cs_der_product cs
-left join analytics_blue.dim_drug ips  on (
+from {{ ref('cs_der_product') }} cs
+left join {{ ref('dim_drug') }} ips  on (
 	ips.drug_key1=cs.key or
 	ips.drug_key2=cs.key or
 	ips.drug_key3=cs.key )
-	
-where ips.drug_id is   null
-and status='A'
 order by cs.product_id,
    rank desc
