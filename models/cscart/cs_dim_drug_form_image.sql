@@ -8,7 +8,7 @@
 
 select 
         distinct on(ips_drug_form)
-        ips_drug_form as drug_form
+        ips_drug_form as drug_form,
         image_path 
 from {{ ref('cs_dim_product') }} 
 where 
