@@ -20,7 +20,7 @@
             as drug_key2,
     lower(regexp_replace(coalesce(drug,'')||coalesce(strength_value,'')||coalesce(strength,'')||coalesce(drug_form,''),'SULFATE|HCL|\(.*\)$|otic|\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))
             as drug_key3,
-    replace(lower(regexp_replace(coalesce(drug,'')||coalesce(strength_value,'')||coalesce(strength,'')||coalesce(drug_form,''),'SULFATE|HCL|\(.*\)$|otic|\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))
+    replace(lower(regexp_replace(coalesce(drug,'')||coalesce(strength_value,'')||coalesce(strength,'')||coalesce(drug_form,''),'MALEATE|SULFATE|HCL|\(.*\)$|otic|\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))
         ,'solution','suspension')
         as drug_key4,
    case when drug ilike '%topi%click%'
