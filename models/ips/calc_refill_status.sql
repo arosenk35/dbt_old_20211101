@@ -97,7 +97,7 @@ select  distinct on (rxno)
         coalesce(r.prescription_renewal,false) as prescription_renewal,
         f.first_fill_date ,
 		case 
-            when pat.deceased_date is not null then 'Deceased'
+            when pat.dod is not null then 'Deceased'
             when fill_number=-1 and hold_date is not null then 'OnHold' 
             when fill_number=-1 then 'InProgress'
             when no_of_refill<=fill_number then 'Complete'
@@ -109,7 +109,7 @@ select  distinct on (rxno)
         end as refill_status,
         case 
             when pat.active = false then 'Lost'
-            when pat.deceased_date is not null then 'Lost'
+            when pat.dod is not null then 'Lost'
             when fill_number=-1 and hold_date is not null then 'OnHold' 
             when fill_number=-1 then 'InProgress'
             when no_of_refill<=fill_number then 'Complete'
@@ -120,7 +120,7 @@ select  distinct on (rxno)
         else 'Open'
         end as opportunity_stage,
 		case 
-            when pat.deceased_date is not null then 0
+            when pat.dod is not null then 0
             when fill_number=-1 and hold_date is not null then 1
             when fill_number=-1 then 1
             when (no_of_refill>fill_number and now()>=rx_expire_date and r.prescription_renewal) then 29
