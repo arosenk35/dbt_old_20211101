@@ -11,6 +11,7 @@
 select distinct on(cs.product_id)
     cs.key1,
     cs.key2,
+    cs.key_topi,
     cs.product ,
     cs.product_id ,
     cs.price,
@@ -38,6 +39,13 @@ select distinct on(cs.product_id)
     when ips.drug_key1=cs.key2 then 4
 	when ips.drug_key2=cs.key2 then 5
 	when ips.drug_key3=cs.key2 then 6
+    when ips.drug_key4=cs.key1 then 7
+    when ips.drug_key4=cs.key2 then 8
+    when ips.drug_key_topi=cs.key_topi then 9
+  
+    when ips.quick_code=cs.product_code then 77
+
+
 	else 88
 	end as rank
 	
@@ -48,6 +56,10 @@ left join {{ ref('dim_drug') }} ips  on (
 	ips.drug_key3=cs.key1 or
     ips.drug_key1=cs.key2 or
 	ips.drug_key2=cs.key2 or
-	ips.drug_key3=cs.key2 )
+	ips.drug_key3=cs.key2 or
+    ips.drug_key4=cs.key1 or
+    ips.drug_key4=cs.key2 or 
+    ips.drug_key_topi=cs.key_topi or
+    ips.quick_code=cs.product_code  )
 order by cs.product_id,
    rank desc

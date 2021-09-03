@@ -2,11 +2,13 @@
   config({
     "materialized": "table",
     "post-hook": [
-      after_commit("create index  index_{{this.name}}_on_id on {{this.schema}}.{{this.name}} (drug_id)"),
-      after_commit("create index  index_{{this.name}}_on_drug on {{this.schema}}.{{this.name}} (master_drug)"),
-      after_commit("create index  index_{{this.name}}_on_drug_k1 on {{this.schema}}.{{this.name}} (drug_key1)"),
-      after_commit("create index  index_{{this.name}}_on_drug_k2 on {{this.schema}}.{{this.name}} (drug_key2)"),
-      after_commit("create index  index_{{this.name}}_on_drug_k3 on {{this.schema}}.{{this.name}} (drug_key3)")
+        after_commit("create index  index_{{this.name}}_on_id on {{this.schema}}.{{this.name}} (drug_id)"),
+        after_commit("create index  index_{{this.name}}_on_drug on {{this.schema}}.{{this.name}} (master_drug)"),
+        after_commit("create index  index_{{this.name}}_on_drug_k1 on {{this.schema}}.{{this.name}} (drug_key1)"),
+        after_commit("create index  index_{{this.name}}_on_drug_k2 on {{this.schema}}.{{this.name}} (drug_key2)"),
+        after_commit("create index  index_{{this.name}}_on_drug_k3 on {{this.schema}}.{{this.name}} (drug_key3)"),
+        after_commit("create index  index_{{this.name}}_on_drug_k4 on {{this.schema}}.{{this.name}} (drug_key4)"),
+        after_commit("create index  index_{{this.name}}_on_quickcode on {{this.schema}}.{{this.name}} (quick_code)")
       ]
   })
   }}
@@ -16,9 +18,15 @@
             as drug_key1,
     lower(regexp_replace(coalesce(drug,'')||coalesce(strength_value,'')||coalesce(strength,'')||coalesce(drug_form,''),'|\(.*\)$|otic||\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))
             as drug_key2,
-    lower(regexp_replace(coalesce(drug,'')||coalesce(strength_value,'')||coalesce(strength,'')||coalesce(drug_form,''),'HCL|\(.*\)$|otic|\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))
+    lower(regexp_replace(coalesce(drug,'')||coalesce(strength_value,'')||coalesce(strength,'')||coalesce(drug_form,''),'SULFATE|HCL|\(.*\)$|otic|\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))
             as drug_key3,
-
+    replace(lower(regexp_replace(coalesce(drug,'')||coalesce(strength_value,'')||coalesce(strength,'')||coalesce(drug_form,''),'SULFATE|HCL|\(.*\)$|otic|\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))
+        ,'solution','suspension')
+        as drug_key4,
+   case when drug ilike '%topi%click%'
+        then
+        lower(regexp_replace(coalesce(drug,''),'|\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))
+    end as drug_key_topi,
 
     dm.drug_id,
     btrim(coalesce(dm.drug,'')||' '||coalesce(dm.strength_value,'')||' '||coalesce(dm.strength,'')) as drug_name, 
@@ -29,7 +37,7 @@
     dm.strength_value, 
     dm.generic, 
     dm.manufacturer, 
-    dm.quick_code, 
+    lower(dm.quick_code) as quick_code, 
     dm.qty, 
     dm.qty_pack, 
     dm.color, 
