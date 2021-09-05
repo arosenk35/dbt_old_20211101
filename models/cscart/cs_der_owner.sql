@@ -9,9 +9,9 @@
 }}
 SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,'0'),'U'||order_id ) )
 		nullif(regexp_replace(lower(coalesce(cs.firstname,'')||coalesce(cs.lastname,'')),'\`| |\,|\&|\.|-|','','g'),'') as key_owner,
-		(coalesce(nullif(cs.vet_data__id,''),'U'||cs.order_id) )	as last_doctor_id,
-		btrim(initcap(coalesce(cs.b_firstname,''))||' '|| initcap(nullif(cs.b_lastname,''))) as owner_name,
-		coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,'0'),'U'||order_id )	as account_id,
+		(coalesce(nullif(cs.vet_data__id,''),'U'||cs.order_id) )								as last_doctor_id,
+		btrim(initcap(coalesce(cs.b_firstname,''))||' '|| initcap(nullif(cs.b_lastname,''))) 	as owner_name,
+		coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,'0'),'U'||order_id )		as account_id,
 		case 
 			when nullif(cs.b_firstname,'') is null
 			then initcap(split_part(cs.b_lastname,' ',1))
@@ -30,9 +30,9 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,
 			when cs.email ilike '%ggvcp%' then null
 			when cs.email ilike '%ggcvp%' then null
 			else btrim(nullif(lower(cs.email),''))
-		end														as email,
-		nullif(regexp_replace(cs.fax,' |\.|-|\(|\)','','g'),'')	as fax,
-		TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second' as last_order_date,
+		end																as email,
+		nullif(regexp_replace(cs.fax,' |\.|-|\(|\)','','g'),'')			as fax,
+		TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second' 	as last_order_date,
 		u.created_date,
 		array_remove(array_append(array[null::text], nullif(regexp_replace(cs.b_phone,' |\.|-|\(|\)','','g'),'')),null) as array_phone,
 		array_remove(array_append(array[null::text], nullif(lower(
@@ -42,7 +42,24 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,
 			else btrim(nullif(lower(cs.email),''))
 			end	
 		),'')),null) as array_email,
-        initcap(reverse(split_part(reverse(cs.lastname),' ',1))) || ' '||initcap(nullif(cs.pet_data__name,'')) 	as last_patient_name
+        initcap(reverse(split_part(reverse(cs.lastname),' ',1))) || ' '||initcap(nullif(cs.pet_data__name,'')) 	as last_patient_name,
+        case 	when coalesce(cs.b_firstname,''))||nullif(cs.b_lastname,'') ilike '%vet%'    then 'Clinic'
+				when coalesce(cs.b_firstname,''))||nullif(cs.b_lastname,'') ilike '%hosp%'   then 'Clinic'
+				when coalesce(cs.b_firstname,''))||nullif(cs.b_lastname,'') ilike '%clinic%' then 'Clinic'
+                when coalesce(cs.b_firstname,''))||nullif(cs.b_lastname,'') ilike '%animal%' then 'Clinic'
+                when coalesce(cs.b_firstname,''))||nullif(cs.b_lastname,'') ilike '%center%' then 'Clinic'
+                when coalesce(cs.b_firstname,''))||nullif(cs.b_lastname,'') ilike '%corpor%' then 'Clinic'
+                when cs.email ilike '%vet%'     then 'Clinic'
+                when cs.email ilike '%hosp%'    then 'Clinic'
+                when cs.email ilike '%clinic%'  then 'Clinic'
+                when cs.email ilike '%animal%'  then 'Clinic'
+                when cs.email ilike '%center%'  then 'Clinic'
+                when cs.email ilike '%corpo%'   then 'Clinic'
+                when cs.email ilike '%payab%'   then 'Clinic'
+                when cs.email ilike '%account%' then 'Clinic'
+                else 'Patient'
+        end as account_type
+
 FROM cscart.orders cs
 left join analytics_cscart.cs_dim_user u on u.user_id=(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) )
 
