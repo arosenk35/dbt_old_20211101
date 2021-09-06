@@ -43,12 +43,12 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,
 			end	
 		),'')),null) as array_email,
         initcap(reverse(split_part(reverse(cs.lastname),' ',1))) || ' '||initcap(nullif(cs.pet_data__name,'')) 	as last_patient_name,
-        case 	when coalesce(cs.b_firstname,''))||nullif(cs.b_lastname,'') ilike '%vet%'    then 'Clinic'
-				when coalesce(cs.b_firstname,''))||nullif(cs.b_lastname,'') ilike '%hosp%'   then 'Clinic'
-				when coalesce(cs.b_firstname,''))||nullif(cs.b_lastname,'') ilike '%clinic%' then 'Clinic'
-                when coalesce(cs.b_firstname,''))||nullif(cs.b_lastname,'') ilike '%animal%' then 'Clinic'
-                when coalesce(cs.b_firstname,''))||nullif(cs.b_lastname,'') ilike '%center%' then 'Clinic'
-                when coalesce(cs.b_firstname,''))||nullif(cs.b_lastname,'') ilike '%corpor%' then 'Clinic'
+        case 	when coalesce(cs.b_firstname,'')||nullif(cs.b_lastname,'') ilike '%vet%'    then 'Clinic'
+				when coalesce(cs.b_firstname,'')||nullif(cs.b_lastname,'') ilike '%hosp%'   then 'Clinic'
+				when coalesce(cs.b_firstname,'')||nullif(cs.b_lastname,'') ilike '%clinic%' then 'Clinic'
+                when coalesce(cs.b_firstname,'')||nullif(cs.b_lastname,'') ilike '%animal%' then 'Clinic'
+                when coalesce(cs.b_firstname,'')||nullif(cs.b_lastname,'') ilike '%center%' then 'Clinic'
+                when coalesce(cs.b_firstname,'')||nullif(cs.b_lastname,'') ilike '%corpor%' then 'Clinic'
                 when cs.email ilike '%vet%'     then 'Clinic'
                 when cs.email ilike '%hosp%'    then 'Clinic'
                 when cs.email ilike '%clinic%'  then 'Clinic'
