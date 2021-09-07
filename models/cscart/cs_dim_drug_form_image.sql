@@ -14,3 +14,4 @@ from {{ ref('cs_dim_product') }}
 where 
         nullif(ips_drug_form,'') is not null and 
         image_path is not null
+	order by ips_drug_form,created_date desc

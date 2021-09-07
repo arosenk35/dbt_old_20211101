@@ -31,6 +31,7 @@ select
     main_pair__detailed__http_image_path                                    as image_path,	
     case 
         when 
+            product ilike '%CHEW%' or
             product ilike 'AMLODIPINE%SUSPENSION%' or
             product ilike 'ARANESP%DARBEPOETIN%INJECTION%VIAL%' or
             product ilike 'POTASSIUM%SUSPENSION%' or
