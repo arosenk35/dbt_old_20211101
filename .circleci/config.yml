@@ -92,14 +92,14 @@ jobs:
           no_output_timeout: 30m
           command: |
             . venv/bin/activate
-            dbt run --profiles-dir=.  --exclude  masterdata fact_refill_status_history_monthly calc_refill_status_sequence --target prod
+            dbt run --profiles-dir=.  --exclude  mapped fact_refill_status_history_monthly calc_refill_status_sequence --target prod
 
       - run:
-          name: DBT  MasterData matching
+          name: DBT  MasterData mapping
           no_output_timeout: 30m
           command: |
             . venv/bin/activate
-            dbt run --profiles-dir=.  --models  masterdata  --target prod
+            dbt run --profiles-dir=.  --models  mapped  --target prod
 
   daily:
     docker:

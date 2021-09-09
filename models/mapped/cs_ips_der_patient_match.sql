@@ -74,7 +74,7 @@ SELECT  distinct on(cs.patient_id)
 		end as rank
 		
 FROM {{ ref('cs_dim_patient') }}  cs
-left join {{ ref('md_dim_owner') }}  o on o.account_id=cs.account_id
+left join {{ ref('cs_ips_dim_owner') }}  o on o.account_id=cs.account_id
 left join {{ ref('dim_patient') }}  dmp 
 		on 	(
 				dmp.key_patient=cs.key_patient||cs.species

@@ -46,7 +46,7 @@ models:
       description: This schema contains all of the Cs-Cart Related data used by Tableau
       schema: cscart
       materialized: table
-    masterdata:
-      description: This schema contains all of the mapped masterdata
-      schema: masterdata
+    mapped:
+      description: This schema contains all of the mapped data
+      schema: mapped
       materialized: table

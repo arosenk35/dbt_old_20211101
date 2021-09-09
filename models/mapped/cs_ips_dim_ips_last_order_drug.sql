@@ -9,7 +9,7 @@ SELECT
 
 FROM    {{ ref('cs_fact_order_header') }} o
         join {{ ref('cs_fact_order_lines') }} l on o.order_id=l.order_id
-        join {{ ref('md_dim_product') }} p on l.product_id=p.product_id
+        join {{ ref('cs_ips_dim_product') }} p on l.product_id=p.product_id
 where ips_drug_id is not null
 order by 
 patient_id,

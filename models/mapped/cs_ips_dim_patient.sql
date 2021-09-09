@@ -13,7 +13,7 @@ rank() OVER (
     PARTITION BY ips_patient_id 
     ORDER BY cs.rank ASC,last_order_date desc 
 ) as priority	
-FROM {{ ref('md_der_patient_match') }}  cs
+FROM {{ ref('cs_ips_der_patient_match') }}  cs
 
 order by 
 		cs.patient_id,

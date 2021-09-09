@@ -11,7 +11,7 @@
 
 SELECT  distinct on(cs.account_id)
 cs.*	
-FROM {{ ref('md_der_owner_match') }}  cs
+FROM {{ ref('cs_ips_der_owner_match') }}  cs
 
 order by 
 		cs.account_id,
