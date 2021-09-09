@@ -88,11 +88,18 @@ jobs:
             dbt seed --full-refresh --profiles-dir=. --target prod
 
       - run:
-          name: DBT sales No TUM & no MasterData matching
+          name: DBT IPS sales No TUM & no MasterData matching
           no_output_timeout: 30m
           command: |
             . venv/bin/activate
-            dbt run --profiles-dir=.  --exclude  mapped fact_refill_status_history_monthly calc_refill_status_sequence --target prod
+            dbt run --profiles-dir=.  --models ips --exclude fact_refill_status_history_monthly calc_refill_status_sequence --target prod
+
+      - run:
+          name: DBT cscart sales No TUM & no MasterData matching
+          no_output_timeout: 30m
+          command: |
+            . venv/bin/activate
+            dbt run --profiles-dir=.  --models cscart --target prod
 
       - run:
           name: DBT  MasterData mapping
