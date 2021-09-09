@@ -60,6 +60,7 @@ select
             and opt.option_name ilike '%quantity%' 
             and l._sdc_level_0_id =opt._sdc_level_0_id
             and opt.status='A' and nullif(variant_name,'') is not null
+            and opt.modifier_type='A'
             limit 1) 
         as variant_price
 

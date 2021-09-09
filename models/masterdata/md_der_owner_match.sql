@@ -33,7 +33,7 @@ with c1 as (
 			then 3
 			else 88
 		end  as rank
-	FROM {{ ref('cs_der_owner') }} cs
+	FROM {{ ref('cs_dim_owner') }} cs
 	left join {{ ref('dim_owner') }} ips on	
 	
 			cs.key_owner=ips.key_owner 

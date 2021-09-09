@@ -1,4 +1,3 @@
-
 with c1 as(
 SELECT  distinct on(cs.patient_id)
 		key_patient_species,
@@ -74,8 +73,8 @@ SELECT  distinct on(cs.patient_id)
 			else 88 
 		end as rank
 		
-FROM {{ ref('cs_der_patient') }}  cs
-left join {{ ref('cs_dim_owner') }}  o on o.account_id=cs.account_id
+FROM {{ ref('cs_dim_patient') }}  cs
+left join {{ ref('md_dim_owner') }}  o on o.account_id=cs.account_id
 left join {{ ref('dim_patient') }}  dmp 
 		on 	(
 				dmp.key_patient=cs.key_patient||cs.species

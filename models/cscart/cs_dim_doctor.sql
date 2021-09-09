@@ -7,94 +7,94 @@
 }}
 
 SELECT   
-		distinct on (cs.doctor_id)
+		distinct on (coalesce(nullif(cs.vet_data__id,''),'U'||cs.order_id) )
 
-		cs.key_vet,
-		cs.key_sln,
-		cs.key_clinic,
-		cs.email, 
-		cs.fax, 
-		cs.firstname,
-		cs.doctor_id,
-		cs.lastname, 
-		cs.doctor_name,
-		cs.sln,
-		cs.address2,
-		cs.user_type,
-		cs.clinic_id,
-		cs.address,
-		cs.phone,
-		cs.city,
-		cs.tax_excempt,
-		cs.state,
-		cs.zip,
-		cs.country,
-		cs.dob,
-		cs.company_url,
-		cs.staff_notes,
-		cs.clinic,
-		cs.channel,
-		cs.doctor_resgistered,
-		ips.doctor_id 			as ips_doctor_id,
-		ips.vet 				as ips_doctor_name,
-		ips.sln    				as ips_sln,
-		ips.clinic 				as ips_clinic,
-		ips.practice 			as ips_practice,
-		ips.dea 				as ips_dea,
-
+		nullif(regexp_replace(lower(cs.vet_data__firstname||cs.vet_data__lastname),'\`| |\,|\&|\.|-|','','g'),'') as key_vet,
+		nullif(regexp_replace(cs.vet_data__sin,'[^0-9]+', '', 'g'),'') 			                    as key_sln,
+		nullif(regexp_replace(lower(coalesce(cs.company,'')),'\`|\(|\)| |\,|\&|\.|-|','','g'),'')   as key_clinic,
+		btrim(lower(case when cs.vet_data__email ilike '%ggvcp%' then null else cs.vet_data__email end))   as email, 
+		nullif(regexp_replace(cs.vet_data__fax ,' |\.|-|\(|\)','','g'),'') 		                    as fax, 
+		initcap(cs.vet_data__firstname) 		                                                    as firstname,
+		(coalesce(nullif(cs.vet_data__id,''),'U'||cs.order_id) )				                    as doctor_id,
+		initcap(cs.vet_data__lastname) 			                                                    as lastname, 
+		nullif(btrim(coalesce(initcap(cs.vet_data__firstname),'') || ' ' || coalesce(initcap(cs.vet_data__lastname),'')),'') as doctor_name,
+		nullif(regexp_replace(cs.vet_data__sin ,' |\.|-','','g'),'') 	                            as sln,
+		nullif(cs.doctor_data__b_address_2,'') 						                                as address2,
+		coalesce(nullif(doctor_data__user_type,''),'U') 			                                as user_type,
+		nullif(doctor_data__clinic_id,'')  		as clinic_id,
+		nullif(doctor_data__b_address,'') 		as address,
+		coalesce(nullif(regexp_replace(cs.vet_data__phone,' |\,|\&|\.|-|\(|\)','','g'),''),nullif(regexp_replace(doctor_data__phone,' |\,|\&|\.|-|\(|\)','','g'),''),nullif(regexp_replace(doctor_data__b_phone,' |-|\(|\)','','g'),''),nullif(regexp_replace(doctor_data__s_phone,' |-|\(|\)','','g'),'')) as phone,
+		nullif(initcap(doctor_data__b_city),'') as city,
+		nullif(doctor_data__tax_exempt,'') 		as tax_excempt,
+		upper(nullif(doctor_data__b_state,'')) 	as state,
+		nullif(regexp_replace(doctor_data__b_zipcode,' |\,|\&|\.|-|\(|\)','','g'),'') as zip,
+		upper(doctor_data__b_country) 			as country,
+		nullif(doctor_data__birthday,'') 		as dob,
+		nullif(doctor_data__url,'') 			as company_url,
+		nullif(doctor_data__staff_notes,'') 	as staff_notes,
 	case 
-		when not ips.active then 99 
-		when cs.key_sln = ips.key_sln 
-		and cs.key_clinic =ips.key_clinic
-		then 1
-		when cs.key_vet	 	= 	ips.key_vet
-		and cs.key_clinic 	=	ips.key_clinic
-		then 2		
-		when cs.key_sln = ips.key_sln 
-		and cs.zip=ips.zip
-		then 5	
-		when cs.key_vet	 = ips.key_vet
-		and cs.zip=ips.zip
-		then 6	
-		when cs.key_sln = ips.key_sln 
-		and regexp_replace(lower(cs.city),' ','','g')=regexp_replace(lower(ips.city),' ','','g')
-		then 7	
-		when cs.key_vet	 = ips.key_vet
-		and regexp_replace(lower(cs.city),' ','','g')=regexp_replace(lower(ips.city),' ','','g')
-		then 8
-		when cs.key_sln = ips.key_sln 
-		and (	phone 	=	ips.key_phone1
-			or 	phone  	=	ips.key_phone2
-			or 	phone  	=	ips.key_phone3
-			or  fax 	=	ips.key_phone1
-			or 	fax  	=	ips.key_phone2
-			or 	fax  	=	ips.key_phone3)
-		then 9		
-		when  	cs.key_vet	 = ips.key_vet 
-		and (	phone 	=	ips.key_phone1
-			or 	phone 	=	ips.key_phone2
-			or 	phone 	=	ips.key_phone3
-			or  fax 	=	ips.key_phone1
-			or 	fax  	=	ips.key_phone2
-			or 	fax  	=	ips.key_phone3)
-		then 10		
-		when cs.key_sln = ips.key_sln 
-		then 50		
-		when cs.key_vet	 = ips.key_vet
-		then 51		
-		when cs.email  = ips.email
-		then 52
-		else 88
-	end  as rank
+		when nullif(regexp_replace(cs.company,'\(|\)| |-|','','g'),'') is not null
+		then Initcap(nullif(regexp_replace(cs.company,'\(|\)|-|','','g'),''))
+		when 
+			cs.b_firstname ilike '%corpo%' 	or
+			cs.b_firstname ilike '%vet%' 	or
+			cs.b_firstname ilike '%hosp%' 	or
+			cs.b_firstname ilike '%medic%' 	or
+			cs.b_firstname ilike '%center%' or
+			cs.b_firstname ilike '%animal%' or
+			cs.b_firstname ilike '%pet %' 	or
+			cs.b_firstname ilike '%pets%' 	or
+			cs.b_firstname ilike '%clinic%'
+			then initcap(cs.b_firstname)
+		when
+			cs.b_lastname  ilike '%corpo%' 	or 
+			cs.b_lastname  ilike '%vet%' 	or
+			cs.b_lastname  ilike '%hosp%' 	or
+			cs.b_lastname  ilike '%medic%' 	or
+			cs.b_lastname  ilike '%pet %' 	or
+			cs.b_lastname  ilike '%pets%' 	or
+			cs.b_lastname  ilike '%center%'	or
+			cs.b_lastname  ilike '%animal%' or
+			cs.b_lastname  ilike '%clinic%'
+		then initcap(cs.b_lastname )
+		when 
+			cs.s_firstname ilike '%corpo%' 	or
+			cs.s_firstname ilike '%vet%' 	or
+			cs.s_firstname ilike '%hosp%' 	or
+			cs.s_firstname ilike '%medic%' 	or
+			cs.s_firstname ilike '%center%' or
+			cs.s_firstname ilike '%animal%' or
+			cs.s_firstname ilike '%pet %' 	or
+			cs.s_firstname ilike '%pets%' 	or
+			cs.s_firstname ilike '%clinic%'
+		then initcap(cs.s_firstname)
+		when 
+			cs.s_lastname ilike '%corpo%' 	or
+			cs.s_lastname ilike '%vet%' 	or
+			cs.s_lastname ilike '%hosp%' 	or
+			cs.s_lastname ilike '%medic%' 	or
+			cs.s_lastname ilike '%pet %' 	or
+			cs.s_lastname ilike '%pets%' 	or
+			cs.s_lastname ilike '%center%'	or
+			cs.s_lastname ilike '%animal%' 	or
+			cs.s_lastname ilike '%clinic%'
+		then initcap(cs.s_lastname )
+		end as clinic,
+	case when 
+		nullif(vet_data__id,'') is null and
+		nullif(regexp_replace(lower(cs.vet_data__firstname||cs.vet_data__lastname),' ','','g'),'') is null
+		then 'B2B' 
+		else 'B2C'
+		end as channel,
+	case
+		when nullif(regexp_replace(cs.company,' |-|','','g'),'') is null and nullif(vet_data__id,'') is null
+		then false
+		else true
+	end doctor_resgistered
 
-FROM {{ ref('cs_der_doctor') }} cs
+FROM cscart.orders cs
 
-left join {{ ref('dim_vet') }} ips
-	on 	cs.key_vet	=	ips.key_vet
-	or 	cs.key_sln	= 	ips.key_sln
-	or 	cs.email  	= 	ips.email
+where (nullif(btrim(coalesce(cs.vet_data__firstname,'') || coalesce(cs.vet_data__lastname,'')),'') ) is not null
 
-order by 
-	cs.doctor_id,
-	rank asc,
-	ips.created_date desc
+order by doctor_id,
+	cs.timestamp desc

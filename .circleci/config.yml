@@ -88,11 +88,18 @@ jobs:
             dbt seed --full-refresh --profiles-dir=. --target prod
 
       - run:
-          name: DBT sales No TUM
+          name: DBT sales No TUM & no MasterData matching
           no_output_timeout: 30m
           command: |
             . venv/bin/activate
-            dbt run --profiles-dir=.  --exclude  fact_refill_status_history_monthly calc_refill_status_sequence --target prod
+            dbt run --profiles-dir=.  --exclude  masterdata fact_refill_status_history_monthly calc_refill_status_sequence --target prod
+
+      - run:
+          name: DBT  MasterData matching
+          no_output_timeout: 30m
+          command: |
+            . venv/bin/activate
+            dbt run --profiles-dir=.  --models  masterdata  --target prod
 
   daily:
     docker:
@@ -148,7 +155,7 @@ workflows:
   hourly-workflow:
     triggers:
       - schedule:
-          cron: "30 8-18 * * *"
+          cron: "0 8-18 * * *"
           filters:
             branches:
               only:

@@ -2,64 +2,47 @@
   config({
     "materialized": "table",
     "post-hook": [
-      	after_commit("create index  index_{{this.name}}_on_product_id on {{this.schema}}.{{this.name}} (product_id)")]
+        after_commit("create index  index_{{this.name}}_on_id on {{this.schema}}.{{this.name}} (product_id)"),
+      	after_commit("create index  index_{{this.name}}_on_k_1 on {{this.schema}}.{{this.name}} (key1)"),
+        after_commit("create index  index_{{this.name}}_on_k_2 on {{this.schema}}.{{this.name}} (key2)"),
+        after_commit("create index  index_{{this.name}}_on_k_topi on {{this.schema}}.{{this.name}} (key_topi)"),
+        after_commit("create index  index_{{this.name}}_on_p_code on {{this.schema}}.{{this.name}} (product_code)")]
   })
 }}
 
-
-
-select distinct on(cs.product_id)
-    cs.key1,
-    cs.key2,
-    cs.key_topi,
+select
+    distinct on (product_id)
+    
+    nullif(regexp_replace(lower(cs.product),'micro|\,|\-|\(|\)|\/| |otic|\%|s$|oral|','','g'),'') as key1,
+    nullif(regexp_replace(lower(cs.product),'\(.*\)$|micro|\,|\-|\(|\)|\/| |otic|\%|s$|oral|','','g'),'') as key2,
+    	case when product like '%TOPI%CLICK%'
+	then lower(regexp_replace(split_part(cs.product,'TOPI',1),'\(.*\)$|micro|\,|\-|\(|\)|\/| |otic|\%|s$|oral|','','g'))||'topiclick'
+	end key_topi,
     cs.product ,
     cs.product_id ,
     cs.price,
-	cs.product_code,
+	lower(cs.product_code) as product_code,
     cs.status as status,
-    status_name,
-    cs.updated_date,
-	cs.created_date,
-	(ips.drug_id is not null) as ips_found,
-	(coalesce(cs.product_code,'cs')=coalesce(ips.quick_code,'ips')) as cs_ips_codes_match,
-    cs.image_path,
-    cold_shipping,
-	ips.quick_code as ips_quick_code,
-    ips.drug_id as ips_drug_id,
-    ips.drug_form as ips_drug_form,
-    ips.strength as ips_strength,
-    ips.strength_value as ips_strength_value,
-    ips.master_drug as ips_drug,
-	ips.active,
-	case 
-	when ips.active='N' then 99
-	when ips.drug_key1=cs.key1 then 1
-	when ips.drug_key2=cs.key1 then 2
-	when ips.drug_key3=cs.key1 then 3
-    when ips.drug_key1=cs.key2 then 4
-	when ips.drug_key2=cs.key2 then 5
-	when ips.drug_key3=cs.key2 then 6
-    when ips.drug_key4=cs.key1 then 7
-    when ips.drug_key4=cs.key2 then 8
-    when ips.drug_key_topi=cs.key_topi then 9
-  
-    when ips.quick_code=cs.product_code then 77
-
-
-	else 88
-	end as rank
-	
-from {{ ref('cs_der_product') }} cs
-left join {{ ref('dim_drug') }} ips  on (
-	ips.drug_key1=cs.key1 or
-	ips.drug_key2=cs.key1 or
-	ips.drug_key3=cs.key1 or
-    ips.drug_key1=cs.key2 or
-	ips.drug_key2=cs.key2 or
-	ips.drug_key3=cs.key2 or
-    ips.drug_key4=cs.key1 or
-    ips.drug_key4=cs.key2 or 
-    ips.drug_key_topi=cs.key_topi or
-    ips.quick_code=cs.product_code  )
-order by cs.product_id,
-   rank desc
+    case    when cs.status='A' then 'Active'
+            when cs.status='D' then 'Disabled'
+            when cs.status='H' then 'Hidden'
+    end as status_name,
+    TIMESTAMP 'epoch' + updated_timestamp::numeric * INTERVAL '1 second'    as updated_date,
+	TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second'            as created_date,
+    main_pair__detailed__http_image_path                                    as image_path,	
+    case 
+        when 
+            product ilike '%CHEW%' or
+            product ilike 'AMLODIPINE%SUSPENSION%' or
+            product ilike 'ARANESP%DARBEPOETIN%INJECTION%VIAL%' or
+            product ilike 'POTASSIUM%SUSPENSION%' or
+            product ilike 'OMEPRAZOLE%SUSPENSION%' or
+            product ilike 'TERBUTALINE%SUSPENSION%' or
+            product ilike 'CHLORAMBUCIL%' or
+            product ilike 'SAME/MILK%THISTLE%SUSPENSION%' or
+            product ilike 'AZITHROMYCIN%SUSPENSION%' or
+            product ilike 'MARBOFLOXACIN%SUSPENSION%'
+        then true
+        else false
+    end as cold_shipping
+from cscart.products cs
