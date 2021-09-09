@@ -64,7 +64,7 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,
         end as account_type
 
 FROM cscart.orders cs
-left join analytics_cscart.cs_dim_user u on u.user_id=(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) )
+left join {{ ref('cs_dim_user') }} u on u.user_id=(coalesce(nullif(cs.pet_data__user_id,'0'),cs.user_id) )
 
 order by account_id,
 cs.timestamp desc
