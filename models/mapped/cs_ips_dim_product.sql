@@ -34,7 +34,7 @@ select distinct on(cs.product_id)
         else 88
 	end as rank
 	
-from {{ ref('cs_dim_product') }} cs
+from {{ ref('cs_der_product') }} cs
 left join {{ ref('dim_drug') }} ips  on (
 	ips.drug_key1=cs.key1 or
 	ips.drug_key2=cs.key1 or
