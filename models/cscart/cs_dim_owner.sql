@@ -16,11 +16,30 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,
 		btrim(initcap(coalesce(cs.b_firstname,''))||' '|| initcap(nullif(cs.b_lastname,''))) 	as owner_name,
 		coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,'0'),'U'||order_id )		as account_id,
 		case 
-			when nullif(cs.b_firstname,'') is null
-			then initcap(split_part(cs.b_lastname,' ',1))
-			else btrim(initcap(nullif(cs.b_firstname,'')) )	
+			when 	nullif(cs.b_lastname,'') ilike '%vet%'    or
+					nullif(cs.b_lastname,'') ilike '%hosp%'   or
+				 	nullif(cs.b_lastname,'') ilike '%clinic%' or
+                 	nullif(cs.b_lastname,'') ilike '%animal%' or
+                 	nullif(cs.b_lastname,'') ilike '%center%' or
+                 	nullif(cs.b_lastname,'') ilike '%corpor%' 
+			then 	initcap(split_part(cs.b_lastname,' ',1))
+			when 	nullif(cs.b_firstname,'') is null
+			then 	initcap(split_part(cs.b_lastname,' ',1))
+			else 	btrim(initcap(nullif(cs.b_firstname,'')) )	
 		end as firstname,
-		btrim(lower(reverse(split_part(reverse(cs.b_lastname),' ',1))))  as lastname,
+		case 
+			when 	nullif(cs.b_lastname,'') is null
+			then 	btrim(lower(reverse(split_part(reverse(cs.b_firstname),' ',1))))
+			when 	nullif(cs.b_lastname,'') is not null and (
+			     	nullif(cs.b_lastname,'') ilike '%vet%'    or
+				 	nullif(cs.b_lastname,'') ilike '%hosp%'   or
+				 	nullif(cs.b_lastname,'') ilike '%clinic%' or
+                 	nullif(cs.b_lastname,'') ilike '%animal%' or
+                 	nullif(cs.b_lastname,'') ilike '%center%' or
+                 	nullif(cs.b_lastname,'') ilike '%corpor%' )
+			then btrim(initcap(substring(cs.b_lastname,POSITION(' ' in cs.b_lastname)+1,40)))
+   			else btrim(initcap(reverse(split_part(reverse(btrim(cs.b_lastname)),' ',1))))  
+		end as lastname,
 		upper(cs.b_state) 										as state,
 		cs.b_zipcode 											as zip,
 		nullif(regexp_replace(cs.b_phone,' |\.|-|\(|\)','','g'),'')  as phone,

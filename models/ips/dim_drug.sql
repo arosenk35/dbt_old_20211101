@@ -54,6 +54,8 @@
     dm.special_type, 
     dm.drug_subtype,
     dm.awp,
+    dm.swp_price,
+    dm.wac_price,
     coalesce(da.api_category,'Unclassified') as api_category,
     da.controlled,
     da.common,
