@@ -50,7 +50,9 @@
     dm.acquisition_cost, 
     dm.primary_supplier, 
     dm.secondary_supplier, 
-    dm.price_template_id,  
+    dm.price_template_id        as price_plan_id,  
+    pth.description             as price_plan_description,
+    pth.cost_type               as price_plan_cost_type,
     dm.special_type, 
     dm.drug_subtype,
     dm.awp,
@@ -67,5 +69,6 @@
           else 'drug'
     END as item_type
 FROM ips.drug_master dm
+left join ips.price_template_hdr pth on dm.price_template_id=tran_id
 left join {{ ref('dim_api_category') }} da on dm.drug  ilike '%'||da.master_drug||'%'
 order by drug_id
