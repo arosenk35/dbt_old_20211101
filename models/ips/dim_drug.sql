@@ -69,7 +69,8 @@
           when compound_flag='Y'
           then 'compound-drug'
           else 'drug'
-    END as item_type
+    END as item_type,
+    dm.drug like '%/%' as complex_drug
 FROM ips.drug_master dm
 left join ips.price_template_hdr pth on dm.price_template_id=tran_id
 left join {{ ref('dim_api_category') }} da on dm.drug  ilike '%'||da.master_drug||'%'

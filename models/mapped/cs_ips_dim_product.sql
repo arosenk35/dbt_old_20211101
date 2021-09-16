@@ -46,5 +46,6 @@ left join {{ ref('dim_drug') }} ips  on (
     ips.drug_key4=cs.key2 or 
     ips.drug_key_topi=cs.key_topi or
     ips.quick_code=cs.product_code  )
+    where ips.compound
 order by cs.product_id,
    rank desc
