@@ -71,9 +71,9 @@ select
         s.shipping_method,
         s.shipping_class,
         sr.cold_shipping,
-        case  when cs.b_lastname like '%#%'
-              then split_part(cs.b_lastname,'#',2) 
-              else nullif(regexp_replace(cs.b_lastname,'[^0-9]+', '', 'g'),'') 
+        case  when o.b_lastname like '%#%'
+              then split_part(o.b_lastname,'#',2) 
+              else nullif(regexp_replace(o.b_lastname,'[^0-9]+', '', 'g'),'') 
         end as po_nbr
 from cscart.orders o
 left join {{ ref('cs_segment_owner') }} so on so.account_id=o.user_id   
