@@ -20,8 +20,8 @@ select
         count (distinct b.rxno) FILTER (WHERE s.refill_status ='Open' )   as open_prescriptions_count,
         sum (amount)            FILTER (WHERE s.refill_status ='Open' )   as open_prescriptions_amount,
         min(b.start_date)     as min_start_date,
-        max(b.dispense_date)  as max_dispense_date,
-        max(b.rxno) as last_rxno
+        min(b.dispense_date)  as min_dispense_date,
+        max(b.dispense_date)  as max_dispense_date
 FROM {{ ref('fact_prescription') }} b
 join {{ ref('dim_practice') }}  dmpr on dmpr.practice=b.practice
 join {{ ref('der_refill_status') }} s on s.rxno=b.rxno

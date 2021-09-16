@@ -31,7 +31,7 @@ select
         min(b.start_date)     as min_start_date,
         min(b.dispense_date)  as min_dispense_date,
         max(b.dispense_date)  as max_dispense_date,
-        max(b.rxno) as last_rxno
+        max(b.rxno)           as last_rxno
 FROM {{ ref('fact_prescription') }} b
 join cohort c on c.patient_id=b.patient_id
 join {{ ref('dim_vet') }}  v on b.doctor_id=v.doctor_id

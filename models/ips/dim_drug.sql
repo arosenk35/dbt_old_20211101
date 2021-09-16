@@ -30,14 +30,13 @@
 
     dm.drug_id,
     btrim(coalesce(dm.drug,'')||' '||coalesce(dm.strength_value,'')||' '||coalesce(dm.strength,'')) as drug_name, 
-    dm.drug                   as master_drug, 
-    dm.ndc, 
-    btrim(dm.drug_form)       as drug_form, 
-    btrim(dm.strength)        as strength, 
+    dm.drug                     as master_drug, 
+    nullif(dm.ndc,'')           as ndc,
+    btrim(dm.drug_form)         as drug_form, 
+    btrim(upper(dm.strength))   as strength, 
     dm.strength_value, 
-    dm.generic, 
-    dm.manufacturer, 
-    lower(dm.quick_code) as quick_code, 
+    nullif(dm.generic,'')       as generic, 
+    lower(dm.quick_code)        as quick_code, 
     dm.qty, 
     dm.qty_pack, 
     dm.color, 
@@ -46,14 +45,10 @@
     dm.drug_class_group,  
     dm.created_date,  
     dm.changed_date,  
-    dm.med_type, 
     dm.acquisition_cost, 
-    dm.primary_supplier, 
-    dm.secondary_supplier, 
     dm.price_template_id        as price_plan_id,  
     pth.description             as price_plan_description,
     pth.cost_type               as price_plan_cost_type,
-    dm.special_type, 
     dm.drug_subtype,
     dm.awp as average_wholesale_price,
     dm.swp_price as suggested_whole_sale_price,
@@ -63,11 +58,16 @@
     coalesce(da.api_category,'Unclassified') as api_category,
     da.controlled,
     da.common,
-    dm.active,
+    dm.active='Y' as active,
+    compound_flag='Y' as compound,
+    dm.price_template_id is not null as has_price_plan,
+    drug_schedule,
     CASE when dm.drug ilike '%fedex%' 
           then 'shipping'
           when dm.drug ilike '%usps%' 
           then 'shipping'
+          when compound_flag='Y'
+          then 'compound-drug'
           else 'drug'
     END as item_type
 FROM ips.drug_master dm

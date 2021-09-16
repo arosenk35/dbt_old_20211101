@@ -13,8 +13,8 @@ select
     pth.active, 
     pth.created_date, 
     pth.changed_date,
-    pth.calculation_base_flag,
-    pth.flat_flag
+    pth.calculation_base_flag as calculation_basis,
+    pth.flat_flag as flat_rate
 	
 from 
 ips.price_template_hdr pth 
