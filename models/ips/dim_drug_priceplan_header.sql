@@ -1,6 +1,7 @@
 select
     pth.tran_id as price_plan_id, 
     pth.description, 
+    regexp_replace(substring(description from '(\(.*\))'),'\(|\)','','g') as price_plan_code, 
     pth.cost_type, 
     pth.minimum_price, 
     pth.allow_customer_discount,

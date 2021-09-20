@@ -48,6 +48,7 @@
     dm.acquisition_cost, 
     dm.price_template_id        as price_plan_id,  
     pth.description             as price_plan_description,
+    regexp_replace(substring(pth.description from '(\(.*\))'),'\(|\)','','g') as price_plan_code, 
     pth.cost_type               as price_plan_cost_type,
     dm.drug_subtype,
     dm.awp as average_wholesale_price,
