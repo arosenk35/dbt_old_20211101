@@ -19,7 +19,9 @@ select
         o.tax_subtotal                      as tax_amount,
         o.paid_data__total                  as paid_amount,
         o.total                             as order_amount,
-        (is_patient_order='Y')              as patient_order,
+        is_patient_order='Y'                as is_patient_order,
+        nullif(refill_order_id,'0') is not null  as is_refill_order,
+        nullif(user_id,'0') is null         as is_guest_order,
         o.total - o.tax_subtotal -  o.shipping_cost  as gross_amount,
         o.subtotal_discount                 as discount,
         TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second' as order_date,
@@ -43,12 +45,9 @@ select
             when 'L' then 'Pending VET Approval'
         end                                       as status,
         nullif(refill_order_id,'0')               as refill_order_id,
-        nullif(o.vet_data__id,'') is null         as direct_purchase,
-        (nullif(refill_order_id,'0') is not null) as refill_order,
 
       is_order_due='y'                            as is_order_due ,
       is_parent_order = 'Y'                       as is_parent_order ,
-      is_patient_order='Y'                        as is_patient_order,
       case 
           when  o.status in ('C','I')
           then null
