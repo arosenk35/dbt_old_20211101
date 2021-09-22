@@ -20,7 +20,7 @@
         p.account_id,
         p.note, 
         p.rx_id as rxno, 
-        p.rx_id::text||':'||fill_number::text as refill_id, 
+        p.rx_id::text||':'||bh.fill_number::text as refill_id, 
         p.med_type, 
         p.sig, 
         p.hold, 
@@ -40,8 +40,10 @@
         bh.dispense_date, 
         bd.response_message, 
         p.created_date,
+        p.tran_date,
         bh.bill_date,
-        p.otc, 
+        fp.delivery_date,
+        fp.tracking_number,
         bh.fill_number, 
         p.ips_bill, 
         bd.delay_reason_code,
@@ -67,7 +69,7 @@
         coalesce(p.days_supply,1)::integer as days_supply,
         bh.fill_number=0 as first_fill,
         bh.fill_number=1 as fill_schedule_started,
-        no_of_refill=fill_number as last_fill,
+        no_of_refill=bh.fill_number as last_fill,
         case 
             when p.days_supply <=15 then '15'
             when p.days_supply <=30 then '30'
@@ -134,6 +136,7 @@ join ips.prescription p on p.tran_id =bh.rx_id
 join ips.patient_master on bh.patient_id = patient_master.id 
 join ips.doctor_master on p.doctor_id = doctor_master.srno 
 join ips.drug_master on bh.drug_id = drug_master.drug_id 
+left join {{ ref('fact_delivery') }} fp on fp.refill_id=p.rx_id::text||':'||bh.fill_number::text 
 left join ips.zip_master zm_pt ON patient_master.zip = zm_pt.srno
 left join ips.responsible_party_master ON bh.account_id = responsible_party_master.srno 
 left join ips.zip_master zm_dr ON doctor_master.zip = zm_dr.srno
@@ -169,8 +172,10 @@ select
         null as dispense_date, 
         null as response_message, 
         p.created_date,
-        p.changed_date, 
-        p.otc, 
+        p.tran_date,
+        h.bill_date,
+        null as delivery_date,
+        null as tracking_number,
         -1 as fill_number, 
         p.ips_bill, 
         null as delay_reason_code,
@@ -247,7 +252,7 @@ from ips.prescription p
 left join ips.bill_header h on  p.tran_id=h.rx_id
 join ips.patient_master on p.patient_id = patient_master.id 
 join ips.doctor_master on  p.doctor_id = doctor_master.srno 
-join ips.drug_master on p.drug_id = drug_master.drug_id 
+join ips.drug_master on p.drug_id = drug_master.drug_id
 LEFT JOIN ips.facility_master ON patient_master.facility_id = facility_master.srno 
 LEFT JOIN ips.zip_master zm_pt ON patient_master.zip = zm_pt.srno
 LEFT JOIN ips.responsible_party_master ON p.account_id = responsible_party_master.srno 

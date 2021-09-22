@@ -9,7 +9,7 @@
   }}
   SELECT distinct on (p.rx_id,bh.fill_number)
         p.rx_id       as rxno,
-        p.rx_id||':'||fill_number as refill_id,
+        p.rx_id::text||':'||fill_number::text as refill_id,
         bh.fill_number,
         dh.delivery_date,
         dh.tracking_number
