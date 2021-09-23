@@ -27,6 +27,8 @@
         then lower(regexp_replace(coalesce(drug,''),'|\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))
         when drug ilike '%PLO%'
         then lower(regexp_replace(split_part(drug,'PLO',1),'|\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))||'ointment'
+        when drug_form ilike '%oint%'
+        then lower(regexp_replace(split_part(master_drug,'PLO',1)||coalesce(strength_value,'')||coalesce(strength,''),'|\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))||'ointment'
     end as drug_key_topi,
 
     dm.drug_id,
