@@ -23,9 +23,10 @@
     replace(lower(regexp_replace(coalesce(drug,'')||coalesce(strength_value,'')||coalesce(strength,'')||coalesce(drug_form,''),'MALEATE|SULFATE|HCL|\(.*\)$|otic|\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))
         ,'solution','suspension')
         as drug_key4,
-   case when drug ilike '%topi%click%'
-        then
-        lower(regexp_replace(coalesce(drug,''),'|\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))
+    case when drug ilike '%topi%click%'
+        then lower(regexp_replace(coalesce(drug,''),'|\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))
+        when drug ilike '%PLO%'
+        then lower(regexp_replace(split_part(drug,'PLO',1),'|\,|\-|\(|\)|\/| |\%|s$|oral|','','g'))||'ointment'
     end as drug_key_topi,
 
     dm.drug_id,
@@ -60,7 +61,7 @@
     da.controlled,
     da.common,
     dm.active='Y' as active,
-    compound_flag='Y' as compound,
+    compound_flag='Y' as is_compound,
     dm.price_template_id is not null as has_price_plan,
     drug_schedule,
     CASE when dm.drug ilike '%fedex%' 
@@ -71,7 +72,7 @@
           then 'compound-drug'
           else 'drug'
     END as item_type,
-    dm.drug like '%/%' as complex_drug
+    dm.drug like '%/%' as is_complex_drug
 FROM ips.drug_master dm
 left join ips.price_template_hdr pth on dm.price_template_id=tran_id
 left join {{ ref('dim_api_category') }} da on dm.drug  ilike '%'||da.master_drug||'%'

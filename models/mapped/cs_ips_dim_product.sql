@@ -17,8 +17,16 @@ select distinct on(cs.product_id)
     ips.strength_value as ips_strength_value,
     ips.master_drug as ips_drug,
 	ips.active,
-	(ips.drug_id is not null) as ips_found,
-	(coalesce(cs.product_code,'cs')=coalesce(ips.quick_code,'ips')) as cs_ips_codes_match,
+    case 
+        when ips.price_plan_id is null 
+        then 9
+        else 0
+    end price_rank,
+    case 
+        when is_compound 
+        then 0 
+        else 9
+    end item_type_rank,
 	case 
         when ips.active='N' then 99
         when ips.drug_key1=cs.key1 then 1
@@ -46,6 +54,6 @@ left join {{ ref('dim_drug') }} ips  on (
     ips.drug_key4=cs.key2 or 
     ips.drug_key_topi=cs.key_topi or
     ips.quick_code=cs.product_code  )
-    where ips.compound
+    where ips.is_compound
 order by cs.product_id,
-   rank desc
+   price_rank desc,item_type_rank,rank desc

@@ -15,9 +15,12 @@ select
     
     nullif(regexp_replace(lower(cs.product),'micro|\,|\-|\(|\)|\/| |otic|\%|s$|oral|','','g'),'') as key1,
     nullif(regexp_replace(lower(cs.product),'\(.*\)$|micro|\,|\-|\(|\)|\/| |otic|\%|s$|oral|','','g'),'') as key2,
-    	case when product like '%TOPI%CLICK%'
-	then lower(regexp_replace(split_part(cs.product,'TOPI',1),'\(.*\)$|micro|\,|\-|\(|\)|\/| |otic|\%|s$|oral|','','g'))||'topiclick'
-	end key_topi,
+    case 
+        when product like '%TOPI%CLICK%'
+	    then lower(regexp_replace(split_part(cs.product,'TOPI',1),'\(.*\)$|micro|\,|\-|\(|\)|\/| |otic|\%|s$|oral|','','g'))||'topiclick'
+	    when product like '%TRANSDERMAL%GEL%'
+	    then lower(regexp_replace(split_part(cs.product,'TRANSDERMAL',1),'\(.*\)$|micro|\,|\-|\(|\)|\/| |otic|\%|s$|oral|','','g'))||'ointment'
+    end as key_topi,
     cs.product ,
     cs.product_id ,
     cs.price,
