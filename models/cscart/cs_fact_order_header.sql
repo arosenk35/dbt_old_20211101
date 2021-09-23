@@ -13,7 +13,7 @@ select
         coalesce(nullif(o.pet_data__user_id,'0'),nullif(o.user_id,'0'),'U'||o.order_id )                                as account_id,
         coalesce(nullif(o.vet_data__id,''),'U'||o.order_id)                                                           as doctor_id,
         o.issuer_id,
-        nullif(btrim(o.notes),'')           as notes,
+        nullif(btrim(o.notes),'')           as customer_notes,
         nullif(btrim(o.staff_notes),'')     as staff_notes,
         nullif(details,'')                  as details,
         o.tax_subtotal                      as tax_amount,

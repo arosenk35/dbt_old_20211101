@@ -36,7 +36,7 @@ select
               limit 1) 
         as flavor,
         (select 
-              lower(opt.variant_name)
+              lower(nullif(opt.variant_name,'-')
           from cscart.orders__lines__extra__product_options_value opt
               where opt._sdc_source_key_order_id=l._sdc_source_key_order_id 
               and option_name ilike '%instruct%'
