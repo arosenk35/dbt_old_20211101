@@ -11,8 +11,6 @@ select
         l.product,
         l.product_id,
         l.tax_value         as tax_amount,
-        --l.shipped_amount    as units_shipped,
-        --l.amount            as units_ordered,
         l.discount,
         l.subtotal          as gross_amount,
         l.price             as price,
@@ -36,7 +34,7 @@ select
               limit 1) 
         as flavor,
         (select 
-              lower(nullif(opt.variant_name,'-')
+              lower(nullif(opt.variant_name,'-'))
           from cscart.orders__lines__extra__product_options_value opt
               where opt._sdc_source_key_order_id=l._sdc_source_key_order_id 
               and option_name ilike '%instruct%'
@@ -62,6 +60,18 @@ select
             and opt.status='A' and nullif(variant_name,'') is not null
             and opt.modifier_type='A'
             limit 1) 
-        as variant_price
+        as variant_price,
+        (select 
+            regexp_replace(substring(opt.option_name from '(\(.*\))'),'\(|\)','','g') as price_plan
+          from cscart.orders__lines__extra__product_options_value opt
+        where opt._sdc_source_key_order_id=l._sdc_source_key_order_id 
+            and l._sdc_level_0_id =opt._sdc_level_0_id
+            and opt.status='A' 
+            and option_type='S'
+            and opt.modifier_type='A' 
+            and option_name like '(%)%' 
+            and modifier::numeric !=0
+            limit 1) 
+        as price_plan
 
 from cscart.orders__lines l 

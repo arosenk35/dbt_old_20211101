@@ -1,3 +1,10 @@
+{{
+  config({
+    "materialized": "table",
+    "post-hook": [
+    after_commit("create index  index_{{this.name}}_on_id on {{this.schema}}.{{this.name}} (patient_id,drug_id)")]
+  })
+}}
 SELECT  
     distinct on(patient_id,ips_drug_id)
     patient_id,

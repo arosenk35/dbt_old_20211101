@@ -8,6 +8,7 @@
 
 select 
     l.product_id ,
+    min(TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second') as first_order_date,
     max(TIMESTAMP 'epoch' + o.timestamp::numeric * INTERVAL '1 second') as last_order_date,
     sum(l.amount)               as ltv_qty,
     sum(l.subtotal)             as ltv_amount,
