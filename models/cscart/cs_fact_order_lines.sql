@@ -52,16 +52,6 @@ select
             limit 1) 
         as quantity,
         (select 
-              round(modifier ::numeric,2)
-          from cscart.orders__lines__extra__product_options_value opt
-        where opt._sdc_source_key_order_id=l._sdc_source_key_order_id 
-            and opt.option_name ilike '%quantity%' 
-            and l._sdc_level_0_id =opt._sdc_level_0_id
-            and opt.status='A' and nullif(variant_name,'') is not null
-            and opt.modifier_type='A'
-            limit 1) 
-        as variant_price,
-        (select 
             regexp_replace(substring(opt.option_name from '(\(.*\))'),'\(|\)','','g') as price_plan
           from cscart.orders__lines__extra__product_options_value opt
         where opt._sdc_source_key_order_id=l._sdc_source_key_order_id 
