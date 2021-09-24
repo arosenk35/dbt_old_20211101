@@ -41,7 +41,7 @@ select
               and l._sdc_level_0_id =opt._sdc_level_0_id
               and opt.status='A' and nullif(variant_name,'') is not null
               limit 1) 
-        as opt_instruction,
+        as instruction,
         (select 
               opt.variant_name 
           from cscart.orders__lines__extra__product_options_value opt
@@ -52,7 +52,7 @@ select
             limit 1) 
         as quantity,
         (select 
-              modifier 
+              round(modifier ::numeric,2)
           from cscart.orders__lines__extra__product_options_value opt
         where opt._sdc_source_key_order_id=l._sdc_source_key_order_id 
             and opt.option_name ilike '%quantity%' 
@@ -72,6 +72,8 @@ select
             and option_name like '(%)%' 
             and modifier::numeric !=0
             limit 1) 
-        as price_plan
+        as price_plan_code,
+        p.drug_form
 
 from cscart.orders__lines l 
+left join {{ ref('cs_der_product') }} p on l.product_id=p.product_id

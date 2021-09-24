@@ -12,6 +12,6 @@ option_name	,
 case 
     when  option_type='S' and modifier::numeric !=0 and   option_name like '(%)%'
     then  regexp_replace(substring(option_name from '(\(.*\))'),'\(|\)','','g') 
-end as price_plan
+end as price_plan_code
 FROM cscart.orders__lines__extra__product_options_value
 order by option_id, _sdc_received_at desc

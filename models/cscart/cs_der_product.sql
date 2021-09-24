@@ -25,6 +25,7 @@ select
     cs.product_id ,
     cs.price,
 	lower(cs.product_code) as product_code,
+    upper(reverse(split_part(reverse(regexp_replace(cs.product,'\(.*\)|S$|s$','','g')),' ',1))) as drug_form,
     cs.status as status,
     case    when cs.status='A' then 'Active'
             when cs.status='D' then 'Disabled'
