@@ -13,6 +13,7 @@
         distinct on (p.rxno)
         p.patient_id,
         p.doctor_id,
+        p.account_id,
         p.nfo_status,
         p.rxno,
         p.fill_number,

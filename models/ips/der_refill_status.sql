@@ -9,6 +9,7 @@
   }}
   select  
         patient_id,
+        account_id,
         doctor_id,
         drug_id,
         last_tran_id,
@@ -30,12 +31,6 @@
         nbr_renewals,
         prescription_renewal,
         opportunity_stage,
-        --case 
-        --    when opportunity_ranking = 0 then 0
-        --    when api_category = 'Chronic' then opportunity_ranking+5000
-        --    when api_category = 'Accute' then opportunity_ranking+4000
-        --    else  opportunity_ranking
-        --end 
         opportunity_ranking,
         renewal_status,
         prescription_price,
