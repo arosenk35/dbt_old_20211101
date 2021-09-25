@@ -155,6 +155,60 @@ SELECT  distinct on(   coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_
             then 'guinea pig'
             else lower(btrim(regexp_replace(cs.pet_data__species,'\`|\.|-','','g'))) 
         end as species,
+		case 
+            when    cs.pet_data__species ilike '%dog%' or
+                    cs.pet_data__species ilike '%k%9%' or
+                    cs.pet_data__species ilike '%king%' or
+                    cs.pet_data__species ilike '%terrier%' or
+                    cs.pet_data__species ilike '%poodle%' or
+                    cs.pet_data__species ilike 'cani%' or
+                    cs.pet_data__species ilike '%hound%' or
+                    cs.pet_data__species ilike '%malte%' or
+                    cs.pet_data__species ilike '%pi%cher%' or
+                    cs.pet_data__species ilike '%doodle%' or
+                    cs.pet_data__species ilike '%spaniel%' or
+                    cs.pet_data__species ilike '%c%nine%' or
+                    cs.pet_data__species ilike '%Ch%hua%'
+            then 'dog'
+            when    cs.pet_data__species ilike '%bird%' or
+                    cs.pet_data__species ilike '%parrot%' or
+                    cs.pet_data__species ilike '%macaw%' or
+                    cs.pet_data__species ilike '%chicken%' or
+                    cs.pet_data__species ilike '%pigeon%' 
+            then 'bird'
+            when    cs.pet_data__species ilike '%rabbit%' or 
+                    cs.pet_data__species ilike '%bunny%'
+            then 'rab'
+            when    cs.pet_data__species ilike '%rat%' or
+                    cs.pet_data__species ilike '%mouse%' or
+                    cs.pet_data__species ilike '%rodent%'
+            then 'rat'
+            when    cs.pet_data__species ilike '%reptile%' or
+                    cs.pet_data__species ilike '%lizard%' or
+                    cs.pet_data__species ilike '%frog%' or
+                    cs.pet_data__species ilike '%snake%' or
+                    cs.pet_data__species ilike '%dragon%' or
+                    cs.pet_data__species ilike '%chameleon%'
+            then 'rep'
+            when    cs.pet_data__species ilike '%horse%'
+            then 'hor'
+            when    cs.pet_data__species ilike '%ferret%'
+            then 'frrts'
+            when    cs.pet_data__species ilike '%gerbil%' or
+                    cs.pet_data__species ilike '%hamster%'
+            then 'ger'
+            when    cs.pet_data__species ilike '%cat%' or
+                    cs.pet_data__species ilike '%siam%' or
+                    cs.pet_data__species ilike '%tabby%' or
+                    cs.pet_data__species ilike '%fe%ne%'  
+            then 'cat'
+            when    cs.pet_data__species ilike '%primate%' or 
+                    cs.pet_data__species ilike '%monke%'
+            then 'pri'
+            when    cs.pet_data__species ilike '%g%pig%' or 
+                    cs.pet_data__species ilike '%inea%pig%' 
+            then 'swine'
+        end as species_code,
         lower(btrim(regexp_replace(cs.pet_data__species,'\`|\.|-','','g'))) as orig_species,
         initcap(btrim(regexp_replace(cs.pet_data__breed,'\`|\.|-','','g'))) as breed,
 		nullif(lower(cs.pet_data__weight),'-')	 		                    as weight,
