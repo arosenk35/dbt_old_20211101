@@ -40,7 +40,7 @@
         bh.dispense_date, 
         bd.response_message, 
         p.created_date  as prescription_created_date,
-        bh.bill_date,
+        bd.created_date as bill_date,
         fp.delivery_date,
         fp.tracking_number,
         bh.fill_number, 
@@ -171,7 +171,7 @@ select
         null as dispense_date, 
         null as response_message, 
         p.created_date  as prescription_created_date,
-        h.bill_date,
+        null as bill_date,
         null as delivery_date,
         null as tracking_number,
         -1 as fill_number, 
@@ -247,7 +247,7 @@ select
 
 
 from ips.prescription p
-left join ips.bill_header h on  p.tran_id=h.rx_id
+left join ips.bill_header bh on  p.tran_id=bh.rx_id
 join ips.patient_master on p.patient_id = patient_master.id 
 join ips.doctor_master on  p.doctor_id = doctor_master.srno 
 join ips.drug_master on p.drug_id = drug_master.drug_id
@@ -256,7 +256,7 @@ LEFT JOIN ips.zip_master zm_pt ON patient_master.zip = zm_pt.srno
 LEFT JOIN ips.responsible_party_master ON p.account_id = responsible_party_master.srno 
 LEFT JOIN ips.zip_master zm_dr ON doctor_master.zip = zm_dr.srno
 left join {{ ref('dim_practice_map') }} pg on pg.practice=doctor_master.address
-where h.tran_id is null
+where bh.tran_id is null
 and p.rx_id not like 'otc%'
 and p.office_id = 2
 and p.active='Y'
