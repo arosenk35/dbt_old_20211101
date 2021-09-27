@@ -11,7 +11,7 @@
         p.rx_id       as rxno,
         p.rx_id::text||':'||fill_number::text as refill_id,
         bh.fill_number,
-        dh.delivery_date,
+        dh.delivery_date + dh.delivery_time::timestamp as delivery_date,
         dh.tracking_number
 
 FROM ips.prescription p 
