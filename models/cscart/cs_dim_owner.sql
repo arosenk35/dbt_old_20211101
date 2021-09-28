@@ -40,14 +40,14 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,
 			then btrim(initcap(substring(cs.b_lastname,POSITION(' ' in cs.b_lastname)+1,40)))
    			else btrim(initcap(reverse(split_part(reverse(btrim(cs.b_lastname)),' ',1))))  
 		end as lastname,
-		upper(cs.b_state) 										as state,
+		upper(btrim(cs.b_state)) 										as state,
 		cs.b_zipcode 											as zip,
 		nullif(regexp_replace(cs.b_phone,' |\.|-|\(|\)','','g'),'')  as phone,
-		nullif(cs.b_address,'') 								as address,
-		nullif(cs.b_address_2,'') 								as address2,
+		nullif(btrim(cs.b_address,'')) 								as address,
+		nullifbtrim(cs.b_address_2,''))								as address2,
 		upper(nullif(cs.b_country,'')) 							as country,
 		initcap(nullif(cs.b_county,''))							as county,
-		nullif(initcap(cs.b_city),'') 							as city,
+		nullif(initcap(btrim(cs.b_city),'') )							as city,
 		case 
 			when cs.email ilike '%ggvcp%' then null
 			when cs.email ilike '%ggcvp%' then null

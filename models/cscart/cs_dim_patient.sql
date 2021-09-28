@@ -211,7 +211,7 @@ SELECT  distinct on(   coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_
         end as species_code,
         lower(btrim(regexp_replace(cs.pet_data__species,'\`|\.|-','','g'))) as orig_species,
         initcap(btrim(regexp_replace(cs.pet_data__breed,'\`|\.|-','','g'))) as breed,
-		nullif(lower(cs.pet_data__weight),'-')	 		                    as weight,
+		btrim(nullif(lower(cs.pet_data__weight),'-'))	 		                    as weight,
 		TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second'        as last_order_date,
 		lower(regexp_replace(reverse(split_part(reverse(cs.lastname),' ',1))||split_part(cs.pet_data__name,' ',1),'\`| |\,|\&|\.|-|','','g'))  as key_patient,
 		lower(regexp_replace(split_part(lastname,'-',1) ||split_part(cs.pet_data__name,' ',1),'\`| |\,|\&|\.|-|','','g'))  as key_patient1,
