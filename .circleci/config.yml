@@ -89,21 +89,21 @@ jobs:
 
       - run:
           name: DBT IPS sales No TUM
-          no_output_timeout: 30m
+          no_output_timeout: 15m
           command: |
             . venv/bin/activate
             dbt run --profiles-dir=.  --models ips --exclude fact_refill_status_history_monthly calc_refill_status_sequence --target prod
 
       - run:
           name: DBT CsCart sales
-          no_output_timeout: 30m
+          no_output_timeout: 15m
           command: |
             . venv/bin/activate
             dbt run --profiles-dir=.  --models cscart --target prod
 
       - run:
           name: DBT  MasterData Mapping
-          no_output_timeout: 30m
+          no_output_timeout: 15m
           command: |
             . venv/bin/activate
             dbt run --profiles-dir=.  --models  mapped  cs_dim_product --target prod
@@ -162,7 +162,7 @@ workflows:
   hourly-workflow:
     triggers:
       - schedule:
-          cron: "0 8-18 * * *"
+          cron: "15 8-18 * * *"
           filters:
             branches:
               only:
