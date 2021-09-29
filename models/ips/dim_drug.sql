@@ -49,7 +49,7 @@
     dm.created_date,  
     dm.changed_date,  
     dm.acquisition_cost, 
-    dm.price_template_id        as price_plan_id,  
+    dm.m_price_template_id        as price_plan_id,  
     pth.description             as price_plan_description,
     regexp_replace(substring(pth.description from '(\(.*\))'),'\(|\)','','g') as price_plan_code, 
     pth.cost_type               as price_plan_cost_type,
@@ -76,6 +76,6 @@
     END as item_type,
     dm.drug like '%/%' as is_complex_drug
 FROM ips.drug_master dm
-left join ips.price_template_hdr pth on dm.price_template_id=tran_id
+left join ips.price_template_hdr pth on dm.m_price_template_id=tran_id
 left join {{ ref('dim_api_category') }} da on dm.drug  ilike '%'||da.master_drug||'%'
 order by drug_id
