@@ -7,28 +7,20 @@
       ]
   })
   }}
-
-  with max_created as (
-    select doctor_id,max(created_date) as max_created_date
-    from ips.prescription
-    group by doctor_id
-  ),
-
   
-  vet as(
+  with vet as(
     SELECT 
     coalesce(nullif(address,''),note)   as practice,
     nullif(address,'')                  as address,
     z.zipid::text                       as zip,
-    phone11||phone12||phone13 as phone1,
+    phone11||phone12||phone13           as phone1,
     coalesce(z.country,'USA')           as country,
     coalesce(z.state,'CA')              as state,
 	  z.city,
-    sv.max_created_date,
+    dm.created_date,
     active
 
 	FROM ips.doctor_master dm
-  join max_created sv on dm.srno=sv.doctor_id
   left join ips.zip_master z on dm.zip = z.srno
   )
   
@@ -41,7 +33,7 @@
   phone1,
   first_value(practice) OVER (PARTITION BY state,city,zip,phone1 order by 
                 case when active='Y' then 1 else 99 end,
-                max_created_date desc,                
+                created_date asc,                
 							  case when btrim(practice) is null then 99
 							  when address ilike '%vet%' then 2
 							  when address ilike '%hosp%' then 1 
@@ -57,7 +49,9 @@
 
  where nullif(btrim(practice),' ') is not null
  and length(practice)>2
+
  union all 
+
  select
  'Unknown',
  null,
