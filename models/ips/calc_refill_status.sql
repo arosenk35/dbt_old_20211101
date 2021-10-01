@@ -46,7 +46,7 @@
             then rx_expire_date
             else p.dispense_date::date + p.days_supply 
         end as next_refill_date,
-        p.first_fill,
+        p.is_first_fill,
         p.schedule_type,
         p.start_date,
         p.qty ,       

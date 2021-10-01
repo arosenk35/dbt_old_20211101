@@ -15,7 +15,7 @@ select
 
 FROM    {{ ref('fact_prescription') }} p
 join {{ ref('calc_refill_status') }} rs on p.rxno=rs.rxno
-where   p.first_fill and
+where   p.is_first_fill and
 p.transaction_type ='Prescription'
 and p.days_supply !=0
 and rs.remaining_refills!=0

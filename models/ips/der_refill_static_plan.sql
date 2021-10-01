@@ -4,7 +4,7 @@
     "post-hook": [
       after_commit("create index  index_{{this.name}}_on_rxno on {{this.schema}}.{{this.name}} (rxno)"),
       after_commit("create index  index_{{this.name}}_on_scenario on {{this.schema}}.{{this.name}} (scenario,rxno)"),
-      after_commit("create index  index_{{this.name}}_on_firstfill on {{this.schema}}.{{this.name}} (first_fill)")
+      after_commit("create index  index_{{this.name}}_on_firstfill on {{this.schema}}.{{this.name}} (is_first_fill)")
       ]
   })
   }}
@@ -19,7 +19,7 @@
         amount,
         rxno::text||fill_number as refill_id,
         schedule_type,
-        false::boolean as first_fill,
+        false::boolean as is_first_fill,
         case 
             when   refill_date is null then '0'
             when   refill_date-start_date <=interval '15 days' then '15'
@@ -51,7 +51,7 @@ union all
         p.amount,
         p.refill_id,
         p.schedule_type,
-        p.first_fill,
+        p.is_first_fill,
         p.days_since_first_fill_tier
     FROM {{ ref('fact_prescription') }} p
     where  transaction_type ='Prescription'
