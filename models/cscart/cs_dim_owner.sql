@@ -43,11 +43,11 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,
 		upper(btrim(cs.b_state)) 										as state,
 		cs.b_zipcode 											as zip,
 		nullif(regexp_replace(cs.b_phone,' |\.|-|\(|\)','','g'),'')  as phone,
-		nullif(btrim(cs.b_address,'')) 							as address,
-		nullif(btrim(cs.b_address_2,''))						as address2,
+		btrim(nullif(cs.b_address,'')) 							as address,
+		btrim(nullif(cs.b_address_2,''))						as address2,
 		upper(nullif(cs.b_country,'')) 							as country,
 		initcap(nullif(cs.b_county,''))							as county,
-		nullif(initcap(btrim(cs.b_city),'') )							as city,
+		initcap(btrim(nullif(cs.b_city,'')))							as city,
 		case 
 			when cs.email ilike '%ggvcp%' then null
 			when cs.email ilike '%ggcvp%' then null

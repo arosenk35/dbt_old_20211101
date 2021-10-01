@@ -65,9 +65,10 @@
         END as shipping_charge,
         'actuals' as scenario, 
         coalesce(p.days_supply,1)::integer as days_supply,
-        bh.fill_number=0 as first_fill,
+        bh.fill_number=0 as is_first_fill,
+        bh.fill_number>0 as is_refill_renewal,
         bh.fill_number=1 as fill_schedule_started,
-        no_of_refill=bh.fill_number as last_fill,
+        no_of_refill=bh.fill_number as is_last_fill,
         case 
             when p.days_supply <=15 then '15'
             when p.days_supply <=30 then '30'
@@ -198,9 +199,10 @@ select
         END as shipping_charge,
         'actuals' as scenario, 
         coalesce(p.days_supply,1)::integer as days_supply,
-        false as first_fill,
+        bh.fill_number=0 as is_first_fill,
+        bh.fill_number>0 as is_refill_renewal,
         false as fill_schedule_started,
-        false as last_fill,
+        false as is_last_fill,
         case 
                 when  p.days_supply <=15 then '15'
                 when  p.days_supply <=30 then '30'
