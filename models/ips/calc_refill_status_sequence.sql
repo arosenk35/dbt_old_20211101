@@ -20,8 +20,8 @@
             else dispense_date 
         end as status_date,
         days_supply,
-        first_fill,
-        last_fill,
+        is_first_fill,
+        is_last_fill,
         start_date,
         amount
 
@@ -39,7 +39,7 @@ union all
         p.no_of_refill,
         p.rx_expire_date::date as status_date,
         p.days_supply,
-        p.first_fill,
+        p.is_first_fill,
         p.last_fill,
         p.start_date,
         p.amount
@@ -62,8 +62,8 @@ union all
         no_of_refill,
         status_date,
         days_supply,
-        first_fill,
-        last_fill,
+        is_first_fill,
+        is_last_fill,
         start_date,
         amount
     from refills
