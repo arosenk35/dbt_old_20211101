@@ -74,8 +74,10 @@
           then 'compound-drug'
           else 'drug'
     END as item_type,
-    dm.drug like '%/%' as is_complex_drug
+    dm.drug like '%/%' as is_complex_drug,
+   (dis.drug_id is not null) as is_stock_drug
 FROM ips.drug_master dm
 left join ips.price_template_hdr pth on dm.m_price_template_id=tran_id
 left join {{ ref('dim_api_category') }} da on dm.drug  ilike '%'||da.master_drug||'%'
+left join {{ ref('dim_stock_drug') }} dis on dis.drug_id=dm.drug_id
 order by drug_id
