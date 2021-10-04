@@ -6,6 +6,7 @@
   })
   }}
 
+--- required for ltv calc
 with cohort as (
     select  b.patient_id,
             min(dispense_date) as min_dispense_date

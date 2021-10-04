@@ -20,6 +20,7 @@
         p.account_id,
         p.note, 
         p.rx_id as rxno, 
+        --- do not remove the sime colon it is being used everywhere and in all systems
         p.rx_id::text||':'||bh.fill_number::text as refill_id, 
         p.med_type, 
         p.sig, 
@@ -56,10 +57,10 @@
             then 'Samples'
             else 'Prescription'
         end as transaction_type,
-        CASE    when p.rx_id ilike '%otc%' and charge_to_account ='Y' 
-                then 0
-                else bh.patient_pay-bh.sales_tax_amount
-        END as prescription_charge,
+  --      CASE    when p.rx_id ilike '%otc%' and charge_to_account ='Y' 
+  --              then 0
+  --              else bh.patient_pay-bh.sales_tax_amount
+  --     END as prescription_charge,
         CASE when p.rx_id ilike '%otc%' and charge_to_account ='Y' 
                 then bh.patient_pay-bh.sales_tax_amount
         END as shipping_charge,
@@ -70,6 +71,7 @@
         bh.fill_number=1 as fill_schedule_started,
         no_of_refill=bh.fill_number as is_last_fill,
         case 
+            when p.days_supply is null then '15'
             when p.days_supply <=15 then '15'
             when p.days_supply <=30 then '30'
             when p.days_supply <=60 then '60'
@@ -100,15 +102,15 @@
             when p.no_of_refill!=bh.fill_number 
             then bh.fill_number+1 
         end as next_fill_number,
+
     case 
     when p.doctor_id < 1 then 'Unknown'
     else coalesce(pg.practice_group,'Unknown') 
     end as practice,
-    case when p.ips_bill='Y' 
-    then true 
-    else false 
-    end as auto_fill,
-        case 
+
+    (p.ips_bill='Y') as is_auto_fill,
+
+    case 
             when p.sig_code ilike 'fou%' then 'Office Use'
             when p.sig_code ilike 'for%offic%' then 'Office Use'
         else 'Patient Use'
@@ -121,11 +123,11 @@
     end flavor,
     p.sig_code,
     case 
-    when p.receive_through ='1' then 'Paper'
-    when p.receive_through ='2' then 'Phone'
-    when receive_through ='3' then 'Electronic'
-    when receive_through ='4' then 'Fax'
-    when receive_through ='5' then 'Transfer'
+        when p.receive_through ='1' then 'Paper'
+        when p.receive_through ='2' then 'Phone'
+        when receive_through ='3' then 'Electronic'
+        when receive_through ='4' then 'Fax'
+        when receive_through ='5' then 'Transfer'
     end origin,
     bh.acquisition_cost
 
@@ -143,6 +145,8 @@ left join {{ ref('dim_practice_map') }} pg on pg.practice=doctor_master.address
 WHERE p.office_id = 2 and bh.patient_pay-bh.sales_tax_amount !=0
 
 union all
+
+---- this is to track in-progress transactions
 
 select 
         p.patient_id, 
@@ -189,11 +193,11 @@ select
                 then 'Samples'
                 else 'Prescription'
         end as transaction_type,
-        CASE    
-                when p.rx_id ilike '%otc%' and charge_to_account ='Y' 
-                then 0
-                else bill_amount
-        END as prescription_charge,
+ --       CASE    
+ --              when p.rx_id ilike '%otc%' and charge_to_account ='Y' 
+ --               then 0
+ --               else bill_amount
+ --       END as prescription_charge,
         CASE    when p.rx_id ilike '%otc%' and charge_to_account ='Y' 
                 then bill_amount 
         END as shipping_charge,
@@ -204,6 +208,7 @@ select
         false as fill_schedule_started,
         false as is_last_fill,
         case 
+                when  p.days_supply is null then '15'
                 when  p.days_supply <=15 then '15'
                 when  p.days_supply <=30 then '30'
                 when  p.days_supply <=60 then '60'
@@ -219,10 +224,8 @@ select
             when p.doctor_id < 1 then 'Unknown'
             else coalesce(pg.practice_group,'Unknown') 
         end as practice,
-            case when p.ips_bill='Y' 
-        then true 
-        else false 
-        end as auto_fill,
+        
+        (p.ips_bill='Y') as is_auto_fill,
         case 
             when p.sig_code ilike 'fou%' then 'Office Use'
             when p.sig_code ilike 'for%offic%' then 'Office Use'
@@ -231,7 +234,6 @@ select
         case 
             when    sig ilike '%flavor%' and
                     split_part(split_part(sig,'(',2),')',1) ilike '%flavor%'
---btrim(regexp_replace(regexp_replace( split_part(split_part(sig,'(',2),')',1),'mls|\/|ml|flavors|flavor|[0-9]|\#','','g'),'  ',' ','g'))
             then btrim(regexp_replace(regexp_replace( split_part(split_part(sig,'(',2),')',1),'flavored|flavors|flavor','','g'),'  ',' ','g'))
         end flavor,
         sig_code,
