@@ -30,7 +30,8 @@ SELECT  _sdc_source_key_order_id as order_id,
             then 'USPS'
             when shipping ilike '%dhl%'
             then 'DHL'
-        end sipping_carrier
+        end sipping_carrier,
+        nullif(delivery_time,'')  as delivery_time
 
 
 FROM cscart.orders__shipping

@@ -47,7 +47,7 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,
 		btrim(nullif(cs.b_address_2,''))						as address2,
 		upper(nullif(cs.b_country,'')) 							as country,
 		initcap(nullif(cs.b_county,''))							as county,
-		initcap(btrim(nullif(cs.b_city,'')))							as city,
+		initcap(btrim(nullif(cs.b_city,'')))					as city,
 		case 
 			when cs.email ilike '%ggvcp%' then null
 			when cs.email ilike '%ggcvp%' then null
@@ -73,15 +73,27 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,
 				when coalesce(cs.b_firstname,'')||nullif(cs.b_lastname,'') ilike '%hosp%'   then 'Clinic'
 				when coalesce(cs.b_firstname,'')||nullif(cs.b_lastname,'') ilike '%clinic%' then 'Clinic'
                 when coalesce(cs.b_firstname,'')||nullif(cs.b_lastname,'') ilike '%animal%' then 'Clinic'
+				when coalesce(cs.b_firstname,'')||nullif(cs.b_lastname,'') ilike '%emergency%' then 'Clinic'
                 when coalesce(cs.b_firstname,'')||nullif(cs.b_lastname,'') ilike '%center%' then 'Clinic'
                 when coalesce(cs.b_firstname,'')||nullif(cs.b_lastname,'') ilike '%corpor%' then 'Clinic'
+				when coalesce(cs.b_firstname,'')||nullif(cs.s_lastname,'') ilike '%banfield%'    	then 'Corp'
+		        when coalesce(cs.b_firstname,'')||nullif(cs.s_lastname,'') ilike '%vca%'    		then 'Corp'
+				when coalesce(cs.b_firstname,'')||nullif(cs.s_lastname,'') ilike '%petco%'    		then 'Corp'
+				when coalesce(cs.b_firstname,'')||nullif(cs.s_lastname,'') ilike '%village%'    	then 'Corp'
+
+				when coalesce(cs.b_firstname,'')||nullif(cs.s_lastname,'') ilike '%emergency%' then 'Clinic'
+				when coalesce(cs.b_firstname,'')||nullif(cs.s_lastname,'') ilike '%vet %'   then 'Clinic'
+				when coalesce(cs.b_firstname,'')||nullif(cs.s_lastname,'') ilike '%hosp%'   then 'Clinic'
+				when coalesce(cs.b_firstname,'')||nullif(cs.s_lastname,'') ilike '%clinic%' then 'Clinic'
+                when coalesce(cs.b_firstname,'')||nullif(cs.s_lastname,'') ilike '%animal%' then 'Clinic'
+                when coalesce(cs.b_firstname,'')||nullif(cs.s_lastname,'') ilike '%center%' then 'Clinic'
+                when coalesce(cs.b_firstname,'')||nullif(cs.s_lastname,'') ilike '%corpor%' then 'Clinic'
                 when cs.email ilike '%hosp%'    then 'Clinic'
                 when cs.email ilike '%clinic%'  then 'Clinic'
                 when cs.email ilike '%animal%'  then 'Clinic'
                 when cs.email ilike '%center%'  then 'Clinic'
                 when cs.email ilike '%corpo%'   then 'Clinic'
                 when cs.email ilike '%payab%'   then 'Clinic'
-                when cs.email ilike '%account%' then 'Clinic'
                 else 'Patient'
         end as account_type
 

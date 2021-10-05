@@ -70,6 +70,7 @@ select
         end as days_since_first_order_tier,
         s.shipping_method,
         s.shipping_class,
+        s.delivery_time,
         sr.cold_shipping,
         case  when o.b_lastname like '%#%'
               then split_part(o.b_lastname,'#',2) 
