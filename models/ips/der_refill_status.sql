@@ -54,7 +54,7 @@
         master_rxno,
         master_rx_start_date,
         origin,
-        auto_fill,
+        is_auto_fill,
         product_renewal,
         sig,
         flavor

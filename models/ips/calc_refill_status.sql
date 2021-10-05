@@ -52,7 +52,7 @@
         p.qty ,       
         p.prescription_price,
         dmd.api_category,
-        auto_fill,
+        is_auto_fill,
         prescription_type,
         p.origin
 
