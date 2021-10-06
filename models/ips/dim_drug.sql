@@ -1,3 +1,4 @@
+---test
 {{
   config({
     "materialized": "table",
