@@ -48,11 +48,7 @@ SELECT  distinct on(coalesce(nullif(cs.pet_data__user_id,'0'),nullif(cs.user_id,
 		upper(nullif(cs.b_country,'')) 							as country,
 		initcap(nullif(cs.b_county,''))							as county,
 		initcap(btrim(nullif(cs.b_city,'')))					as city,
-		case 
-			when cs.email ilike '%ggvcp%' then null
-			when cs.email ilike '%ggcvp%' then null
-			else btrim(nullif(lower(cs.email),''))
-		end																as email,
+		{{ email_cleaned('cs.email') }} 						as email,
 		nullif(regexp_replace(cs.fax,' |\.|-|\(|\)','','g'),'')			as fax,
 		TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second' 	as last_order_date,
 		u.created_date,

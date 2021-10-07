@@ -7,7 +7,7 @@
 }}
 SELECT  
       initcap(u.company)      as company,  
-      btrim(nullif(lower(u.email),''))           as email, 
+      {{ email_cleaned('u.email') }} 						as email,
       initcap(u.firstname)    as firstname,
       u.is_root, 
       initcap(u.lastname)     as lastname,

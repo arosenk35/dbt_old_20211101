@@ -27,13 +27,7 @@
       then 'Unknown' 
       else coalesce(p.practice_group,'Unknown')
     end                   as practice,
-    case 
-      when dm.email ilike '%ggvcp%' 
-      then null
-      when dm.email not like '%@%' 
-      then null 
-      else lower(dm.email) 
-    end      as email, 
+    {{ email_cleaned('dm.email') }} as email,
     z.zipid::text         as zip,
     phone11 || phone12|| phone13 as phone1,
     phone21 || phone22|| phone23 as phone2,

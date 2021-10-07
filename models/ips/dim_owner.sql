@@ -23,13 +23,7 @@
         pm.address,
         pm.note,
         z.zipid::text                                           as zip,
-        case 
-              when pm.email ilike '%ggvcp%'
-              then null
-              when pm.email not like '%@%' 
-              then null 
-              else btrim(lower(pm.email))       
-        end   as email, 
+        {{ email_cleaned('pm.email') }} as email,
         pm.created_date,
         pm.address2,
         coalesce(upper(z.country),'USA')                      as country,

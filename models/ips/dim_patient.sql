@@ -33,7 +33,7 @@ SELECT distinct on (pm.id)
           when pm.sex ilike '%other%'   then  'Other'
           else nullif(pm.sex,'')
     end as sex,
-    lower(nullif(pm.email,''))          as email, 
+    {{ email_cleaned('pm.email') }} as email,
     pm.patnote, 
     pm.created_date, 
     pm.address,
