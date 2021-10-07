@@ -38,9 +38,9 @@
     end,'') ||' '|| coalesce(initcap(firstname),'') || ' ' || coalesce(initcap(lastname),'')) as vet,
     created_date, 
     changed_date, 
-    upin,
-    dea, 
-    sln,
+    nullif(upin,'') as upin,
+    nullif(dea,'') as dea, 
+    nullif(sln,'') as sln,
     note,
     designation_id, 
     case 
