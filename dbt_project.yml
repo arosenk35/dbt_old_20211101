@@ -29,6 +29,12 @@ seeds:
       +quote_columns: false
       +full_refresh: true
       +enabled: true
+    sales_territories:
+      +quote_columns: false
+      +full_refresh: true
+      +enabled: true
+      +column_types:
+        zip: varchar(5)
   #     +column_types:
   #       next_refill: date
   #       created_date: timestamp

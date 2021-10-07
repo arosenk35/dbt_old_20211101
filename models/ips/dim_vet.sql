@@ -90,8 +90,10 @@
 		case 
         when length(nullif(regexp_replace(sln,'[^0-9]+', '', 'g'),'') ) <4 then null
         else nullif(regexp_replace(sln,'[^0-9]+', '', 'g'),'')  
-    end   as key_sln
+    end   as key_sln,
+    st.territory
 
 	FROM ips.doctor_master dm
   left join ips.zip_master z on dm.zip = z.srno
   left join {{ ref('dim_practice_map') }} p on p.practice=coalesce(nullif(dm.address,''),dm.note)
+  left join {{ ref('sales_territories') }} st on z.zipid= st.zip
