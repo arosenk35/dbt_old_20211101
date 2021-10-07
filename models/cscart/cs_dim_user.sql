@@ -14,12 +14,5 @@ SELECT
       btrim(initcap(coalesce(firstname,''))||' '|| initcap(nullif(lastname,''))) as user_name,
       u.status, 
          TIMESTAMP 'epoch' + timestamp::numeric * INTERVAL '1 second' as created_date,
-      u.user_id,
-      case 
-            when u.email ilike '%ggvcp%'
-            then false
-            when u.email not like '%@%'
-            then false
-            else true
-      end as valid_email
+      u.user_id
 FROM cscart.users u
