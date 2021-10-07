@@ -29,9 +29,9 @@
     end                   as practice,
     {{ email_cleaned('dm.email') }} as email,
     z.zipid::text         as zip,
-    phone11 || phone12|| phone13 as phone1,
-    phone21 || phone22|| phone23 as phone2,
-    phone31 || phone32|| phone33 as phone3,
+    nullif(btrim(phone11 || phone12|| phone13),'') as phone1,
+    nullif(btrim(phone21 || phone22|| phone23),'') as phone2,
+    nullif(btrim(phone31 || phone32|| phone33),'') as phone3,
     btrim(coalesce(  case 
       when  lower(credential) in ('dr','dvm') 
           then  initcap(credential)
