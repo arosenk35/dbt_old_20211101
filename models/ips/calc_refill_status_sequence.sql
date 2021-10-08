@@ -40,7 +40,7 @@ union all
         p.rx_expire_date::date as status_date,
         p.days_supply,
         p.is_first_fill,
-        p.last_fill,
+        p.is_last_fill,
         p.start_date,
         p.amount
 
