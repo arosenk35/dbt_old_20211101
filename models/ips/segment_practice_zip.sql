@@ -10,7 +10,7 @@ select
         dmpr.zip,
         count (distinct b.doctor_id)  as nbr_vets,
         count (distinct b.patient_id) as nbr_patients,
-        count (distinct b.practice)   as nbr_practices,
+        count (distinct b.practice_id)  as nbr_practices,
         count (distinct b.drug_id)    as nbr_drugs,
         count (distinct b.account_id) as nbr_owners,
         count (distinct b.refill_id)  as ltv_refills_count,
@@ -23,6 +23,6 @@ select
         min(b.dispense_date)  as min_dispense_date,
         max(b.dispense_date)  as max_dispense_date
 FROM {{ ref('fact_prescription') }} b
-join {{ ref('dim_practice') }}  dmpr on dmpr.practice=b.practice
+join {{ ref('dim_practice') }}  dmpr on dmpr.practice_id=b.practice_id
 join {{ ref('der_refill_status') }} s on s.rxno=b.rxno
 group by dmpr.zip

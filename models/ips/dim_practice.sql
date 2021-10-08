@@ -38,7 +38,7 @@
 		  else 99
     end as rank_clinic
   FROM {{ ref('dim_practice_map') }}  m
-  left join {{ ref('dim_vet') }}  v on m.doctor_id=v.doctor_id
+  join {{ ref('dim_vet') }}  v on m.doctor_id=v.doctor_id
   order by 
   m.practice_id, rank asc,
   rank_clinic asc,

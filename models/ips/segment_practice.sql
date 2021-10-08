@@ -10,7 +10,6 @@ select
         b.practice_id,
         count (distinct b.doctor_id)  as nbr_vets,
         count (distinct b.patient_id) as nbr_patients,
-        count (distinct b.practice_id)   as nbr_practices,
         count (distinct b.drug_id)    as nbr_drugs,
         count (distinct b.account_id) as nbr_owners,
         count (distinct b.refill_id)  as ltv_refills_count,
