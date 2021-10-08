@@ -38,20 +38,20 @@ SELECT
 		and regexp_replace(lower(cs.city),' ','','g')=regexp_replace(lower(ips.city),' ','','g')
 		then 8
 		when cs.key_sln = ips.key_sln 
-		and (	phone 	=	ips.key_phone1
-			or 	phone  	=	ips.key_phone2
-			or 	phone  	=	ips.key_phone3
-			or  fax 	=	ips.key_phone1
-			or 	fax  	=	ips.key_phone2
-			or 	fax  	=	ips.key_phone3)
+		and (	phone 	=	ips.phone1
+			or 	phone  	=	ips.phone2
+			or 	phone  	=	ips.phone3
+			or  fax 	=	ips.phone1
+			or 	fax  	=	ips.phone2
+			or 	fax  	=	ips.phone3)
 		then 9		
 		when  	cs.key_vet	 = ips.key_vet 
-		and (	phone 	=	ips.key_phone1
-			or 	phone 	=	ips.key_phone2
-			or 	phone 	=	ips.key_phone3
-			or  fax 	=	ips.key_phone1
-			or 	fax  	=	ips.key_phone2
-			or 	fax  	=	ips.key_phone3)
+		and (	phone 	=	ips.phone1
+			or 	phone 	=	ips.phone2
+			or 	phone 	=	ips.phone3
+			or  fax 	=	ips.phone1
+			or 	fax  	=	ips.phone2
+			or 	fax  	=	ips.phone3)
 		then 10		
 		when cs.key_sln = ips.key_sln 
 		then 50		

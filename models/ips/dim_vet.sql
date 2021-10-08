@@ -9,9 +9,9 @@
       after_commit("create index  index_{{this.name}}_on_kv on {{this.schema}}.{{this.name}} (key_vet)"),
       after_commit("create index  index_{{this.name}}_on_ks on {{this.schema}}.{{this.name}} (key_sln)"),
       after_commit("create index  index_{{this.name}}_on_kclinic on {{this.schema}}.{{this.name}} (key_clinic)"),
-      after_commit("create index  index_{{this.name}}_on_kp1 on {{this.schema}}.{{this.name}} (key_phone1)"),
-      after_commit("create index  index_{{this.name}}_on_kp2 on {{this.schema}}.{{this.name}} (key_phone2)"),
-      after_commit("create index  index_{{this.name}}_on_kp3 on {{this.schema}}.{{this.name}} (key_phone3)"),
+      after_commit("create index  index_{{this.name}}_on_kp1 on {{this.schema}}.{{this.name}} (phone1)"),
+      after_commit("create index  index_{{this.name}}_on_kp2 on {{this.schema}}.{{this.name}} (phone2)"),
+      after_commit("create index  index_{{this.name}}_on_kp3 on {{this.schema}}.{{this.name}} (phone3)"),
       after_commit("create index  index_{{this.name}}_on_email on {{this.schema}}.{{this.name}} (email)")
       ]
   })
@@ -59,7 +59,8 @@
           or address ilike '%animal%'
           or address ilike '%corpor%'
           or address ilike '%pets%'
-    then nullif(regexp_replace(lower(coalesce(address,'')),'\`|\(|\)| |\,|\&|\.|-|','','g'),'')
+    then 
+        {{gen_fuzzy_key("address")}}  
     end as key_clinic,
 
     case  when dm.note ilike '%vet%'    then initcap(dm.note) 
@@ -68,12 +69,12 @@
           when dm.note ilike '%animal%' then initcap(dm.note) 
           when dm.note ilike '%corpor%' then initcap(dm.note) 
           when dm.note ilike '%pets%'   then initcap(dm.note) 
-          when dm.note ilike '%medical%'    then initcap(dm.note) 
-          when dm.note ilike '%dentistry%'    then initcap(dm.note) 
+          when dm.note ilike '%medical%'  then initcap(dm.note) 
+          when dm.note ilike '%dentistry%' then initcap(dm.note) 
 
           when address ilike '%vet%'    then initcap(address) 
-          when address ilike '%medical%'    then initcap(address) 
-          when address ilike '%dentistry%'    then initcap(address) 
+          when address ilike '%medical%'  then initcap(address) 
+          when address ilike '%dentistry%' then initcap(address) 
           when address ilike '%hosp%'   then initcap(address) 
           when address ilike '%clinic%' then initcap(address) 
           when address ilike '%animal%' then initcap(address) 
@@ -81,10 +82,7 @@
           when address ilike '%pets%'   then initcap(address) 
     end as clinic,
 
-     nullif(regexp_replace(lower(coalesce(firstname,'')||coalesce(lastname,'')),'\`|(dvm)|(dr )|(dr.)| |\`|\,|\&|\.|-|','','g'),'') as key_vet,
-		phone11 || phone12|| phone13  as key_phone1,
-    phone21 || phone22|| phone23  as key_phone2,
-    phone31 || phone32|| phone33  as key_phone3,
+    nullif(regexp_replace(lower(coalesce(firstname,'')||coalesce(lastname,'')),'\`|(dvm)|(dr )|(dr.)| |\`|\,|\&|\.|-|','','g'),'') as key_vet,
 		case 
         when length(nullif(regexp_replace(sln,'[^0-9]+', '', 'g'),'') ) <4 then null
         else nullif(regexp_replace(sln,'[^0-9]+', '', 'g'),'')  

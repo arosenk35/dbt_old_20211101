@@ -51,10 +51,9 @@ SELECT distinct on (pm.id)
     upper(coalesce(z.country,pm.country,'USA')) as country,
     upper(coalesce(z.state,'CA'))               as state,
 	initcap(z.city)                             as city,
-    lower(regexp_replace(pm.lastname||pm.firstname,'\`| |\,|\&|\.|-|','','g'))  as key_patient,
-    lower(regexp_replace(reverse(split_part(reverse(address2),' ',1))||split_part(split_part(firstname, ' ',1),'-',1),'\`| |\,|\&|\.|-|','','g')) as alt_key_patient,
-    lower(regexp_replace(nullif(split_part(split_part(lastname, ' ',1),'-',1),'')||split_part(split_part(firstname, ' ',1),'-',1),'\`| |\,|\&|\.|-|','','g'))  as key_patient_cleaned
-    
+    {{gen_fuzzy_key("pm.lastname||pm.firstname")}}  as key_patient,
+    {{gen_fuzzy_key("reverse(split_part(reverse(address2),' ',1))||split_part(split_part(firstname, ' ',1),'-',1)")}}  as alt_key_patient,
+    {{gen_fuzzy_key("split_part(split_part(lastname, ' ',1),'-',1)||split_part(split_part(firstname, ' ',1),'-',1)")}}   as key_patient_cleaned
 	FROM ips.patient_master pm
   join ips.prescription p on p.patient_id=pm.id
   left join {{ ref('dim_patient_doctor') }} pd on pm.id=pd.patient_id
