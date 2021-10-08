@@ -32,13 +32,14 @@
         lower(regexp_replace( coalesce(nullif(pm.care_of,''),pm.name) ,'\`| |\,|\&|\.|-|','','g'))    as key_owner,
         coalesce(oc.phone_numbers,'{}') as contact_phone_numbers,
         coalesce(oc.emails,'{}') as contact_emails,
-        case 		when coalesce(nullif(pm.care_of,''),pm.name) ilike '%vet%'    then 'Clinic'
+        case 		when coalesce(nullif(pm.care_of,''),pm.name) ilike '%vet %'   then 'Clinic'
+        	      when coalesce(nullif(pm.care_of,''),pm.name) ilike '%vca%'    then 'Clinic'
+                when coalesce(nullif(pm.care_of,''),pm.name) ilike '%banfield%'    then 'Clinic'
 							  when coalesce(nullif(pm.care_of,''),pm.name) ilike '%hosp%'   then 'Clinic'
 							  when coalesce(nullif(pm.care_of,''),pm.name) ilike '%clinic%' then 'Clinic'
                 when coalesce(nullif(pm.care_of,''),pm.name) ilike '%animal%' then 'Clinic'
                 when coalesce(nullif(pm.care_of,''),pm.name) ilike '%center%' then 'Clinic'
                 when coalesce(nullif(pm.care_of,''),pm.name) ilike '%corpor%' then 'Clinic'
-                when pm.email ilike '%vet%'     then 'Clinic'
                 when pm.email ilike '%hosp%'    then 'Clinic'
                 when pm.email ilike '%clinic%'  then 'Clinic'
                 when pm.email ilike '%animal%'  then 'Clinic'
