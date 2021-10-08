@@ -68,7 +68,12 @@
           when dm.note ilike '%animal%' then initcap(dm.note) 
           when dm.note ilike '%corpor%' then initcap(dm.note) 
           when dm.note ilike '%pets%'   then initcap(dm.note) 
+          when dm.note ilike '%medical%'    then initcap(dm.note) 
+          when dm.note ilike '%dentistry%'    then initcap(dm.note) 
+
           when address ilike '%vet%'    then initcap(address) 
+          when address ilike '%medical%'    then initcap(address) 
+          when address ilike '%dentistry%'    then initcap(address) 
           when address ilike '%hosp%'   then initcap(address) 
           when address ilike '%clinic%' then initcap(address) 
           when address ilike '%animal%' then initcap(address) 
@@ -93,3 +98,4 @@
   left join ips.zip_master z on dm.zip = z.srno
   left join {{ ref('dim_practice_map') }} p on p.doctor_id=dm.srno
   left join {{ ref('sales_territories') }} st on z.zipid= st.zip
+  where dm.office_id=2

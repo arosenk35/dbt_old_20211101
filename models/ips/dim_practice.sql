@@ -9,7 +9,7 @@
   select 
   distinct on(m.practice_id)
 	m.practice_id,	
-  initcap(coalesce(v.clinic,v.address,m.practice)) as practice,
+  initcap(coalesce(v.clinic,v.address,firstname||' '||lastname)) as practice,
 	firstname,
 	lastname,
 	email,
