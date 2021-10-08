@@ -85,7 +85,10 @@
         when length(nullif(regexp_replace(sln,'[^0-9]+', '', 'g'),'') ) <4 then null
         else nullif(regexp_replace(sln,'[^0-9]+', '', 'g'),'')  
     end   as key_sln,
-    st.territory
+    st.territory,
+    dm.website,
+    dm.dea_expiration_date,
+    dm.sln_expiration_date
 
 	FROM ips.doctor_master dm
   left join ips.zip_master z on dm.zip = z.srno
