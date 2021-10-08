@@ -8,7 +8,7 @@
         after_commit("create index  index_{{this.name}}_on_doctor on {{this.schema}}.{{this.name}} (doctor_id)"),
         after_commit("create index  index_{{this.name}}_on_patient on {{this.schema}}.{{this.name}} (patient_id)"),
         after_commit("create index  index_{{this.name}}_on_account on {{this.schema}}.{{this.name}} (account_id)"),
-        after_commit("create index  index_{{this.name}}_on_practice on {{this.schema}}.{{this.name}} (practice)")
+        after_commit("create index  index_{{this.name}}_on_practice_id on {{this.schema}}.{{this.name}} (practice_id)")
       ]
   })
   }}
@@ -103,10 +103,8 @@
             then bh.fill_number+1 
         end as next_fill_number,
 
-    case 
-    when p.doctor_id < 1 then 'Unknown'
-    else coalesce(pg.practice_group,'Unknown') 
-    end as practice,
+    pg.practice_id,
+    pgp.practice,
 
     (p.ips_bill='Y') as is_auto_fill,
 
@@ -141,7 +139,8 @@ left join {{ ref('fact_delivery') }} fp on fp.refill_id=p.rx_id::text||':'||bh.f
 left join ips.zip_master zm_pt ON patient_master.zip = zm_pt.srno
 left join ips.responsible_party_master ON bh.account_id = responsible_party_master.srno 
 left join ips.zip_master zm_dr ON doctor_master.zip = zm_dr.srno
-left join {{ ref('dim_practice_map') }} pg on pg.practice=doctor_master.address
+left join {{ ref('dim_vet') }} pg on pg.doctor_id=p.doctor_id
+left join {{ ref('dim_practice') }} pgp on pg.practice_id=pgp.practice_id
 WHERE p.office_id = 2 and bh.patient_pay-bh.sales_tax_amount !=0
 
 union all
@@ -220,10 +219,8 @@ select
         '0' as days_since_first_fill_tier,
         0 as days_since_first_fill,
         0 as next_fill_number,
-        case 
-            when p.doctor_id < 1 then 'Unknown'
-            else coalesce(pg.practice_group,'Unknown') 
-        end as practice,
+        pg.practice_id,
+        pgp.practice,
         
         (p.ips_bill='Y') as is_auto_fill,
         case 
@@ -257,7 +254,8 @@ LEFT JOIN ips.facility_master ON patient_master.facility_id = facility_master.sr
 LEFT JOIN ips.zip_master zm_pt ON patient_master.zip = zm_pt.srno
 LEFT JOIN ips.responsible_party_master ON p.account_id = responsible_party_master.srno 
 LEFT JOIN ips.zip_master zm_dr ON doctor_master.zip = zm_dr.srno
-left join {{ ref('dim_practice_map') }} pg on pg.practice=doctor_master.address
+left join {{ ref('dim_vet') }} pg on pg.doctor_id=p.doctor_id
+left join {{ ref('dim_practice') }} pgp on pg.practice_id=pgp.practice_id
 where bh.tran_id is null
 and p.rx_id not like 'otc%'
 and p.office_id = 2

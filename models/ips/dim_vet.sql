@@ -4,7 +4,7 @@
     "post-hook": [
       after_commit("create index  index_{{this.name}}_on_id on {{this.schema}}.{{this.name}} (doctor_id)"),
       after_commit("create index  index_{{this.name}}_on_clinic on {{this.schema}}.{{this.name}} (clinic)"),
-      after_commit("create index  index_{{this.name}}_on_practice on {{this.schema}}.{{this.name}} (practice)"),
+      after_commit("create index  index_{{this.name}}_on_practice on {{this.schema}}.{{this.name}} (practice_id)"),
       after_commit("create index  index_{{this.name}}_on_vet on {{this.schema}}.{{this.name}} (vet)"),
       after_commit("create index  index_{{this.name}}_on_kv on {{this.schema}}.{{this.name}} (key_vet)"),
       after_commit("create index  index_{{this.name}}_on_ks on {{this.schema}}.{{this.name}} (key_sln)"),
@@ -17,16 +17,12 @@
   })
   }}
 
- SELECT 
+ SELECT distinct on( dm.srno)
     dm.srno as doctor_id, 
     initcap(firstname)  as firstname,
     initcap(lastname)   as lastname,
     nullif(address,'')  as address, 
-    case 
-      when dm.srno < 1 
-      then 'Unknown' 
-      else coalesce(p.practice_group,'Unknown')
-    end                   as practice,
+    p.practice_id,
     {{ email_cleaned('dm.email') }} as email,
     z.zipid::text         as zip,
     nullif(btrim(phone11 || phone12|| phone13),'') as phone1,
@@ -47,7 +43,7 @@
       when  lower(credential) in ('dr','dvm') 
       then  initcap(credential)
     end as credential, 
-    address2,
+    nullif(address2,'') as address2,
     coalesce(z.country,'USA') as country,
     coalesce(z.state,'CA')    as state,
 	  initcap(z.city)           as city,
@@ -66,7 +62,12 @@
     then nullif(regexp_replace(lower(coalesce(address,'')),'\`|\(|\)| |\,|\&|\.|-|','','g'),'')
     end as key_clinic,
 
-        case  
+    case  when dm.note ilike '%vet%'    then initcap(dm.note) 
+          when dm.note ilike '%hosp%'   then initcap(dm.note) 
+          when dm.note ilike '%clinic%' then initcap(dm.note) 
+          when dm.note ilike '%animal%' then initcap(dm.note) 
+          when dm.note ilike '%corpor%' then initcap(dm.note) 
+          when dm.note ilike '%pets%'   then initcap(dm.note) 
           when address ilike '%vet%'    then initcap(address) 
           when address ilike '%hosp%'   then initcap(address) 
           when address ilike '%clinic%' then initcap(address) 
@@ -90,5 +91,5 @@
 
 	FROM ips.doctor_master dm
   left join ips.zip_master z on dm.zip = z.srno
-  left join {{ ref('dim_practice_map') }} p on p.practice=coalesce(nullif(dm.address,''),dm.note)
+  left join {{ ref('dim_practice_map') }} p on p.doctor_id=dm.srno
   left join {{ ref('sales_territories') }} st on z.zipid= st.zip

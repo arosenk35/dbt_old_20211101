@@ -2,15 +2,15 @@
   config({
     "materialized": "table",
     "post-hook": [
-      after_commit("create index  index_{{this.name}}_on_id on {{this.schema}}.{{this.name}} (practice)")]
+      after_commit("create index  index_{{this.name}}_on_id on {{this.schema}}.{{this.name}} (practice_id)")]
   })
   }}
 
 select 
-        b.practice,
+        b.practice_id,
         count (distinct b.doctor_id)  as nbr_vets,
         count (distinct b.patient_id) as nbr_patients,
-        count (distinct b.practice)   as nbr_practices,
+        count (distinct b.practice_id)   as nbr_practices,
         count (distinct b.drug_id)    as nbr_drugs,
         count (distinct b.account_id) as nbr_owners,
         count (distinct b.refill_id)  as ltv_refills_count,
@@ -24,5 +24,4 @@ select
         max(b.dispense_date)  as max_dispense_date
 FROM {{ ref('fact_prescription') }} b
 join {{ ref('der_refill_status') }} s on s.rxno=b.rxno
-      where nullif(btrim(b.practice),' ') is not null
-group by b.practice
+group by b.practice_id
