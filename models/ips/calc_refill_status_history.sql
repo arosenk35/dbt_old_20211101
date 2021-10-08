@@ -19,7 +19,7 @@ distinct on (rxno,status_date)
     s.drug_id,
     s.no_of_refill,
     s.days_supply,
-    s.first_fill,
+    s.is_first_fill,
     s.rx_expire_date,
     s.last_fill,
     s.amount,
