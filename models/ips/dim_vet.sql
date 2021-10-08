@@ -61,7 +61,6 @@
           or address ilike '%hosp%' 
           or address ilike '%clinic%'
           or address ilike '%animal%'
-          or address ilike '%center%'
           or address ilike '%corpor%'
           or address ilike '%pets%'
     then nullif(regexp_replace(lower(coalesce(address,'')),'\`|\(|\)| |\,|\&|\.|-|','','g'),'')
@@ -72,7 +71,6 @@
           when address ilike '%hosp%'   then initcap(address) 
           when address ilike '%clinic%' then initcap(address) 
           when address ilike '%animal%' then initcap(address) 
-          when address ilike '%center%' then initcap(address) 
           when address ilike '%corpor%' then initcap(address) 
           when address ilike '%pets%'   then initcap(address) 
     end as clinic,
