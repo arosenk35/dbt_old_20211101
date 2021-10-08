@@ -17,7 +17,7 @@
         nullif(btrim(pm.phone11 || pm.phone12 || pm.phone13),'')   as phone1,
         nullif(btrim(pm.phone21 || pm.phone22 || pm.phone23),'')   as phone2,
         nullif(btrim(pm.fax1 ||  pm.fax2 ||  pm.fax3),'')          as fax,
-        btrim(initcap(coalesce(pm.name,nullif(pm.care_of,''))))    as owner_name, 
+        btrim(initcap(coalesce(nullif(pm.name,''),pm.care_of)))    as owner_name, 
 
             case 
                   when nullif(pm.name,'') is not null
@@ -40,16 +40,16 @@
         coalesce(upper(z.country),'USA')                      as country,
         coalesce(upper(z.state),'CA')                         as state,
         initcap(z.city) as city,
-        lower(regexp_replace( coalesce(nullif(pm.care_of,''),pm.name) ,'\`| |\,|\&|\.|-|','','g'))    as key_owner,
+        lower(regexp_replace( coalesce(nullif(pm.name,''),pm.care_of) ,'\`| |\,|\&|\.|-|','','g'))    as key_owner,
         coalesce(oc.phone_numbers,'{}') as contact_phone_numbers,
         coalesce(oc.emails,'{}') as contact_emails,
-        case 		when coalesce(nullif(pm.care_of,''),pm.name) ilike '%vet %'   then 'Clinic'
-        	      when coalesce(nullif(pm.care_of,''),pm.name) ilike '%vca%'    then 'Clinic'
-                when coalesce(nullif(pm.care_of,''),pm.name) ilike '%banfield%'    then 'Clinic'
-							  when coalesce(nullif(pm.care_of,''),pm.name) ilike '%hosp%'   then 'Clinic'
-							  when coalesce(nullif(pm.care_of,''),pm.name) ilike '%clinic%' then 'Clinic'
-                when coalesce(nullif(pm.care_of,''),pm.name) ilike '%animal%' then 'Clinic'
-                when coalesce(nullif(pm.care_of,''),pm.name) ilike '%corpor%' then 'Clinic'
+        case 		when coalesce(nullif(pm.name,''),pm.care_of) ilike '%vet %'   then 'Clinic'
+        	      when coalesce(nullif(pm.name,''),pm.care_of) ilike '%vca%'    then 'Clinic'
+                when coalesce(nullif(pm.name,''),pm.care_of) ilike '%banfield%'    then 'Clinic'
+							  when coalesce(nullif(pm.name,''),pm.care_of) ilike '%hosp%'   then 'Clinic'
+							  when coalesce(nullif(pm.name,''),pm.care_of) ilike '%clinic%' then 'Clinic'
+                when coalesce(nullif(pm.name,''),pm.care_of) ilike '%animal%' then 'Clinic'
+                when coalesce(nullif(pm.name,''),pm.care_of) ilike '%corpor%' then 'Clinic'
                 when pm.email ilike '%hosp%'    then 'Clinic'
                 when pm.email ilike '%clinic%'  then 'Clinic'
                 when pm.email ilike '%animal%'  then 'Clinic'
