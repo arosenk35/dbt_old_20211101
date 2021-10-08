@@ -17,17 +17,17 @@
         nullif(btrim(pm.phone11 || pm.phone12 || pm.phone13),'')   as phone1,
         nullif(btrim(pm.phone21 || pm.phone22 || pm.phone23),'')   as phone2,
         nullif(btrim(pm.fax1 ||  pm.fax2 ||  pm.fax3),'')          as fax,
-        btrim(initcap(coalesce(nullif(pm.care_of,''),pm.name))) as owner_name, 
+        btrim(initcap(coalesce(pm.name,nullif(pm.care_of,''))))    as owner_name, 
 
-        case 
-              when nullif(care_of,'') is not null
-              then initcap(split_part(regexp_replace(pm.care_of,'\,','','g'),' ',1)) 
-              else initcap(split_part(regexp_replace(pm.name,'\,','','g'),' ',2))
-        end as firstname,
-        case  when nullif(care_of,'') is not null
-              then initcap(split_part(regexp_replace(pm.care_of,'\,','','g'),' ',2)) 
-              else initcap(split_part(regexp_replace(pm.name,'\,','','g'),' ',1))
-        end as lastname,
+            case 
+                  when nullif(pm.name,'') is not null
+		      then initcap(split_part(regexp_replace(pm.name,'\,','','g'),' ',2))
+                  else initcap(split_part(regexp_replace(pm.care_of,'\,','','g'),' ',1)) 
+            end as firstname,
+            case  when nullif(pm.name,'') is not null
+			then initcap(split_part(regexp_replace(pm.name,'\,','','g'),' ',1))
+                  else initcap(split_part(regexp_replace(pm.care_of,'\,','','g'),' ',2)) 
+            end as lastname,
         
         initcap(nullif(pm.care_of,''))                          as care_of,
         initcap(nullif(pm.name,''))                             as patient_name,
