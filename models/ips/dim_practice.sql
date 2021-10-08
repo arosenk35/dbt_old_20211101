@@ -27,6 +27,7 @@
 	sln_expiration_date,
 	dea,
 	sln,
+  organization_id,
 	case when active='Y' then 1 else 99 end as rank,
 	case    when v.clinic is not null     then 1
           when address ilike '%vet%'    then 1
@@ -39,6 +40,7 @@
     end as rank_clinic
   FROM {{ ref('dim_practice_map') }}  m
   join {{ ref('dim_vet') }}  v on m.doctor_id=v.doctor_id
+  left join {{ ref('dim_organization') }} org on v.clinic ilike '%'||org.name||'%'
   order by 
   m.practice_id, rank asc,
   rank_clinic asc,
