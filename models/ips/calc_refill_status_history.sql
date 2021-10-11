@@ -21,7 +21,7 @@ distinct on (rxno,status_date)
     s.days_supply,
     s.is_first_fill,
     s.rx_expire_date,
-    s.last_fill,
+    s.is_last_fill,
     s.amount,
     s.start_date,
     case  
