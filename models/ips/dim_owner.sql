@@ -17,17 +17,16 @@
         nullif(btrim(pm.phone11 || pm.phone12 || pm.phone13),'')   as phone1,
         nullif(btrim(pm.phone21 || pm.phone22 || pm.phone23),'')   as phone2,
         nullif(btrim(pm.fax1 ||  pm.fax2 ||  pm.fax3),'')          as fax,
-        btrim(initcap(coalesce(nullif(pm.name,''),pm.care_of)))    as owner_name, 
-
-      case 
-            when nullif(pm.name,'') is not null
-            then initcap(split_part(regexp_replace(pm.name,'\,','','g'),' ',2))
-            else initcap(split_part(regexp_replace(pm.care_of,'\,','','g'),' ',1)) 
-      end as firstname,
-      case  when nullif(pm.name,'') is not null
-            then initcap(split_part(regexp_replace(pm.name,'\,','','g'),' ',1))
-            else initcap(split_part(regexp_replace(pm.care_of,'\,','','g'),' ',2)) 
-      end as lastname,
+      
+        btrim(initcap(coalesce(nullif(pm.care_of,''),pm.name)))    as owner_name, 
+        case when nullif(pm.care_of,'') is not null
+              then initcap(split_part(regexp_replace(pm.care_of,'\,','','g'),' ',1)) 
+              else initcap(split_part(regexp_replace(pm.name,'\,','','g'),' ',2))
+        end as firstname,
+        case  when nullif(pm.name,'') is not null
+              then initcap(split_part(regexp_replace(pm.name,'\,','','g'),' ',1))
+              else initcap(split_part(regexp_replace(pm.care_of,'\,','','g'),' ',2)) 
+        end as lastname,        
         
         initcap(nullif(pm.care_of,''))                          as care_of,
         initcap(nullif(pm.name,''))                             as patient_name,
@@ -40,14 +39,14 @@
         coalesce(upper(z.country),'USA')                      as country,
         coalesce(upper(z.state),'CA')                         as state,
         initcap(z.city) as city,
-        {{gen_fuzzy_key("coalesce(nullif(pm.name,''),pm.care_of)")}}    as key_owner,
+        {{gen_fuzzy_key("coalesce(nullif(pm.care_of,''),pm.name)")}}    as key_owner,
         coalesce(oc.phone_numbers,'{}') as contact_phone_numbers,
         coalesce(oc.emails,'{}') as contact_emails,
         case      when coalesce(nullif(pm.name,''),pm.care_of) ilike '%vet %'   then 'Clinic'
-        	      when coalesce(nullif(pm.name,''),pm.care_of) ilike '%vca%'    then 'Clinic'
+        	        when coalesce(nullif(pm.name,''),pm.care_of) ilike '%vca%'    then 'Clinic'
                   when coalesce(nullif(pm.name,''),pm.care_of) ilike '%banfield%'    then 'Clinic'
-			when coalesce(nullif(pm.name,''),pm.care_of) ilike '%hosp%'   then 'Clinic'
-			when coalesce(nullif(pm.name,''),pm.care_of) ilike '%clinic%' then 'Clinic'
+                  when coalesce(nullif(pm.name,''),pm.care_of) ilike '%hosp%'   then 'Clinic'
+                  when coalesce(nullif(pm.name,''),pm.care_of) ilike '%clinic%' then 'Clinic'
                   when coalesce(nullif(pm.name,''),pm.care_of) ilike '%animal%' then 'Clinic'
                   when coalesce(nullif(pm.name,''),pm.care_of) ilike '%corpor%' then 'Clinic'
                   when pm.email ilike '%hosp%'    then 'Clinic'
