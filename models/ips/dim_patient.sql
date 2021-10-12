@@ -39,7 +39,6 @@ SELECT distinct on (pm.id)
     pm.address,
     pm.address2,
     z.zipid::text as zip, 
-    pm.death_date, 
     initcap(pm.patient_type) as species,
     pm.deceased_date as dod, 
     pm.account_type, 
