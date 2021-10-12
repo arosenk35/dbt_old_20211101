@@ -96,4 +96,5 @@
   left join ips.zip_master z on dm.zip = z.srno
   left join {{ ref('dim_practice_map') }} p on p.doctor_id=dm.srno
   left join {{ ref('sales_territories') }} st on z.zipid= st.zip
-  where dm.office_id is null or dm.office_id =2
+  --ignore office_id it lies!
+  --where dm.office_id is null or dm.office_id =2
