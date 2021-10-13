@@ -106,7 +106,7 @@ jobs:
           no_output_timeout: 15m
           command: |
             . venv/bin/activate
-            dbt run --profiles-dir=.  --models  mapped  cs_dim_product --target prod
+            dbt run --profiles-dir=.  --models  mapped  cs_dim_product confluent --target prod
 
   daily:
     docker:
