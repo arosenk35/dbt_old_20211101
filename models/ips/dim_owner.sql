@@ -34,7 +34,8 @@
         pm.note,
         z.zipid::text                                           as zip,
         {{ email_cleaned('pm.email') }} as email,
-        pm.created_date,
+        coalesce(pm.created_date,pm.changed_date)::timestamp     as created_date,
+        coalesce(pm.changed_date,pm.created_date)::timestamp     as changed_date,
         pm.address2,
         coalesce(upper(z.country),'USA')                      as country,
         coalesce(upper(z.state),'CA')                         as state,
@@ -43,7 +44,7 @@
         coalesce(oc.phone_numbers,'{}') as contact_phone_numbers,
         coalesce(oc.emails,'{}') as contact_emails,
         case      when coalesce(nullif(pm.name,''),pm.care_of) ilike '%vet %'   then 'Clinic'
-        	        when coalesce(nullif(pm.name,''),pm.care_of) ilike '%vca%'    then 'Clinic'
+        	      when coalesce(nullif(pm.name,''),pm.care_of) ilike '%vca%'    then 'Clinic'
                   when coalesce(nullif(pm.name,''),pm.care_of) ilike '%banfield%'    then 'Clinic'
                   when coalesce(nullif(pm.name,''),pm.care_of) ilike '%hosp%'   then 'Clinic'
                   when coalesce(nullif(pm.name,''),pm.care_of) ilike '%clinic%' then 'Clinic'
@@ -59,10 +60,9 @@
         end as account_type,
         case when pm.active='Y' then true else false end active
 
-	FROM ips.responsible_party_master pm
-  left join {{ ref('dim_owner_contacts') }} oc on pm.srno=oc.account_id
-  left join ips.zip_master z  on pm.zip = z.srno
-  where name not like '%, +%'
-  order by 
-  pm.srno, 
-  case when pm.active='Y' then 1 else 99 end
+FROM  ips.responsible_party_master pm
+      left join {{ ref('dim_owner_contacts') }} oc on pm.srno=oc.account_id
+      left join ips.zip_master z  on pm.zip = z.srno
+where exists (select 'x' from ips.prescription p where pm.srno=p.account_id and p.office_id=2)
+order by pm.srno, 
+      case when pm.active='Y' then 1 else 99 end
