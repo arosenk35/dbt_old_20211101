@@ -11,11 +11,13 @@
   
   vet as(
     SELECT 
+      
       case  when nullif(address,'') is null then
               regexp_replace(replace(replace(replace(replace(replace(lower(note),'street','st'),'drive','dr'),'avenue','ave'),'road','rd'),'floor','fl'),'\#|\''|\`| |\,|\&|\.|-|','','g')
             else
               regexp_replace(replace(replace(replace(replace(replace(lower(address),'street','st'),'drive','dr'),'avenue','ave'),'road','rd'),'floor','fl'),'\#|\''|\`| |\,|\&|\.|-|','','g')
-      end as practice_clean,    
+      end as fuzzy_key,   
+
       btrim(coalesce(nullif(address,''),note))  as practice,
       nullif(address,'')                  as address,
       z.zipid::text                       as zip,
@@ -33,7 +35,6 @@
   left join ips.zip_master z on dm.zip = z.srno
   where  exists (select 'x' from ips.prescription p where dm.srno=p.doctor_id and p.office_id=2)
 	--  ignore office_id it lies!
-  --  where dm.office_id is null or dm.office_id =2
   ),
   
   fuzzy as (select 
@@ -86,7 +87,7 @@
                 practice_id_map
  
    FROM vet
-   order by practice_clean
+   order by fuzzy_key
    )
 
   select     
