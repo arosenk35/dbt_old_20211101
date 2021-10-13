@@ -56,3 +56,7 @@ models:
       description: This schema contains all of the mapped data
       schema: mapped
       materialized: table
+    confluent:
+      description: This schema confluent related views
+      schema: confluent
+      materialized: view
