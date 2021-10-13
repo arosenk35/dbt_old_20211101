@@ -1,4 +1,4 @@
-select row_to_json(j)::json as account,max_dispense_date
+select row_to_json(j)::json as account,created_date
 from(
         select  o.account_id      as ips_account_id , 
                 '+1'||o.phone1    as phoneNumber,
@@ -14,7 +14,7 @@ from(
                 o.country ,
                 o.state ,
                 o.city ,
-	max_dispense_date,
+	        o.created_date::timestamp,
 	coalesce((select true from analytics_cscart.cs_dim_owner cs_o where cs_o.email=o.email limit 1),false)::boolean as cscart_user,
                 (select jsonb_agg((select x from (select
                                 ips_patient_id,
@@ -23,7 +23,7 @@ from(
                                 sex,
                                 species,
                                 doctor,
-								                dod
+				dod
                                 )x))
                                 FROM
                                 (SELECT 
@@ -49,10 +49,10 @@ from(
                                                 'sln',coalesce(sln,'')
                                         ) doctor ,  
                                         	p.dob as dob,
-		                                  to_char(p.dob,'MM-dd') as dobString,
+		                                to_char(p.dob,'MM-dd') as dobString,
                                           	coalesce(p.sex,'')    as sex,
                                           	coalesce(species,'')  as species,
-								 			                p.dod
+						p.dod
                                 FROM    analytics_blue.dim_patient p
                                         join  analytics_blue.dim_vet v on p.doctor_id=v.doctor_id
                 where p.account_id=o.account_id) patient_row
