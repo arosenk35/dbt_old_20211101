@@ -93,6 +93,7 @@
     dm.sln_expiration_date
 
 	FROM ips.doctor_master dm
+	where  exists (select 'x' from ips.prescription p where dm.srno=p.doctor_id and p.office_id=2)
   left join ips.zip_master z on dm.zip = z.srno
   left join {{ ref('dim_practice_map') }} p on p.doctor_id=dm.srno
   left join {{ ref('sales_territories') }} st on z.zipid= st.zip

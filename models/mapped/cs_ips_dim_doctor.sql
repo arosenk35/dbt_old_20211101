@@ -14,7 +14,7 @@ SELECT
 		ips.vet 				as ips_doctor_name,
 		ips.sln    				as ips_sln,
 		ips.clinic 				as ips_clinic,
-		ips.practice 			as ips_practice,
+		ips.practice_id 	    as ips_practice_id,
 		ips.dea 				as ips_dea,
 
 	case 
