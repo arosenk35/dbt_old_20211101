@@ -1,4 +1,5 @@
-select row_to_json(j)::json as account,changed_date
+select row_to_json(j)::json as account,
+now() as changed_date
 from(
         select  o.account_id      as ips_account_id , 
                 '+1'||o.phone1    as phoneNumber,
@@ -14,7 +15,7 @@ from(
                 o.country ,
                 o.state ,
                 o.city ,
-	        o.changed_date::timestamp ,
+	        o.changed_date ,
 	coalesce((select true from analytics_cscart.cs_dim_owner cs_o where cs_o.email=o.email limit 1),false)::boolean as cscart_user,
                 (select jsonb_agg((select x from (select
                                 ips_patient_id,
