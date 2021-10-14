@@ -1,5 +1,4 @@
-select j as record,
---row_to_json(j)::jsonb as "record",
+select row_to_json(j)::jsonb as "record",
 current_timestamp  at time zone 'america/new_york' as changed_date
 from( select email,data.owner::jsonb||json_build_object('patients',data.patients::jsonb)::jsonb as "dataFields" from
         (select  o.email,
