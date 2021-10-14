@@ -41,6 +41,7 @@
     dm.strength_value, 
     nullif(dm.generic,'')       as generic, 
     lower(dm.quick_code)        as quick_code, 
+    expire_date_days            as bud_days,
     dm.qty, 
     dm.qty_pack, 
     dm.color, 
