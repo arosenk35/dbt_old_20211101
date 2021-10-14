@@ -1,5 +1,5 @@
 select row_to_json(j)::json as account,
-now() as changed_date
+current_timestamp  at time zone 'america/new_york' as changed_date
 from(
         select  o.account_id      as ips_account_id , 
                 '+1'||o.phone1    as phoneNumber,
@@ -63,5 +63,5 @@ from(
        	where o.email is not null
 	      and account_type='Patient'
 				and active
-        limit 5
+        limit 1
 	) j
