@@ -1,22 +1,20 @@
-select row_to_json(j)::json as account,
+select row_to_json(j)::jsonb as "record",
 current_timestamp  at time zone 'america/new_york' as changed_date
-from(
-        select  o.account_id      as ips_account_id , 
-                '+1'||o.phone1    as phoneNumber,
-                o.owner_name,
-                o.address,
-                o.zip ,
-                o.account_type,
-                case when 1=2
-                     then 'andrew.papamichael+'||o.account_id::text||'@bluerabbit.vet'
-                else o.email 
-                end email,
-                coalesce(o.address2,'') as address2 ,
-                o.country ,
-                o.state ,
-                o.city ,
-	        o.changed_date ,
-	coalesce((select true from analytics_cscart.cs_dim_owner cs_o where cs_o.email=o.email limit 1),false)::boolean as cscart_user,
+from( select email,data.owner::jsonb||json_build_object('patients',data.patients::jsonb)::jsonb as "dataFields" from
+        (select  o.email,
+		json_build_object(
+			'ips_account_id',o.account_id,
+			'phoneNumber' ,'+1'||o.phone1,
+                        'owner_name',o.owner_name,
+			'firstname',o.firstname,
+			'lastname',o.lastname,
+                        'address',o.address,
+                        'zip',o.zip ,
+                        'account_type',o.account_type,
+                        'address2',coalesce(o.address2,''),
+                        'country', o.country ,
+                        'state',o.state ,
+                        'city',o.city ) as owner,
                 (select jsonb_agg((select x from (select
                                 ips_patient_id,
                                 patient_name,
@@ -61,7 +59,7 @@ from(
         from analytics_blue.dim_owner o
         left join analytics_blue.segment_owner so on so.account_id=o.account_id
        	where o.email is not null
-	      and account_type='Patient'
-				and active
+	        and account_type='Patient'
+		and active
         limit 1
-	) j
+	) data) j
