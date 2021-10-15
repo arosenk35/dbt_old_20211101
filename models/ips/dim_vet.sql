@@ -9,10 +9,11 @@
       after_commit("create index  index_{{this.name}}_on_kv on {{this.schema}}.{{this.name}} (key_vet)"),
       after_commit("create index  index_{{this.name}}_on_ks on {{this.schema}}.{{this.name}} (key_sln)"),
       after_commit("create index  index_{{this.name}}_on_kclinic on {{this.schema}}.{{this.name}} (key_clinic)"),
-      after_commit("create index  index_{{this.name}}_on_kp1 on {{this.schema}}.{{this.name}} (phone1)"),
+      after_commit("create index  index_{{this.name}}_on_kp1 on {{this.schema}}.{{this.name}} (phone1,phone2,phone3)"),
       after_commit("create index  index_{{this.name}}_on_kp2 on {{this.schema}}.{{this.name}} (phone2)"),
       after_commit("create index  index_{{this.name}}_on_kp3 on {{this.schema}}.{{this.name}} (phone3)"),
-      after_commit("create index  index_{{this.name}}_on_email on {{this.schema}}.{{this.name}} (email)")
+      after_commit("create index  index_{{this.name}}_on_email on {{this.schema}}.{{this.name}} (email)"),
+      after_commit("create index  index_{{this.name}}_on_territory on {{this.schema}}.{{this.name}} (territory)")
       ]
   })
   }}
@@ -97,5 +98,3 @@
   left join {{ ref('dim_practice_map') }} p on p.doctor_id=dm.srno
   left join {{ ref('sales_territories') }} st on z.zipid= st.zip
 	where  exists (select 'x' from ips.prescription p where dm.srno=p.doctor_id and p.office_id=2)
-  --ignore office_id it lies!
-  --where dm.office_id is null or dm.office_id =2

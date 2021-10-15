@@ -8,7 +8,8 @@
         after_commit("create index  index_{{this.name}}_on_doctor on {{this.schema}}.{{this.name}} (doctor_id)"),
         after_commit("create index  index_{{this.name}}_on_patient on {{this.schema}}.{{this.name}} (patient_id)"),
         after_commit("create index  index_{{this.name}}_on_account on {{this.schema}}.{{this.name}} (account_id)"),
-        after_commit("create index  index_{{this.name}}_on_practice_id on {{this.schema}}.{{this.name}} (practice_id)")
+        after_commit("create index  index_{{this.name}}_on_practice_id on {{this.schema}}.{{this.name}} (practice_id)"),
+        after_commit("create index  index_{{this.name}}_on_territory on {{this.schema}}.{{this.name}} (territory,dispense_date)")
       ]
   })
   }}
@@ -105,6 +106,7 @@
 
     pg.practice_id,
     pgp.practice,
+    pg.territory,
 
     (p.ips_bill='Y') as is_auto_fill,
 
@@ -221,7 +223,7 @@ select
         0 as next_fill_number,
         pg.practice_id,
         pgp.practice,
-        
+        pg.territory,        
         (p.ips_bill='Y') as is_auto_fill,
         case 
             when p.sig_code ilike 'fou%' then 'Office Use'
