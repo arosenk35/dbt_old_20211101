@@ -52,13 +52,14 @@ from( select email,data.owner::jsonb||json_build_object('patients',data.patients
                                           	coalesce(p.sex,'')    as sex,
                                           	coalesce(species,'')  as species,
 						p.dod
-                                FROM    analytics_blue.dim_patient p
-                                        join  analytics_blue.dim_vet v on p.doctor_id=v.doctor_id
+                                FROM    {{ ref('dim_patient') }}  p
+                                        join  {{ ref('dim_vet') }}  v on p.doctor_id=v.doctor_id
                 where p.account_id=o.account_id) patient_row
                 )::jsonb  AS patients
-        from analytics_blue.dim_owner o
-        left join analytics_blue.segment_owner so on so.account_id=o.account_id
-       	where o.email is not null
+        from {{ ref('dim_owner') }}  o
+        left join {{ ref('segment_owner') }}  so on so.account_id=o.account_id
+       	where o.email
+                is not null
 	        and account_type='Patient'
 		and active
         limit 1

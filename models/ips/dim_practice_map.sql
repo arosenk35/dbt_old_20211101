@@ -31,7 +31,7 @@
 	    prm.practice_id as practice_id_map
 
   FROM ips.doctor_master dm
-	left join analytics_seed.practice_map prm on    dm.srno = prm.doctor_id
+	left join {{ ref('practice_map') }}  prm on    dm.srno = prm.doctor_id
   left join ips.zip_master z on dm.zip = z.srno
   where  exists (select 'x' from ips.prescription p where dm.srno=p.doctor_id and p.office_id=2)
 	--  ignore office_id it lies!
