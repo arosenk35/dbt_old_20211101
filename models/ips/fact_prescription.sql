@@ -46,6 +46,7 @@
         fp.tracking_number,
         bh.fill_number, 
         p.ips_bill, 
+        bh.walkin_tran_id,
         bd.delay_reason_code,
         case when coalesce(p.last_tran_id,0) = 0  
         then false 
@@ -179,7 +180,8 @@ select
         null as delivery_date,
         null as tracking_number,
         -1 as fill_number, 
-        p.ips_bill, 
+        p.ips_bill,        
+        bh.walkin_tran_id, 
         null as delay_reason_code,
 		
         case    

@@ -2,12 +2,12 @@
   config({
     "materialized": "table",
     "post-hook": [
-        after_commit("create index  index_{{this.name}}_on_rxno on {{this.schema}}.{{this.name}} (tran_id)")
+        after_commit("create index  index_{{this.name}}_on_rxno on {{this.schema}}.{{this.name}} (walkin_tran_id)")
         ]
   })
   }}
 select  
-    tran_id,
+    tran_id as walkin_tran_id,
     tran_type,
     signature_flag,
     checkout_tran_id,
