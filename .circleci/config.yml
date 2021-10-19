@@ -91,10 +91,10 @@ jobs:
 
       - run:
           name: DBT IPS sales No TUM
-          no_output_timeout: 15m
+          no_output_timeout: 30m
           command: |
             . venv/bin/activate
-            dbt run --profiles-dir=.  --models ips --exclude fact_refill_status_history_monthly calc_refill_status_sequence --target prod
+            dbt run --profiles-dir=.  --models ips --exclude fact_refill_status_history_monthly calc_refill_status_sequence fact_refill_status_history_monthly --target prod
 
       - run:
           name: DBT CsCart sales
