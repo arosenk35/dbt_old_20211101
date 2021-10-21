@@ -1,4 +1,4 @@
-2{{
+{{
   config({
     "materialized": "table",
     "post-hook": [
