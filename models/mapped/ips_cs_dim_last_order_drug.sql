@@ -7,13 +7,19 @@
 }}
 ---track last known rxno for cscart order
 select 
-        distinct on (cs_lod.order_id)
+        distinct on (cs_lod.order_id,cs_lod.product_id)
         cs_lod.order_id,
         o.rxno,
+        o.account_id,
+        o.doctor_id,
+        o.patient_id,
+        o.drug_id,
+        cs_lod.product_id,
+        split_part(cs_lod.patient_id,':',2) as cscart_patient_id,		
+        split_part(cs_lod.patient_id,':',1) as cscart_owner_id,
         o.last_dispense_date 
 from {{ ref('der_refill_status') }}  o
     join {{ ref('cs_ips_dim_patient') }}   cs_dmp 	        on cs_dmp.ips_patient_id=o.patient_id and priority=1
     join {{ ref('cs_ips_dim_last_order_drug') }}  cs_lod    on cs_lod.patient_id=cs_dmp.patient_id and cs_lod.ips_drug_id=o.drug_id
-    order by    cs_lod.order_id,
+     order by   cs_lod.order_id,cs_lod.product_id,
                 o.last_dispense_date
-	
