@@ -93,7 +93,6 @@
   select     
       coalesce(first_practice_id, first_doctor_id+1000000) as practice_id,
       doctor_id,
-      first_practice as practice,
       'fuzzy' as type 
     from fuzzy 
   where practice_id_map is null
@@ -103,7 +102,6 @@
   (select   
       m.practice_id,	
       m.doctor_id,
-      m.practice,
       'csv' as type
   FROM {{ ref('practice_map') }}  m
   )
