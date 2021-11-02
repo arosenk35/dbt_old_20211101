@@ -1,7 +1,8 @@
-config({
-  “materialized”: “table”,
-  “post-hook”: [
-    after_commit(“create index index_{{this.name}}_on_rxno on {{this.schema}}.{{this.name}} (walkin_tran_id)“)
+{{
+  config({
+    "materialized": "table",
+    "post-hook": [
+    after_commit("create index index_{{this.name}}_on_rxno on {{this.schema}}.{{this.name}} (walkin_tran_id)")
     ]
  })
  }}
