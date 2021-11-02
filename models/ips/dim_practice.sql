@@ -9,7 +9,7 @@
   select 
   distinct on(m.practice_id)
 	m.practice_id,	
-  initcap(coalesce(v.clinic,v.address,firstname||' '||lastname)) as practice,
+  m.practice,
 	firstname,
 	lastname,
 	email,
@@ -27,21 +27,7 @@
 	sln_expiration_date,
 	dea,
 	sln,
-  organization_id,
-	case when active='Y' then 1 else 99 end as rank,
-	case    when v.clinic is not null     then 1
-          when address ilike '%vet%'    then 1
-          when address ilike '%hosp%'   then 1
-          when address ilike '%clinic%' then 1 
-          when address ilike '%animal%' then 1
-          when address ilike '%corpor%' then 1
-          when address ilike '%pets%'   then 1
-		  else 99
-    end as rank_clinic
+  organization_id
   FROM {{ ref('dim_practice_map') }}  m
   join {{ ref('dim_vet') }}  v on m.doctor_id=v.doctor_id
   left join {{ ref('dim_organization') }} org on v.clinic ilike '%'||org.name||'%'
-  order by 
-  m.practice_id, rank asc,
-  rank_clinic asc,
-  v.created_date desc

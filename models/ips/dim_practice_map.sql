@@ -108,8 +108,8 @@ with
 
           btrim(practice)  as practice,
           address,
-        address2,
-        note,
+          address2,
+          note,
           zip,
           phone1,
           country,
@@ -117,7 +117,8 @@ with
           city,
           created_date,
           active,
-        doctor_id,	    practice_id_map
+          doctor_id,	   
+          practice_id_map
 
       FROM clinic
       ),
@@ -141,8 +142,7 @@ with
                     end,             
                     created_date asc               
                     ) first_doctor_id,	
-                    doctor_id,                
-
+                    doctor_id,
                     first_value(practice) OVER (PARTITION BY state,city,zip,phone1 order by 
                     case when active='Y' then 1 else 99 end,
                     case 
@@ -161,7 +161,8 @@ with
                     end asc,											
                     created_date asc
                     ) first_practice,
-          fuzzy_key,practice,	    practice_id_map
+          fuzzy_key,
+          practice_id_map
     
       FROM vet
       order by fuzzy_key
@@ -170,17 +171,18 @@ with
       select     
           coalesce(first_doctor_id) as practice_id,
           doctor_id,
-          'map' as type
-        
+          first_practice as practice,
+          'map' as type        
         from fuzzy 
         where practice_id_map is null
-      and nullif(practice,'') is not null
+      and nullif(first_practice,'') is not null
 
   union all
 
   (select   
       m.practice_id,	
       m.doctor_id,
+      m.practice,
       'csv' as type
   FROM {{ ref('practice_map') }}  m
   )
