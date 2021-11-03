@@ -31,7 +31,7 @@
     nullif(btrim(phone31 || phone32|| phone33),'') as phone3,
     btrim(coalesce(  case 
       when  lower(credential) in ('dr','dvm') 
-          then  initcap(credential)
+          then  initcap(credential) else 'Dvm'
     end,'') ||' '|| coalesce(initcap(firstname),'') || ' ' || coalesce(initcap(lastname),'')) as vet,
     created_date, 
     changed_date, 
@@ -43,15 +43,16 @@
     case 
       when  lower(credential) in ('dr','dvm') 
       then  initcap(credential)
+      else 'Dvm'
     end as credential, 
     nullif(address2,'') as address2,
     coalesce(z.country,'USA') as country,
     coalesce(z.state,'CA')    as state,
 	  initcap(z.city)           as city,
-    case  when active='Y' 
-              then true 
-              else false 
-          end active,
+    case    when active='Y' 
+            then true 
+            else false 
+    end active,
 
     case  when 
               address ilike '%vet%'   
